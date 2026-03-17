@@ -34,5 +34,8 @@ $router->post('/admin/package/edit', 'AdminController@packageEdit');
 
 $router->get('/admin/package/delete', 'AdminController@packageDelete');
 
+$router->get('/admin/package/category_create', 'AdminController@showCategoryCreate');
+$router->post('/admin/package/category_create', 'AdminController@categoryCreate');
+
 $router->get('/admin/profile', 'AdminController@showProfile');
 

@@ -24,7 +24,7 @@ $errors = getSessionFlash('errors');
                         ?>
                         <div class="mb-3">
                             <label class="form-label">Tên gói</label>
-                            <input type="text" name="name" class="form-control">
+                            <input type="text" name="name" class="form-control" value = "<?php if(!empty($oldData['name'])) echo $oldData['name'];?>">
                             <?php
                             if (!empty($errors)) {
                                 echo showErrors($errors, 'name');
@@ -42,7 +42,7 @@ $errors = getSessionFlash('errors');
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Mô tả</label>
-                            <textarea name="description" class="form-control"></textarea>
+                            <textarea name="description" class="form-control" value = "<?php if(!empty($oldData['description'])) echo $oldData['description'];?>"></textarea>
                             <?php
                             if (!empty($errors)) {
                                 echo showErrors($errors, 'description');
@@ -51,7 +51,7 @@ $errors = getSessionFlash('errors');
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Giá</label>
-                            <input type="number" name="price" class="form-control">
+                            <input type="number" name="price" class="form-control" value = "<?php if(!empty($oldData['price'])) echo $oldData['price'];?>">
                             <?php
                             if (!empty($errors)) {
                                 echo showErrors($errors, 'price');

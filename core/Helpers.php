@@ -281,6 +281,7 @@ function isLogin($userModel){
     }
     return $checkLogin;
 }
+//hàm chuyển hướng đăng nhập theo role
 function loginRedirect($userData){
     if(!empty($userData)){
         if($userData['role']==='admin'){
@@ -356,4 +357,14 @@ function removeUploadImg($fileName, $folder='uploads'){
         return unlink($path);
     }
     return false;
+}
+//validate danh mục
+function validateCategory($data){
+    $errors = [];
+    if(empty($data['name'])){
+        $errors['name'] = "Tên gói không được để trống";
+    }elseif(strlen($data['name']) < 3){
+        $errors['name'] = "Tên gói phải ít nhất 3 ký tự";
+    }
+    return $errors;
 }

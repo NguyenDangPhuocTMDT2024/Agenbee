@@ -149,8 +149,8 @@ class AdminController extends Controller
                 $packageInfo = $this->packageModel->getPackagesByID($id);
                 if (!empty($packageInfo)) {
                     $del = removeUploadImg($packageInfo['avatar']);
-                //     var_dump($del);
-                // die();
+                    //     var_dump($del);
+                    // die();
                     if ($del) {
                         $checkDelete = $this->packageModel->deletePackageByID($packageInfo['id']);
                         if ($checkDelete) {
@@ -178,5 +178,45 @@ class AdminController extends Controller
                 redirect('/admin/package');
             }
         }
+    }
+    public function showCategoryCreate()
+    {
+        $this->middleware->adminCheck();
+        $data = [
+            'userModel' => $this->userModel,
+            // 'categoryList' => $this->categoryModel->getAllCategories(),
+            // 'packageModel' => $this->packageModel
+        ];
+        $this->renderView($this->viewPath . 'packages/category_create', $data);
+    }
+    public function categoryCreate() 
+    {
+        if(isPost()){
+            $filteredData = filterData();
+            $errors = [];
+            $errors = validateCategory($filteredData);
+            if(empty($errors)){
+                $data = [
+                    'name' => $filteredData['name'],
+                    'description' => $filteredData['description'],
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+                $checkInsert = $this->categoryModel->createCategory($data);
+                if($checkInsert){
+                    setSessionFlash('msg','Thêm danh mục thành công!');
+                    setSessionFlash('msg_type','success');
+                    redirect('/admin/package');
+                } else{
+                    setSessionFlash('msg','Dữ liệu không hợp lệ, vui lòng sửa lại!');
+                    setSessionFlash('msg_type','danger');
+                }
+            } else{
+                setSessionFlash('msg','Dữ liệu không hợp lệ, vui lòng sửa lại!');
+                setSessionFlash('msg_type','danger');
+                setSessionFlash('errors', $errors);
+                setSessionFlash('old_data',$filteredData);
+            }
+        }
+        redirect('/admin/package/category_create');
     }
 }
