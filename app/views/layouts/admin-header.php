@@ -92,7 +92,7 @@
             <li class="nav-item dropdown user-menu">
               <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <img
-                  src="<?php echo (!empty($userInfo['avatar'])) ? $userInfo['avatar']: _HOST_URL_PUBLIC . '/img/defaultAvatar.png' ?>"
+                  src="<?php echo (!empty($userInfo['avatar'])) ? _HOST_URL_PUBLIC .'/uploads/'.$userInfo['avatar']: _HOST_URL_PUBLIC . '/img/defaultAvatar.png' ?>"
                   class="user-image rounded-circle shadow"
                   alt="User Image"
                 />

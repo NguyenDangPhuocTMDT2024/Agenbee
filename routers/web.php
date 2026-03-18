@@ -40,7 +40,13 @@ $router->post('/admin/package/category_create', 'AdminController@categoryCreate'
 $router->get('/admin/order', 'AdminController@showOrder');
 $router->post('/admin/order', 'AdminController@order');
 
-$router->get('/admin/order/detail', 'AdminController@showDetail');
+$router->get('/admin/order/detail', 'AdminController@showOrderDetail');
+
+$router->get('/admin/user', 'AdminController@showUser');
+$router->get('/admin/user/profile', 'AdminController@showUserProfile');
+$router->get('/admin/user/edit', 'AdminController@showUserEdit');
+$router->get('/admin/user/create', 'AdminController@showUserCreate');
+$router->get('/admin/user/delete', 'AdminController@userDelete');
 
 $router->get('/admin/profile', 'AdminController@showProfile');
 

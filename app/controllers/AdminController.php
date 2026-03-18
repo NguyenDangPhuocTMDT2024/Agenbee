@@ -229,12 +229,34 @@ class AdminController extends Controller
         ];
         $this->renderView($this->viewPath . 'orders/index', $data);
     }
-    public function showDetail()
+    public function showOrderDetail()
     {
         $userID = getSession('user_id');
         $data = [
             'userInfo' => $this->userModel->getUserByID($userID),
         ];
         $this->renderView($this->viewPath . 'orders/detail', $data);
+    }
+    public function showProfile(){
+        $userID = getSession('user_id');
+        $data = [
+            'userInfo' => $this->userModel->getUserByID($userID),
+        ];
+        $this->renderView($this->viewPath . 'users/profile', $data);
+    }
+    public function showUser(){
+        $userID = getSession('user_id');
+        $data = [
+            'userInfo' => $this->userModel->getUserByID($userID),
+            'userList' => $this->userModel->getAllUsers()
+        ];
+        $this->renderView($this->viewPath . 'users/index', $data);
+    }
+    public function showUserCreate(){
+        $userID = getSession('user_id');
+        $data = [
+            'userInfo' => $this->userModel->getUserByID($userID),
+        ];
+        $this->renderView($this->viewPath . 'users/create', $data);
     }
 }

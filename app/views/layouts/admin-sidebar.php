@@ -6,7 +6,7 @@
     <a href="./index.html" class="brand-link">
       <!--begin::Brand Image-->
       <img
-        src="../../dist/assets/img/AdminLTELogo.png"
+        src=""
         alt="AdminLTE Logo"
         class="brand-image opacity-75 shadow" />
       <!--end::Brand Image-->
@@ -75,33 +75,13 @@
           </ul>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="<?php echo _HOST_URL;?>/admin/user" class="nav-link">
             <i class="nav-icon bi bi-tree-fill"></i>
             <p>
               User manager
               <i class="nav-arrow bi bi-chevron-right"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="./UI/general.html" class="nav-link">
-                <i class="nav-icon bi bi-circle"></i>
-                <p>User List</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="./UI/icons.html" class="nav-link">
-                <i class="nav-icon bi bi-circle"></i>
-                <p>Create User</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="./UI/timeline.html" class="nav-link">
-                <i class="nav-icon bi bi-circle"></i>
-                <p>Details</p>
-              </a>
-            </li>
-          </ul>
         </li>
       </ul>
       <!--end::Sidebar Menu-->

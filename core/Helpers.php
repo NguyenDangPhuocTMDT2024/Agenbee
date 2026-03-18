@@ -60,12 +60,12 @@ function sendMail($to, $subject, $message)
 
     try {
         //Server settings
-        $mail->SMTPDebug = 0;                      //Disable debug output
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output for testing
         $mail->isSMTP();                                            //Send using SMTP
         $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
         $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
         $mail->Username   = 'agenbee0502@gmail.com';                     //SMTP username
-        $mail->Password   = 'tvrr onwr apre pqyy';                               //SMTP password
+        $mail->Password   = 'usby gflt wnmn hkph';                               //SMTP password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
         $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
@@ -79,7 +79,17 @@ function sendMail($to, $subject, $message)
         $mail->Subject = $subject;
         $mail->Body    = $message;
 
+        $mail->SMTPOptions = array(
+            'ssl' => [
+                'verify_peer' => true,
+                'verify_depth' => 3,
+                'allow_seft_signed' => true,
+            ],
+        );
+        
         $mail->send();
+        echo 'ok';
+        die();
         return true;
     } catch (\PHPMailer\PHPMailer\Exception $e) {
         return false;

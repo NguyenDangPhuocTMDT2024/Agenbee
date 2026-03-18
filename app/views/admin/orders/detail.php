@@ -28,23 +28,22 @@ $msgType = getSessionFlash('msg_type');
                 </tr>
             </thead>
             <tbody>
-                <!-- ===== PACKAGE 1 ===== -->
-                <tr data-bs-toggle="collapse" data-bs-target="#package1" style="cursor:pointer;">
+                <tr>
                     <td>1</td>
                     <td class="text-start">Setup Shopee Basic</td>
                     <td class="text-danger fw-bold">500,000đ</td>
                     <td><span class="badge bg-warning text-dark">Đang xử lý</span></td>
                     <td><i class="bi bi-chevron-down"></i></td>
                 </tr>
-                <tr id="package1" class="collapse">
+                <tr>
                     <td colspan="5" class="p-0">
                         <div class="bg-light border-top p-3">
                             <div class="row align-items-center">
 
                                 <div class="col-md-2 text-center">
-                                    <img src="https://via.placeholder.com/100"
+                                    <img src=""
                                         class="img-fluid rounded shadow-sm"
-                                        style="max-height:100px;">
+                                        style="max-height:100px;" alt="ảnh gói">
                                 </div>
                                 <div class="col-md-7 text-start">
                                     <h6 class="fw-bold mb-1">Setup Shopee Basic</h6>
@@ -70,22 +69,21 @@ $msgType = getSessionFlash('msg_type');
                         </div>
                     </td>
                 </tr>
-                <!-- ===== PACKAGE 2 ===== -->
-                <tr data-bs-toggle="collapse" data-bs-target="#package2" style="cursor:pointer;">
+                <tr>
                     <td>2</td>
                     <td class="text-start">Setup TikTok Shop Pro</td>
                     <td class="text-danger fw-bold">1,200,000đ</td>
                     <td><span class="badge bg-success">Hoàn thành</span></td>
                     <td><i class="bi bi-chevron-down"></i></td>
                 </tr>
-                <tr id="package2" class="collapse">
+                <tr id="package2">
                     <td colspan="5" class="p-0">
                         <div class="bg-light border-top p-3">
                             <div class="row align-items-center">
                                 <div class="col-md-2 text-center">
-                                    <img src="https://via.placeholder.com/100"
+                                    <img src=""
                                         class="img-fluid rounded shadow-sm"
-                                        style="max-height:100px;">
+                                        style="max-height:100px;" alt="ảnh gói">
                                 </div>
                                 <div class="col-md-7 text-start">
                                     <h6 class="fw-bold mb-1">Setup TikTok Shop Pro</h6>

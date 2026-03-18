@@ -9,7 +9,7 @@ class User extends Database {
     }
     //ham lay toan bo thong tin user
     public function getAllUsers() {
-        $sql = "SELECT * FROM ".$this->tableName;
+        $sql = "SELECT * FROM ".$this->tableName." ORDER BY role ASC";
         $result = $this->getAll($sql);
         return $result;
     }
