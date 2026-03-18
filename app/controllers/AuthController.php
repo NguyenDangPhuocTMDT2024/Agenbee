@@ -138,10 +138,13 @@ class AuthController extends Controller
                     $subject = 'Kích hoạt tài khoản';
                     $linkActive = _HOST_URL . "/activate?token=$token";
                     $content = "Chào $name,<br> Vui lòng click vào link sau để kích hoạt tài khoản: <a href='$linkActive'>$linkActive</a>";
-                    sendMail($mailTo, $subject, $content);
-
-                    setSessionFlash('msg', 'Đăng ký thành công. Vui lòng kiểm tra email để kích hoạt tài khoản!');
-                    setSessionFlash('msg_type', 'success');
+                    if(sendMail($mailTo, $subject, $content)) {
+                        setSessionFlash('msg', 'Đăng ký thành công. Vui lòng kiểm tra email để kích hoạt tài khoản!');
+                        setSessionFlash('msg_type', 'success');
+                    } else {
+                        setSessionFlash('msg', 'Đăng ký thành công nhưng gửi mail thất bại. Vui lòng liên hệ admin!');
+                        setSessionFlash('msg_type', 'warning');
+                    }
                 } else {
                     setSessionFlash('msg', 'Đăng ký thất bại. Vui lòng thử lại!');
                     setSessionFlash('msg_type', 'danger');

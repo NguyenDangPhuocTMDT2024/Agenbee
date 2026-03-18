@@ -50,10 +50,10 @@ $msgType = getSessionFlash('msg_type');
             </thead>
             <tbody>
                 <?php foreach ($packageList as $package): ?>
-                    <tr>
+                    <tr data-bs-toggle="collapse" data-bs-target="#package<?php echo $package['id']; ?>" style="cursor:pointer;">
                         <td><?php echo (!empty($package['id'])) ? $package['id'] : '' ?></td>
                         <td><?php echo (!empty($package['name'])) ? $package['name'] : '' ?></td>
-                        <td><?php echo (!empty($package['price'])) ? $package['price'] : '0' ?><sup>đ</sup></td>
+                        <td><?php echo (!empty($package['price'])) ? number_format($package['price']) : '0' ?><sup>đ</sup></td>
                         <td><?php echo (!empty($package['category_name'])) ? $package['category_name'] : '' ?></td>
                         <td>
                             <?php
@@ -71,6 +71,43 @@ $msgType = getSessionFlash('msg_type');
                         <td>
                             <a href="<?php echo _HOST_URL ?>/admin/package/delete?id=<?php echo $package['id']; ?>"
                                 class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa gói <?php echo $package['name']; ?> ?')">🗑</a>
+                        </td>
+                    </tr>
+                    <tr id="package<?php echo $package['id']; ?>" class="collapse">
+                        <td colspan="7" class="p-0">
+                            <div class="bg-light border-top p-3">
+                                <div class="row align-items-center">
+                                    <div class="col-md-2 text-center">
+                                        <img
+                                            src="<?php echo _HOST_URL_PUBLIC; ?>/uploads/<?php echo $package['avatar'] ?>"
+                                            class="img-fluid rounded shadow-sm"
+                                            style="max-height:100px; object-fit:cover;">
+                                    </div>
+                                    <div class="col-md-7 text-start">
+                                        <h6 class="mb-1 fw-bold">
+                                            <?php echo $package['name']; ?>
+                                        </h6>
+                                        <p class="mb-1 text-muted small">
+                                            <?php echo $package['description'] ?? 'Không có mô tả'; ?>
+                                        </p>
+                                        <span class="badge bg-primary">
+                                            <?php echo $package['category_name']; ?>
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 text-end">
+                                        <div class="fw-bold text-danger mb-2">
+                                            <?php echo number_format($package['price']); ?>đ
+                                        </div>
+                                        <?php if ($package['hidden'] == 1): ?>
+                                            <span class="badge bg-secondary">Đang ẩn</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-success">Đang hiển thị</span>
+                                        <?php endif; ?>
+                                    </div>
+
+                                </div>
+
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>

@@ -53,21 +53,21 @@ function getSessionFlash($key) {
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-//hàm gửi mail (co bug ne aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
+//hàm gửi mail
 function sendMail($to, $subject, $message)
 {
     $mail = new PHPMailer(true);
 
     try {
         //Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+        $mail->SMTPDebug = 0;                      //Disable debug output
         $mail->isSMTP();                                            //Send using SMTP
         $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
         $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
         $mail->Username   = 'agenbee0502@gmail.com';                     //SMTP username
         $mail->Password   = 'tvrr onwr apre pqyy';                               //SMTP password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-        $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
+        $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
         //Recipients
         $mail->setFrom('agenbee0502@gmail.com', 'Agenbee');
@@ -79,17 +79,10 @@ function sendMail($to, $subject, $message)
         $mail->Subject = $subject;
         $mail->Body    = $message;
 
-        $mail->SMTPOptions = [
-            'ssl' => [
-                'verify_peer' => true,
-                'verify_depth' => 3,
-                'allow_self_signed' => true
-            ]
-        ];
-
         $mail->send();
-    } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        return true;
+    } catch (\PHPMailer\PHPMailer\Exception $e) {
+        return false;
     }
 }
 //kiểm tra phương thức gửi dữ liệu
