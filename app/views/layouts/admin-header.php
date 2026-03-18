@@ -1,7 +1,3 @@
-<?php
-$userID = getSession('user_id');
-$userInfo = $userModel->getUserByID($userID);
-?> 
 <!doctype html>
 <html lang="en">
   <!--begin::Head-->

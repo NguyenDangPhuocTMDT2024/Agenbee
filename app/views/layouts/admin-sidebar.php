@@ -43,28 +43,12 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="<?php echo _HOST_URL ?>/admin/order" class="nav-link">
             <i class="nav-icon bi bi-clipboard-fill"></i>
             <p>
               Orders
-              <span class="nav-badge badge text-bg-secondary me-3">6</span>
-              <i class="nav-arrow bi bi-chevron-right"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="./layout/unfixed-sidebar.html" class="nav-link">
-                <i class="nav-icon bi bi-circle"></i>
-                <p>Order List</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="./layout/fixed-sidebar.html" class="nav-link">
-                <i class="nav-icon bi bi-circle"></i>
-                <p>Details</p>
-              </a>
-            </li>
-          </ul>
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">

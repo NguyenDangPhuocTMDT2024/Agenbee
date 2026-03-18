@@ -1,7 +1,7 @@
 <?php
 $data = [
     'title' => 'Category',
-    'userModel' => $userModel
+    'userInfo' => $userInfo
 ];
 layout('admin-header', $data);
 layout('admin-sidebar');

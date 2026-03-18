@@ -24,7 +24,7 @@ $router->get('/home', 'UserController@home');
 //admin routes
 $router->get('/admin/', 'AdminController@dashboard');
 
-$router->get('/admin/package', 'AdminController@package');
+$router->get('/admin/package', 'AdminController@showPackage');
 
 $router->get('/admin/package/create', 'AdminController@showPackageCreate');
 $router->post('/admin/package/create', 'AdminController@packageCreate');
@@ -36,6 +36,11 @@ $router->get('/admin/package/delete', 'AdminController@packageDelete');
 
 $router->get('/admin/package/category_create', 'AdminController@showCategoryCreate');
 $router->post('/admin/package/category_create', 'AdminController@categoryCreate');
+
+$router->get('/admin/order', 'AdminController@showOrder');
+$router->post('/admin/order', 'AdminController@order');
+
+$router->get('/admin/order/detail', 'AdminController@showDetail');
 
 $router->get('/admin/profile', 'AdminController@showProfile');
 

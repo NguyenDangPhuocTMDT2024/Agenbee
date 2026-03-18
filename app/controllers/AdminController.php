@@ -6,6 +6,7 @@ class AdminController extends Controller
     private $categoryModel;
     private $userModel;
     private $packageModel;
+    private $orderModel;
     private $middleware;
     public function __construct()
     {
@@ -13,22 +14,24 @@ class AdminController extends Controller
         $this->userModel = new User();
         $this->categoryModel = new Category();
         $this->packageModel = new Package();
+        $this->orderModel = new Order();
+        $this->middleware->adminCheck();
     }
     public function dashboard()
     {
-        $this->middleware->adminCheck();
+        $userID = getSession('user_id');
         $data = [
-            'userModel' => $this->userModel,
+            'userInfo' => $this->userModel->getUserByID($userID),
             // 'orderModel' => $this->orderModel,
             // 'taskModel' => $this->taskModel
         ];
         $this->renderView($this->viewPath . 'dashboard', $data);
     }
-    public function package()
+    public function showPackage()
     {
-        $this->middleware->adminCheck();
+        $userID = getSession('user_id');
         $data = [
-            'userModel' => $this->userModel,
+            'userInfo' => $this->userModel->getUserByID($userID),
             'packageList' => $this->packageModel->getAllPackages(),
             'categoryList' => $this->categoryModel->getAllCategories()
         ];
@@ -36,9 +39,9 @@ class AdminController extends Controller
     }
     public function showPackageCreate()
     {
-        $this->middleware->adminCheck();
+        $userID = getSession('user_id');
         $data = [
-            'userModel' => $this->userModel,
+            'userInfo' => $this->userModel->getUserByID($userID),
             'categoryList' => $this->categoryModel->getAllCategories()
         ];
         $this->renderView($this->viewPath . 'packages/create', $data);
@@ -83,9 +86,9 @@ class AdminController extends Controller
     }
     public function showPackageEdit()
     {
-        $this->middleware->adminCheck();
+        $userID = getSession('user_id');
         $data = [
-            'userModel' => $this->userModel,
+            'userInfo' => $this->userModel->getUserByID($userID),
             'categoryList' => $this->categoryModel->getAllCategories(),
             'packageModel' => $this->packageModel
         ];
@@ -148,12 +151,10 @@ class AdminController extends Controller
                 $id = $filteredData['id'];
                 $packageInfo = $this->packageModel->getPackagesByID($id);
                 if (!empty($packageInfo)) {
-                    $del = removeUploadImg($packageInfo['avatar']);
-                    //     var_dump($del);
-                    // die();
-                    if ($del) {
-                        $checkDelete = $this->packageModel->deletePackageByID($packageInfo['id']);
-                        if ($checkDelete) {
+                    $checkDelete = $this->packageModel->deletePackageByID($packageInfo['id']);
+                    if ($checkDelete) {
+                        $delImg = removeUploadImg($packageInfo['avatar']);
+                        if ($delImg) {
                             setSessionFlash('msg', 'Xóa gói thành công!');
                             setSessionFlash('msg_type', 'success');
                             redirect('/admin/package');
@@ -181,9 +182,9 @@ class AdminController extends Controller
     }
     public function showCategoryCreate()
     {
-        $this->middleware->adminCheck();
+        $userID = getSession('user_id');
         $data = [
-            'userModel' => $this->userModel,
+            'userInfo' => $this->userModel->getUserByID($userID),
             // 'categoryList' => $this->categoryModel->getAllCategories(),
             // 'packageModel' => $this->packageModel
         ];
@@ -218,5 +219,22 @@ class AdminController extends Controller
             }
         }
         redirect('/admin/package/category_create');
+    }
+    public function showOrder()
+    {
+        $userID = getSession('user_id');
+        $data = [
+            'userInfo' => $this->userModel->getUserByID($userID),
+            'orderList' => $this->orderModel->getAllOrders()
+        ];
+        $this->renderView($this->viewPath . 'orders/index', $data);
+    }
+    public function showDetail()
+    {
+        $userID = getSession('user_id');
+        $data = [
+            'userInfo' => $this->userModel->getUserByID($userID),
+        ];
+        $this->renderView($this->viewPath . 'orders/detail', $data);
     }
 }

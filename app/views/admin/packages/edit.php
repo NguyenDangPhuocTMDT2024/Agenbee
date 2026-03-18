@@ -1,7 +1,7 @@
 <?php
 $data = [
     'title' => 'Packages',
-    'userModel' => $userModel
+    'userInfo' => $userInfo
 ];
 $getData = filterData('get');
 if (!empty($getData['id'])) {
