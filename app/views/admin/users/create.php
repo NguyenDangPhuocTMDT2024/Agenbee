@@ -8,6 +8,8 @@ layout('admin-sidebar');
 
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
+$errors = getSessionFlash('errors');
+$oldData = getSessionFlash('old_data');
 ?>
 
 <main class="container mt-4 mb-4">
@@ -32,15 +34,6 @@ $msgType = getSessionFlash('msg_type');
                             ?>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Ảnh đại diện</label>
-                            <input type="file" name="avatar" class="form-control">
-                            <?php
-                            if (!empty($errors)) {
-                                echo showErrors($errors, 'avatar');
-                            }
-                            ?>
-                        </div>
-                        <div class="mb-3">
                             <label class="form-label">Email</label>
                             <input type="text" name="email" class="form-control" value = "<?php if(!empty($oldData['email'])) echo $oldData['email'];?>">
                             <?php
@@ -60,10 +53,19 @@ $msgType = getSessionFlash('msg_type');
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Mật khẩu</label>
-                            <input type="text" name="password" class="form-control" value = "<?php if(!empty($oldData['password'])) echo $oldData['password'];?>">
+                            <input type="password" name="password" class="form-control">
                             <?php
                             if (!empty($errors)) {
                                 echo showErrors($errors, 'password');
+                            }
+                            ?>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Xác nhận mật khẩu</label>
+                            <input type="password" name="password_confirmation" class="form-control">
+                            <?php
+                            if (!empty($errors)) {
+                                echo showErrors($errors, 'password_confirmation');
                             }
                             ?>
                         </div>

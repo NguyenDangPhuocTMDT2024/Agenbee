@@ -1,6 +1,6 @@
 <?php
 $data = [
-    'title' => 'Orders',
+    'title' => 'Thông tin người dùng',
     'userInfo' => $userInfo
 ];
 layout('admin-header', $data);
@@ -19,13 +19,27 @@ $msgType = getSessionFlash('msg_type');
                         <img src="https://via.placeholder.com/120"
                             class="rounded-circle mb-3 shadow"
                             style="width:120px; height:120px; object-fit:cover;">
-                        <h5 class="fw-bold">Nguyễn Văn A</h5>
-                        <p class="text-muted mb-2">Shop Owner</p>
-                        <span class="badge bg-success mb-3">Active</span>
-                        <div class="d-grid">
-                            <button class="btn btn-primary">
+                        <h5 class="fw-bold"><?php echo (!empty($userProfile['name'])) ? $userProfile['name'] : ''; ?></h5>
+                        <p class="text-muted mb-2"><?php echo (!empty($userProfile['role'])) ? $userProfile['role'] : ''; ?></p>
+                        <?php
+                        if (isset($userProfile['status'])):
+                            if ($userProfile['status']):
+                        ?>
+                                <span class="badge bg-success mb-3">Active</span>
+                            <?php else: ?>
+                                <span class="badge bg-danger mb-3">Inactive</span>
+                        <?php
+                            endif;
+                        endif;
+                        ?>
+                        <div class="d-flex gap-2">
+                            <a href="<?php echo _HOST_URL . '/admin/user/edit?id='. $userProfile['id']?>" class="btn btn-primary flex-fill">
                                 <i class="bi bi-pencil-square"></i> Chỉnh sửa
-                            </button>
+                            </a>
+                            <a href="<?php echo _HOST_URL . '/admin/user/delete?id='. $userProfile['id']?>" class="btn btn-danger flex-fill"
+                            onclick="return confirm('Bạn có chắc muốn người dùng <?php echo $userProfile['name']; ?> ?')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -38,24 +52,25 @@ $msgType = getSessionFlash('msg_type');
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="text-muted">Họ tên</label>
-                                <div class="fw-semibold">Nguyễn Văn A</div>
+                                <div class="fw-semibold"><?php echo (!empty($userProfile['name'])) ? $userProfile['name'] : ''; ?></div>
                             </div>
                             <div class="col-md-6">
                                 <label class="text-muted">Email</label>
-                                <div class="fw-semibold">vana@gmail.com</div>
+                                <div class="fw-semibold"><?php echo (!empty($userProfile['email'])) ? $userProfile['email'] : ''; ?></div>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="text-muted">Số điện thoại</label>
-                                <div class="fw-semibold">0123456789</div>
+                                <div class="fw-semibold"><?php echo (!empty($userProfile['phone'])) ? $userProfile['phone'] : ''; ?></div>
                             </div>
                             <div class="col-md-6">
                                 <label class="text-muted">Ngày tham gia</label>
-                                <div class="fw-semibold">01/01/2025</div>
+                                <div class="fw-semibold"><?php echo (!empty($userProfile['created_at'])) ? $userProfile['created_at'] : ''; ?></div>
                             </div>
                         </div>
                         <hr>
+                        <!-- chưa xong -->
                         <h6 class="fw-bold mb-3">Thông tin shop</h6>
                         <div class="mb-2">
                             <label class="text-muted">Tên shop</label>

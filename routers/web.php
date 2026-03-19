@@ -43,9 +43,14 @@ $router->post('/admin/order', 'AdminController@order');
 $router->get('/admin/order/detail', 'AdminController@showOrderDetail');
 
 $router->get('/admin/user', 'AdminController@showUser');
+
 $router->get('/admin/user/profile', 'AdminController@showUserProfile');
+
 $router->get('/admin/user/edit', 'AdminController@showUserEdit');
+
 $router->get('/admin/user/create', 'AdminController@showUserCreate');
+$router->post('/admin/user/create', 'AdminController@userCreate');
+
 $router->get('/admin/user/delete', 'AdminController@userDelete');
 
 $router->get('/admin/profile', 'AdminController@showProfile');

@@ -75,7 +75,7 @@ $msgType = getSessionFlash('msg_type');
                         </td>
                         <td>
                             <a href="<?php echo _HOST_URL ?>/admin/user/delete?id=<?php echo $user['id']; ?>"
-                                class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa người dùng <?php echo $package['name']; ?> ?')">🗑</a>
+                                class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa người dùng <?php echo $user['name']; ?> ?')">🗑</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
