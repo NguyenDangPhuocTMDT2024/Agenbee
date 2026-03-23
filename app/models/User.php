@@ -41,10 +41,15 @@ class User extends Database
         return $result;
     }
     //ham them phien dang nhap vao bang login_token
-    public function createLoginSession($userId, $token, $createdAt)
+    public function createLoginSession($data)
     {
-        $sql = "INSERT INTO " . $this->tokenTable . " (user_id, token, created_at) VALUES (:user_id, :token, :created_at)";
-        $params = ['user_id' => $userId, 'token' => $token, 'created_at' => $createdAt];
+        $sql = "INSERT INTO " . $this->tokenTable . " (user_id, token, created_at, updated_at) VALUES (:user_id, :token, :created_at, :updated_at)";
+        $params = [
+            'user_id' => isset($data['user_id']) ? $data['user_id'] : null,
+            'token' => isset($data['token']) ? $data['token'] : null,
+            'created_at' => isset($data['created_at']) ? $data['created_at'] : null,
+            'updated_at' => isset($data['updated_at']) ? $data['updated_at'] : null
+        ];
         return $this->insert($sql, $params);
     }
     //ham dem so luong user bang email
@@ -58,35 +63,51 @@ class User extends Database
     //ham tao user moi
     public function createUser($data)
     {
-        $params = ['name' => $data['name'], 'email' => $data['email'], 'password' => $data['password'], 'phone' => $data['phone'], 'active_token' => $data['active_token'], 'created_at' => $data['created_at']];
-        if (isset($data['role']) && isset($data['status'])) {
-            $params['role'] = $data['role'];
-            $params['status'] = $data['status'];
-            $sql = "INSERT INTO " . $this->tableName . " (name, email, password, phone, active_token, role, status, created_at) VALUES (:name, :email, :password, :phone, :active_token, :role, :status, :created_at)";
-        } else {
-            $sql = "INSERT INTO " . $this->tableName . " (name, email, password, phone, active_token, created_at) VALUES (:name, :email, :password, :phone, :active_token, :created_at)";
-        }
+        $params = [
+            'name' => isset($data['name']) ? $data['name'] : null,
+            'email' => isset($data['email']) ? $data['email'] : null,
+            'password' => isset($data['password']) ? password_hash($data['password'], PASSWORD_DEFAULT) : null,
+            'phone' => isset($data['phone']) ? $data['phone'] : null,
+            'role' => isset($data['role']) ? $data['role'] : null,
+            'status' => isset($data['status']) ? $data['status'] : null,
+            'active_token' => isset($data['active_token']) ? $data['active_token'] : null,
+            'created_at' => isset($data['created_at']) ? $data['created_at'] : null
+        ];
+        $sql = "INSERT INTO " . $this->tableName . " (name, email, password, phone, active_token, role, status, created_at) VALUES (:name, :email, :password, :phone, :active_token, :role, :status, :created_at)";
         return $this->insert($sql, $params);
     }
     //ham cap nhat login_token cho user
-    public function updateLoginSessionByID($userId, $token, $updatedAt)
+    public function updateLoginSessionByID($data)
     {
         $sql = "UPDATE " . $this->tokenTable . " SET token = :token, updated_at = :updated_at WHERE user_id = :user_id";
-        $params = ['token' => $token, 'updated_at' => $updatedAt, 'user_id' => $userId];
+        $params = [
+            'token' => isset($data['token']) ? $data['token'] : null,
+            'updated_at' => isset($data['updated_at']) ? $data['updated_at'] : null,
+            'user_id' => isset($data['user_id']) ? $data['user_id'] : null,
+        ];
         return $this->update($sql, $params);
     }
     //ham thay doi forgot_token khi user quen mat khau bang email
-    public function updateForgotToken($email, $token, $updatedAt)
+    public function updateForgotTokenByEmail($data)
     {
         $sql = "UPDATE " . $this->tableName . " SET forgot_token = :forgot_token, updated_at = :updated_at WHERE email = :email";
-        $params = ['forgot_token' => $token, 'email' => $email, 'updated_at' => $updatedAt];
+        $params = [
+            'forgot_token' => isset($data['forgot_token']) ? $data['forgot_token'] : null,
+            'email' => isset($data['email']) ? $data['email'] : null,
+            'updated_at' => isset($data['updated_at']) ? $data['updated_at'] : null
+        ];
         return $this->update($sql, $params);
     }
     //ham thay doi active_token khi user kich hoat tai khoan bang id
-    public function updateActiveToken($userId, $token, $status, $updatedAt)
+    public function updateActiveTokenByID($data)
     {
         $sql = "UPDATE " . $this->tableName . " SET active_token = :active_token, updated_at = :updated_at, status = :status WHERE id = :id";
-        $params = ['active_token' => $token, 'id' => $userId, 'updated_at' => $updatedAt, 'status' => $status];
+        $params = [
+            'active_token' => isset($data['active_token']) ? $data['active_token'] : null,
+            'id' => isset($data['id']) ? $data['id'] : null,
+            'updated_at' => isset($data['updated_at']) ? $data['updated_at'] : null,
+            'status' => isset($data['status']) ? $data['status'] : null
+        ];
         return $this->update($sql, $params);
     }
     //ham lay thong tin user bang forgot_token
@@ -106,10 +127,15 @@ class User extends Database
         return $result;
     }
     //ham cap nhat mat khau moi cho user
-    public function updatePasswordByID($userId, $password, $forgotToken, $updatedAt)
+    public function updatePasswordByID($data)
     {
         $sql = "UPDATE " . $this->tableName . " SET password = :password, forgot_token = :forgot_token, updated_at = :updated_at WHERE id = :id";
-        $params = ['password' => password_hash($password, PASSWORD_DEFAULT), 'forgot_token' => $forgotToken, 'updated_at' => $updatedAt, 'id' => $userId];
+        $params = [
+            'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+            'forgot_token' => isset($data['forgot_token']) ? $data['forgot_token'] : null,
+            'updated_at' => isset($data['updated_at']) ? $data['updated_at'] : null,
+            'id' => isset($data['id']) ? $data['id'] : null
+        ];
         return $this->update($sql, $params);
     }
     //hàm xóa user bằng id

@@ -42,7 +42,8 @@ class AdminController extends Controller
         $userID = getSession('user_id');
         $data = [
             'userInfo' => $this->userModel->getUserByID($userID),
-            'categoryList' => $this->categoryModel->getAllCategories()
+            'categoryList' => $this->categoryModel->getAllCategories(),
+            'addOnPackageList' => $this->packageModel->getAddonPackages()
         ];
         $this->renderView($this->viewPath . 'packages/create', $data);
     }
@@ -302,9 +303,9 @@ class AdminController extends Controller
                     'name' => $name,
                     'email' => $email,
                     'phone' => $phone,
-                    'password' => password_hash($password, PASSWORD_DEFAULT),
-                    'role' => $filteredData['role'],
-                    'status' => $filteredData['status'],
+                    'password' => $password,
+                    'role' => isset($filteredData['role']) ? $filteredData['role'] : null,
+                    'status' => isset($filteredData['status']) ? $filteredData['status'] : null,
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
                 if (!$filteredData['status']) {
@@ -420,6 +421,24 @@ class AdminController extends Controller
         $data = [
             'userInfo' => $this->userModel->getUserByID($userID),
         ];
+        if (isGet()) {
+            $filteredData = filterData('get');
+            if (isset($filteredData['id'])) {
+                $id = $filteredData['id'];
+                $checkUser = $this->userModel->getUserByID($id);
+                if (!empty($checkUser)) {
+                    $data['userProfile'] = $checkUser;
+                } else {
+                    setSessionFlash('msg', 'Người dùng không tồn tại!!!');
+                    setSessionFlash('msg_type', 'danger');
+                    redirect('/admin/user');
+                }
+            } else {
+                setSessionFlash('msg', 'Đường dẫn không hợp lệ!');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/admin/user');
+            }
+        }
         $this->renderView($this->viewPath . 'users/edit', $data);
     }
     public function userEdit(){

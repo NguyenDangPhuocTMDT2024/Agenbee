@@ -53,7 +53,7 @@ function getSessionFlash($key) {
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-//hàm gửi mail
+//hàm gửi mail bugggggggggggggggggggggggggggggggggggggggggggggggggg
 function sendMail($to, $subject, $message)
 {
     $mail = new PHPMailer(true);
@@ -360,6 +360,13 @@ function removeUploadImg($fileName, $folder='uploads'){
         return unlink($path);
     }
     return false;
+}
+function showImg($fileName, $folder='uploads'){
+    if(!empty($fileName)){
+        echo _HOST_URL_PUBLIC.'/'.$folder.'/'.$fileName;
+    } else {
+        echo '';
+    }
 }
 //validate danh mục
 function validateCategory($data){

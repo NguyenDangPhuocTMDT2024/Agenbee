@@ -12,132 +12,117 @@ $errors = getSessionFlash('errors');
 $oldData = getSessionFlash('old_data');
 ?>
 <main class="admin-main">
-    <div class="container mt-4 mb-3">
+    <form method="post" action="" enctype="multipart/form-data" class="container mt-4 mb-3">
         <div class="row">
-            
-            <!-- LEFT: AVATAR + ACTION -->
             <div class="col-md-4">
                 <div class="card shadow-sm text-center">
                     <div class="card-body">
-                        <img src="https://via.placeholder.com/120"
-                            class="rounded-circle mb-3 shadow"
-                            style="width:120px; height:120px; object-fit:cover;">
+                        <label class="avatar-upload mb-3">
+                            <img id="avatarPreview" src="<?php showImg($userProfile['avatar']); ?>" class="shadow">
+                            <div class="overlay">
+                                <i class="bi bi-camera"></i>
+                            </div>
+                            <input type="file" name="avatar" id="avatarInput" hidden>
+                            <input type="hidden" name="oldAvatar" value="<?php echo (!empty($userProfile['avatar'])) ?  $userProfile['avatar'] : null; ?>">
+                        </label>
 
-                        <div class="mb-3">
-                            <input type="file" class="form-control">
-                        </div>
-
-                        <h5 class="fw-bold">Nguyễn Văn A</h5>
-                        <p class="text-muted mb-2">Admin</p>
-
-                        <span class="badge bg-success mb-3">Active</span>
-
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-primary flex-fill">
-                                <i class="bi bi-save"></i> Lưu
-                            </button>
-                            <a href="#" class="btn btn-secondary flex-fill">
-                                Hủy
-                            </a>
-                        </div>
+                        <h5 class="fw-bold"><?php echo (!empty($userProfile['name'])) ?  $userProfile['name'] : ''; ?></h5>
+                        <p class="text-muted mb-2"><?php echo (!empty($userProfile['role'])) ?  $userProfile['role'] : ''; ?></p>
+                        <?php
+                        if (isset($userProfile['status'])):
+                            if ($userProfile['status']):
+                        ?>
+                                <span class="badge bg-success mb-3">Active</span>
+                            <?php else: ?>
+                                <span class="badge bg-danger mb-3">Inactive</span>
+                        <?php
+                            endif;
+                        endif;
+                        ?>
                     </div>
                 </div>
             </div>
-
-            <!-- RIGHT: FORM -->
             <div class="col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="mb-3 fw-bold">Chỉnh sửa thông tin</h5>
-
-                        <form>
-                            <!-- INFO -->
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Họ tên</label>
-                                    <input type="text" class="form-control" value="Nguyễn Văn A">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" value="vana@gmail.com">
-                                </div>
+                        <!-- INFO -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Họ tên</label>
+                                <input name="name" type="text" class="form-control" value="<?php echo (!empty($userProfile['name'])) ?  $userProfile['name'] : ''; ?>">
                             </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Số điện thoại</label>
-                                    <input type="text" class="form-control" value="0123456789">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Trạng thái</label>
-                                    <select class="form-select">
-                                        <option selected>Active</option>
-                                        <option>Inactive</option>
-                                    </select>
-                                </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input name="email" type="text" class="form-control" value="<?php echo (!empty($userProfile['email'])) ?  $userProfile['email'] : '@'; ?>">
                             </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Role</label>
-                                    <select class="form-select">
-                                        <option selected>Admin</option>
-                                        <option>User</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Ngày tham gia</label>
-                                    <input type="text" class="form-control" value="2026-03-01" disabled>
-                                </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Số điện thoại</label>
+                                <input name="phone" type="text" class="form-control" value="<?php echo (!empty($userProfile['phone'])) ?  $userProfile['phone'] : 0; ?>">
                             </div>
-
-                            <hr>
-
-                            <!-- SHOP INFO -->
-                            <h6 class="fw-bold mb-3">Thông tin shop</h6>
-
-                            <div class="mb-3">
-                                <label class="form-label">Tên shop</label>
-                                <input type="text" class="form-control" value="Shop ABC">
+                            <div class="col-md-6">
+                                <label class="form-label">Trạng thái</label>
+                                <select name="status" class="form-select">
+                                    <option <? if($userProfile['status']) echo 'selected' ?> value="1">Active</option>
+                                    <option <? if(!$userProfile['status']) echo 'selected' ?> value="0">Inactive</option>
+                                </select>
                             </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Nền tảng</label>
-                                <div class="d-flex gap-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" checked>
-                                        <label class="form-check-label">Shopee</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" checked>
-                                        <label class="form-check-label">TikTok Shop</label>
-                                    </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Role</label>
+                                <select class="form-select">
+                                    <option selected>Admin</option>
+                                    <option>User</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Ngày tham gia</label>
+                                <input type="text" class="form-control" value="2026-03-01" disabled>
+                            </div>
+                        </div>
+                        <hr>
+                        <!-- SHOP INFO -->
+                        <h6 class="fw-bold mb-3">Thông tin shop</h6>
+                        <div class="mb-3">
+                            <label class="form-label">Tên shop</label>
+                            <input type="text" class="form-control" value="Shop ABC">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nền tảng</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">Shopee</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">TikTok Shop</label>
                                 </div>
                             </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Tiến độ setup (%)</label>
-                                <input type="number" class="form-control" value="70" min="0" max="100">
-                            </div>
-
-                            <hr>
-
-                            <!-- ACTION -->
-                            <div class="d-flex justify-content-end gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-save"></i> Lưu thay đổi
-                                </button>
-                                <a href="#" class="btn btn-secondary">Hủy</a>
-                            </div>
-                        </form>
-
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tiến độ setup (%)</label>
+                            <input type="number" class="form-control" value="70" min="0" max="100">
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Lưu thay đổi
+                            </button>
+                            <a href="#" class="btn btn-secondary">Hủy</a>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
-    </div>
+    </form>
 </main>
+<script>
+    previewImage('avatarInput', 'avatarPreview');
+</script>
 <?php
 layout('admin-footer');
 ?>

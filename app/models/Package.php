@@ -19,6 +19,16 @@ class Package extends Database
         $result = $this->getAll($sql);
         return $result;
     }
+    public function getAddonPackages()
+    {
+        $sql = "SELECT p.*, c.name as category_name 
+                FROM {$this->tableName} p LEFT JOIN {$this->categoryTable} c 
+                ON p.category_id = c.id 
+                WHERE p.category_id = 2
+                ORDER BY category_id ASC";
+        $result = $this->getAll($sql);
+        return $result;
+    } 
     //thêm gói
     public function createPackages($data)
     {

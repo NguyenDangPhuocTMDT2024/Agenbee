@@ -17,7 +17,7 @@ if (!empty($filteredData['token'])) {
             'updated_at' => date('Y-m-d H:i:s'),
             'id' => $checkToken['id']
         ];
-        $userModel->updateActiveToken($data['id'], $data['active_token'], $data['status'], $data['updated_at']);
+        $userModel->updateActiveTokenByID($data);
         $msg = 'Kích hoạt tài khoản thành công!';
     } else {
         $msg = 'Đường link không hợp lệ hoặc đã hết hạn!';

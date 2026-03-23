@@ -48,7 +48,7 @@ class AuthController extends Controller
                                 'created_at' => date('Y-m-d H:i:s'),
                             ];
                             //insert token create login session
-                            $insertStatus = $this->userModel->createLoginSession($data['user_id'], $data['token'], $data['created_at']);
+                            $insertStatus = $this->userModel->createLoginSession($data);
                             if ($insertStatus) {
                                 setSession('user_id', $checkMail['id']);
                                 setSession('token_login', $token); //gan token vao session de xac thuc dang nhap
@@ -127,11 +127,11 @@ class AuthController extends Controller
                     'email' => $email,
                     'phone' => $phone,
                     'active_token' => $token,
-                    'password' => password_hash($password, PASSWORD_DEFAULT),
+                    'password' => $password,
                     'create_at' => date('Y-m-d H:i:s'),
                 ];
                 //insert user
-                $insertStatus = $this->userModel->createUser($data['name'], $data['email'], $data['password'], $data['phone'], $data['active_token'], $data['create_at']);
+                $insertStatus = $this->userModel->createUser($data);
                 if ($insertStatus) {
                     //send mail active account
                     $mailTo = $email;
@@ -169,7 +169,7 @@ class AuthController extends Controller
                 'token' => null,
                 'updated_at' => date('Y-m-d H:i:s')
             ];
-            $this->userModel->updateLoginSessionByID($data['user_id'], $data['token'], $data['updated_at']);
+            $this->userModel->updateLoginSessionByID($data);
         }
         deleteSession('user_id');
         deleteSession('token_login');
@@ -202,7 +202,12 @@ class AuthController extends Controller
             if (empty($errors)) {
                 //create token
                 $token = generateToken();
-                $updateStatus = $this->userModel->updateForgotToken($recoverEmail, $token, date('Y-m-d H:i:s'));
+                $data = [
+                    'user_id' => $checkMail['id'],
+                    'token' => $token,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+                $updateStatus = $this->userModel->updateForgotTokenByEmail($data);
                 if ($updateStatus) {
                     //send mail reset password
                     $mailTo = $recoverEmail;
@@ -261,7 +266,7 @@ class AuthController extends Controller
                         'updated_at' => date('Y-m-d H:i:s'),
                         'id' => $checkToken['id']
                     ];
-                    $updateStatus = $this->userModel->updatePasswordByID($data['id'], $data['password'], $data['forgot_token'], $data['updated_at']);
+                    $updateStatus = $this->userModel->updatePasswordByID($data);
                     if ($updateStatus) {
                         setSessionFlash('msg', 'Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại!');
                         setSessionFlash('msg_type', 'success');
