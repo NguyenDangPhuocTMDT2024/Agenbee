@@ -33,7 +33,8 @@ class AdminController extends Controller
         $data = [
             'userInfo' => $this->userModel->getUserByID($userID),
             'packageList' => $this->packageModel->getAllPackages(),
-            'categoryList' => $this->categoryModel->getAllCategories()
+            'categoryList' => $this->categoryModel->getAllCategories(),
+            'packageItemList' => $this->packageModel->getAllPackageItems()
         ];
         $this->renderView($this->viewPath . 'packages/index', $data);
     }
@@ -53,6 +54,17 @@ class AdminController extends Controller
             $filteredData = filterData();
             $errors = [];
             $errors = validatePackage($filteredData);
+            if($filteredData['category']=='1'){
+                $subNumber = 0;
+                foreach($filteredData['items'] as $sub){
+                    if(isset($sub['selected']) && $sub['selected'] === 'on'){
+                        $subNumber++;
+                    }
+                }
+                if($subNumber < 2){
+                    $errors['items'] = 'Vui lòng chọn ít nhất 2 gói con';
+                }
+            }
             if (validateImage($_FILES['avatar']) !== true) {
                 $errors['avatar'] = validateImage($_FILES['avatar']);
             } else {
@@ -70,6 +82,13 @@ class AdminController extends Controller
                 ];
                 $checkInsert = $this->packageModel->createPackages($data);
                 if ($checkInsert) {
+                    if($filteredData['category']=='1'){
+                        foreach($filteredData['items'] as $sub){
+                            if(isset($sub['selected']) && $sub['selected'] === 'on'){
+                                $this->packageModel->createPackagesAddon($sub['id'], $checkInsert, $sub['quantity']);
+                            }
+                        }
+                    }
                     setSessionFlash('msg', 'Tạo gói thành công!');
                     setSessionFlash('msg_type', 'success');
                     redirect('/admin/package/create');
@@ -81,6 +100,7 @@ class AdminController extends Controller
                 setSessionFlash('msg', 'Dữ liệu không hợp lệ, vui lòng thử lại!');
                 setSessionFlash('msg_type', 'danger');
                 setSessionFlash('errors', $errors);
+                setSessionFlash('old_data', $filteredData);
                 redirect('/admin/package/create');
             }
         }
@@ -88,10 +108,30 @@ class AdminController extends Controller
     public function showPackageEdit()
     {
         $userID = getSession('user_id');
+        if(isGet()){
+            $filteredData = filterData('get');
+            if(!empty($filteredData['id'])){
+                $id = $filteredData['id'];
+                $packageInfo = $this->packageModel->getPackagesByID($id);
+                if(!empty($packageInfo)){
+                    $data['packageInfo'] = $packageInfo;
+                } else {
+                    setSessionFlash('msg', 'Gói không tồn tại!');
+                    setSessionFlash('msg_type', 'danger');
+                    redirect('/admin/package');
+                }
+            } else {
+                setSessionFlash('msg', 'Đã có lỗi xảy ra, vui lòng thử lại!');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/admin/package');
+            }
+        }
         $data = [
             'userInfo' => $this->userModel->getUserByID($userID),
             'categoryList' => $this->categoryModel->getAllCategories(),
-            'packageModel' => $this->packageModel
+            'packageInfo' => $packageInfo ?? null,
+            'packageAddons' => $this->packageModel->getAddonsByPackageID($id),
+            'addOnPackageList' => $this->packageModel->getAddonPackages()
         ];
         $this->renderView($this->viewPath . 'packages/edit', $data);
     }

@@ -3,20 +3,6 @@ $data = [
     'title' => 'Packages',
     'userInfo' => $userInfo
 ];
-$getData = filterData('get');
-if (!empty($getData['id'])) {
-    $id = $getData['id'];
-    $packageInfo = $packageModel->getPackagesByID($id);
-    if (empty($packageInfo)) {
-        setSessionFlash('msg', 'Gói không tồn tại!');
-        setSessionFlash('msg_type', 'danger');
-        redirect('/admin/package');
-    }
-}else{
-    setSessionFlash('msg', 'Đã có lỗi xảy ra, vui lòng thử lại!');
-    setSessionFlash('msg_type', 'danger');
-    redirect('/admin/package');
-}
 layout('admin-header', $data);
 layout('admin-sidebar');
 $msg = getSessionFlash('msg');
@@ -75,7 +61,7 @@ $errors = getSessionFlash('errors');
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Loại gói</label>
-                            <select name="category" class="form-select" id="packageType">
+                            <select name="category" class="form-select" id="packageType" onchange="toggleChooseSubPackage()">
                                 <option value="">Chọn loại</option>
                                 <?php foreach ($categoryList as $cate):
                                     if ($cate['id'] == $packageInfo['category_id']): ?>
@@ -115,9 +101,58 @@ $errors = getSessionFlash('errors');
                     </div>
                 </div>
             </div>
+            <div class="col-md-4 ms-auto" id="chooseSubPackage">
+                <h5 class="mb-3">Các gói con</h5>
+                <?php
+                if (!empty($errors) && isset($errors['items'])) {
+                    echo showErrors($errors, 'items');
+                }
+                ?>
+                <table class="table package-items-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Chọn</th>
+                            <th scope="col">Tên gói con</th>
+                            <th scope="col">Số lượng</th>
+                        </tr>
+                    </thead>
+                    <?php foreach ($addOnPackageList as $item): ?>
+                        <tbody id="itemTableBody">
+                            <tr>
+                                <td><input type="checkbox" name="items[<?php echo $item['id']; ?>][selected]" class="form-check-input" <?php echo isset($packageAddons[$item['id']]) ? 'checked' : ''; ?>></td>
+                                <td class="item-name"><?php echo $item['name']; ?></td>
+                                <td><input type="number" name="items[<?php echo $item['id']; ?>][quantity]" class="form-control form-control-sm item-qty-input" value="<?php echo isset($packageAddons[$item['id']]) ? $packageAddons[$item['id']]['quantity'] : 1; ?>" min="1"></td>
+                            </tr>
+                        </tbody>
+                    <?php endforeach; ?>
+                </table>
+            </div>
         </div>
     </form>
 </main>
+<script>
+    //khi chọn combo thì hiện ra bảng chọn gói con tương ứng
+    const packageType = document.getElementById('packageType');
+    const chooseSubPackage = document.getElementById('chooseSubPackage');
+
+    function toggleChooseSubPackage() {
+        if (!packageType || !chooseSubPackage) return;
+
+        if (packageType.value === '1') {
+            chooseSubPackage.style.display = 'block';
+        } else {
+            chooseSubPackage.style.display = 'none';
+        }
+    }
+
+    if (packageType) {
+        packageType.addEventListener('change', toggleChooseSubPackage);
+        window.addEventListener('pageshow', toggleChooseSubPackage);
+        toggleChooseSubPackage();
+        setTimeout(toggleChooseSubPackage, 0);
+        setTimeout(toggleChooseSubPackage, 150);
+    }
+</script>
 <?php
 layout('admin-footer');
 ?>

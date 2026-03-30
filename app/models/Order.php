@@ -14,5 +14,5 @@ class Order extends Database {
         $result = $this->getAll($sql);
         return $result;
     }
-
+    
 }

@@ -50,7 +50,7 @@ $msgType = getSessionFlash('msg_type');
             </thead>
             <tbody>
                 <?php foreach ($packageList as $package): ?>
-                    <tr data-bs-toggle="collapse" data-bs-target="#package<?php echo $package['id']; ?>" style="cursor:pointer;">
+                    <tr class="package-row" data-bs-target="#package<?php echo $package['id']; ?>" style="cursor:pointer;">
                         <td><?php echo (!empty($package['id'])) ? $package['id'] : '' ?></td>
                         <td><?php echo (!empty($package['name'])) ? $package['name'] : '' ?></td>
                         <td><?php echo (!empty($package['price'])) ? number_format($package['price']) : '0' ?><sup>đ</sup></td>
@@ -66,11 +66,11 @@ $msgType = getSessionFlash('msg_type');
                             } ?>
                         </td>
                         <td>
-                            <a href="<?php echo _HOST_URL ?>/admin/package/edit?id=<?php echo $package['id']; ?>" class="btn btn-warning btn-sm">✏</a>
+                            <a href="<?php echo _HOST_URL ?>/admin/package/edit?id=<?php echo $package['id']; ?>" class="btn btn-warning btn-sm package-action" onclick="event.stopPropagation();">✏</a>
                         </td>
                         <td>
                             <a href="<?php echo _HOST_URL ?>/admin/package/delete?id=<?php echo $package['id']; ?>"
-                                class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa gói <?php echo $package['name']; ?> ?')">🗑</a>
+                                class="btn btn-danger btn-sm package-action" onclick="event.stopPropagation(); return confirm('Bạn có chắc muốn xóa gói <?php echo $package['name']; ?> ?')">🗑</a>
                         </td>
                     </tr>
                     <tr id="package<?php echo $package['id']; ?>" class="collapse">
@@ -83,7 +83,7 @@ $msgType = getSessionFlash('msg_type');
                                             class="img-fluid rounded shadow-sm"
                                             style="max-height:100px; object-fit:cover;">
                                     </div>
-                                    <div class="col-md-7 text-start">
+                                    <div class="<?php if($package['category_name'] == 'Add-on') { echo 'col-md-7'; } else { echo 'col-md-3'; } ?> text-start">
                                         <h6 class="mb-1 fw-bold">
                                             <?php echo $package['name']; ?>
                                         </h6>
@@ -94,6 +94,24 @@ $msgType = getSessionFlash('msg_type');
                                             <?php echo $package['category_name']; ?>
                                         </span>
                                     </div>
+                                    <?php if($package['category_name'] == 'Combo'): ?>
+                                    <div class="col-md-3">
+                                        <h6>Bao gồm:</h6>
+                                        <div>
+                                            <?php 
+                                            foreach ($packageItemList as $item): 
+                                                if($item['combo_id'] == $package['id']):
+                                            ?>
+                                                <p class="mb-1">
+                                                    <?php echo $item['addon_name']; ?> (x<?php echo $item['quantity']; ?>)
+                                                </p>
+                                            <?php 
+                                                endif; 
+                                            endforeach; 
+                                            ?>
+                                        </div>
+                                    </div>
+                                    <?php endif; ?>
                                     <div class="col-md-3 text-end">
                                         <div class="fw-bold text-danger mb-2">
                                             <?php echo number_format($package['price']); ?>đ
@@ -117,7 +135,25 @@ $msgType = getSessionFlash('msg_type');
     </div>
 </main>
 <script>
+    document.querySelectorAll('.package-row').forEach(function(row) {
+        row.addEventListener('click', function(event) {
+            if (event.target.closest('.package-action')) {
+                return;
+            }
 
+            const targetSelector = this.getAttribute('data-bs-target');
+            const collapseElement = document.querySelector(targetSelector);
+
+            if (!collapseElement || typeof bootstrap === 'undefined') {
+                return;
+            }
+
+            const collapse = bootstrap.Collapse.getOrCreateInstance(collapseElement, {
+                toggle: false
+            });
+            collapse.toggle();
+        });
+    });
 </script>
 <?php
 layout('admin-footer');

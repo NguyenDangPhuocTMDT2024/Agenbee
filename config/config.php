@@ -10,3 +10,6 @@ define('_HOST_URL_PUBLIC', _HOST_URL . '/public');
 
 define('_ROOT_PATH',dirname(__DIR__));
 define('_PUBLIC_PATH', _ROOT_PATH.'/public');
+
+define('_HOST_MAIL', 'agenbee0502@gmail.com');
+define('_APP_PASS','usby gflt wnmn hkph');

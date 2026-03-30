@@ -9,7 +9,20 @@ layout('admin-sidebar');
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
 $errors = getSessionFlash('errors');
+$oldData = getSessionFlash('old_data');
 ?>
+<style>
+    .package-items-table .item-name {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .package-items-table .item-qty-input {
+        max-width: 80px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+</style>
 <main class="container mt-4 mb-4">
     <form method="post" enctype="multipart/form-data" class="w-8">
         <div class="row justify-content-center ms-1 me-1">
@@ -43,7 +56,7 @@ $errors = getSessionFlash('errors');
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Mô tả</label>
-                                <textarea name="description" class="form-control" value="<?php if (!empty($oldData['description'])) echo $oldData['description']; ?>"></textarea>
+                                <textarea name="description" class="form-control"><?php if (!empty($oldData['description'])) echo $oldData['description']; ?></textarea>
                                 <?php
                                 if (!empty($errors)) {
                                     echo showErrors($errors, 'description');
@@ -61,10 +74,10 @@ $errors = getSessionFlash('errors');
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Loại gói</label>
-                                <select name="category" class="form-select" id="packageType">
+                                <select name="category" class="form-select" id="packageType" onchange="toggleChooseSubPackage()">
                                     <option value="">Chọn loại</option>
                                     <?php foreach ($categoryList as $cate): ?>
-                                        <option value="<?php echo $cate['id']; ?>"><?php echo $cate['name']; ?></option>
+                                        <option value="<?php echo $cate['id']; ?>" <?php echo (!empty($oldData['category']) && (string)$oldData['category'] === (string)$cate['id']) ? 'selected' : ''; ?>><?php echo $cate['name']; ?></option>
                                     <?php endforeach; ?>
                                 </select>
                                 <?php
@@ -90,13 +103,18 @@ $errors = getSessionFlash('errors');
                                 ?>
                             </div>
                         </div>
-                        <div class="col-md-4 ms-auto">
-                            <h5 class="mb-3">Items</h5>
-                            <table class="table">
+                        <div class="col-md-4 ms-auto" id="chooseSubPackage">
+                            <h5 class="mb-3">Các gói con</h5>
+                            <?php
+                            if (!empty($errors) && isset($errors['items'])) {
+                                echo showErrors($errors, 'items');
+                            }
+                            ?>
+                            <table class="table package-items-table">
                                 <thead>
                                     <tr>
-                                        <th scope="col"></th>
-                                        <th scope="col">Tên item</th>
+                                        <th scope="col">Chọn</th>
+                                        <th scope="col">Tên gói con</th>
                                         <th scope="col">Số lượng</th>
                                     </tr>
                                 </thead>
@@ -104,8 +122,8 @@ $errors = getSessionFlash('errors');
                                 <tbody id="itemTableBody">
                                     <tr>
                                         <td><input type="checkbox" name="items[<?php echo $item['id']; ?>][selected]" class="form-check-input"></td>
-                                        <td><?php echo $item['name'];?></td>
-                                        <td><input type="number" name="items[<?php echo $item['id']; ?>][quantity]" class="form-control" value="<?php echo $item['quantity']; ?>">
+                                        <td class="item-name"><?php echo $item['name'];?></td>
+                                        <td><input type="number" name="items[<?php echo $item['id']; ?>][quantity]" class="form-control form-control-sm item-qty-input" value="1" min="1"></td>
                                     </tr>
                                 </tbody>
                                 <?php endforeach; ?>
@@ -120,6 +138,29 @@ $errors = getSessionFlash('errors');
         </div>
     </form>
 </main>
+<script>
+    //khi chọn combo thì hiện ra bảng chọn gói con tương ứng
+    const packageType = document.getElementById('packageType');
+    const chooseSubPackage = document.getElementById('chooseSubPackage');
+
+    function toggleChooseSubPackage() {
+        if (!packageType || !chooseSubPackage) return;
+
+        if (packageType.value === '1') {
+            chooseSubPackage.style.display = 'block';
+        } else {
+            chooseSubPackage.style.display = 'none';
+        }
+    }
+
+    if (packageType) {
+        packageType.addEventListener('change', toggleChooseSubPackage);
+        window.addEventListener('pageshow', toggleChooseSubPackage);
+        toggleChooseSubPackage();
+        setTimeout(toggleChooseSubPackage, 0);
+        setTimeout(toggleChooseSubPackage, 150);
+    }
+</script>
 <?php
 layout('admin-footer');
 ?>

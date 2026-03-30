@@ -3,12 +3,12 @@
   <!--begin::Sidebar Brand-->
   <div class="sidebar-brand">
     <!--begin::Brand Link-->
-    <a href="./index.html" class="brand-link">
+    <a href="<?php echo _HOST_URL ?>/admin/" class="brand-link">
       <!--begin::Brand Image-->
       <img
-        src=""
-        alt="AdminLTE Logo"
-        class="brand-image opacity-75 shadow" />
+        src="<?php echo _HOST_URL_PUBLIC;?>/img/logo.jpg"
+        alt="Agenbee"
+        class="brand-image opacity-75 shadow rounded-circle" />
       <!--end::Brand Image-->
       <!--begin::Brand Text-->
       <span class="brand-text fw-light">Agenbee</span>

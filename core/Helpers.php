@@ -60,38 +60,28 @@ function sendMail($to, $subject, $message)
 
     try {
         //Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output for testing
+        //$mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output for testing
         $mail->isSMTP();                                            //Send using SMTP
         $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
         $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-        $mail->Username   = 'agenbee0502@gmail.com';                     //SMTP username
-        $mail->Password   = 'usby gflt wnmn hkph';                               //SMTP password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
-        $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-
+        $mail->Username   = _HOST_MAIL;                     //SMTP username
+        $mail->Password   = _APP_PASS;                               //SMTP password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //STARTTLS uses port 587 with Gmail
+        $mail->Port       = 587;
+        $mail->Timeout    = 15;                                      //Avoid long hangs on SMTP read/connect
+        $mail->SMTPKeepAlive = false;
+        $mail->CharSet = 'UTF-8';
         //Recipients
-        $mail->setFrom('agenbee0502@gmail.com', 'Agenbee');
+        $mail->setFrom(_HOST_MAIL, 'Agenbee');
         $mail->addAddress($to);     //Add a recipient
 
         //Content
-        $mail->CharSet = 'UTF-8';
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = $subject;
         $mail->Body    = $message;
-
-        $mail->SMTPOptions = array(
-            'ssl' => [
-                'verify_peer' => true,
-                'verify_depth' => 3,
-                'allow_seft_signed' => true,
-            ],
-        );
         
-        $mail->send();
-        echo 'ok';
-        die();
-        return true;
-    } catch (\PHPMailer\PHPMailer\Exception $e) {
+        return $mail->send();
+    } catch (Exception $e) {
         return false;
     }
 }

@@ -3,6 +3,7 @@
 class Package extends Database
 {
     private $tableName = 'packages';
+    private $itemTable = 'package_items';
     private $categoryTable = 'categories';
 
     public function __construct()
@@ -24,11 +25,18 @@ class Package extends Database
         $sql = "SELECT p.*, c.name as category_name 
                 FROM {$this->tableName} p LEFT JOIN {$this->categoryTable} c 
                 ON p.category_id = c.id 
-                WHERE p.category_id = 2
+                WHERE p.category_id = '4'
                 ORDER BY category_id ASC";
         $result = $this->getAll($sql);
         return $result;
     } 
+    //lấy tất cả item của gói
+    function getAllPackageItems()
+    {
+        $sql = "SELECT pi.*, p.name as addon_name FROM " . $this->itemTable . " pi 
+                JOIN " . $this->tableName . " p ON pi.addon_id = p.id";
+        return $this->getAll($sql);
+    }
     //thêm gói
     public function createPackages($data)
     {
@@ -42,6 +50,27 @@ class Package extends Database
         $sql = "SELECT * FROM ".$this->tableName." WHERE id = :id";
         $param = ['id' => $id];
         return $this->getOne($sql,$param);
+    }
+    //thêm gói con vào gói chính
+    public function createPackagesAddon($addon, $packageId, $quantity)
+    {
+        $sql = "INSERT INTO " . $this->itemTable . "(addon_id, combo_id, quantity) 
+                VALUES (:addon_id, :combo_id, :quantity)";
+        $param = [
+            'addon_id' => $addon,
+            'combo_id' => $packageId,
+            'quantity' => $quantity
+        ];
+        return $this->insert($sql, $param);
+    }
+    //lấy các gói con theo id gói chính
+    public function getAddonsByPackageID($packageId)
+    {
+        $sql = "SELECT pi.*, p.name as addon_name FROM " . $this->itemTable . " pi 
+                JOIN " . $this->tableName . " p ON pi.addon_id = p.id 
+                WHERE pi.combo_id = :packageId";
+        $param = ['packageId' => $packageId];
+        return $this->getAll($sql, $param);
     }
     //cập nhật gói theo id
     public function updatePackageByID($data,$id){
