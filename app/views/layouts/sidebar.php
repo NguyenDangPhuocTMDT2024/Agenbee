@@ -18,7 +18,7 @@
                         <img src="<?php echo _HOST_URL_PUBLIC; ?>/img/logo.jpg" alt="Logo" class="logo-img">
                     </a>
 
-                    <nav class="sidebar-nav mt-4 mt-lg-5">
+                    <nav class="sidebar-nav mt-4 mt-lg-5 d-flex flex-column align-items-center align-items-lg-start gap-2">
                         <button class="nav-item-btn active" data-section="home" data-title="Trang chu" data-bs-toggle="tooltip" data-bs-placement="right" title="Trang chủ">
                             <i class="bi bi-house-door-fill"></i>
                             <span>Home</span>
@@ -31,14 +31,27 @@
                             <i class="bi bi-telephone-fill"></i>
                             <span>Contact</span>
                         </button>
+                        <?php if(isLogin()): ?>
                         <button class="nav-item-btn" data-section="order" data-title="Don hang cua ban" data-bs-toggle="tooltip" data-bs-placement="right" title="Đơn hàng">
                             <i class="bi bi-cart-check-fill"></i>
                             <span>Order</span>
                         </button>
+                        <?php endif; ?>
                     </nav>
-
+                    <?php if(isLogin()): ?>
                     <a href="#" class="profile-shortcut mt-auto text-decoration-none d-flex align-items-center justify-content-center" title="Mo trang profile" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Profile">
-                        <img src="<?php echo _HOST_URL_PUBLIC; ?>/img/defaultAvatar.png" alt="User avatar" class="avatar-sm">
+                        <?php
+                        if(isLogin() && isset($user)) {
+                            if(!empty($user['avatar'])) {
+                                echo '<img src="' . _HOST_URL_PUBLIC . '/' . $user['avatar'] . '" alt="User avatar" class="avatar-sm">';
+                            } else {
+                                echo '<img src="' . _HOST_URL_PUBLIC . '/img/defaultAvatar.png" alt="User avatar" class="avatar-sm">';
+                            }
+                        } else {
+                            echo '<img src="' . _HOST_URL_PUBLIC . '/img/defaultAvatar.png" alt="User avatar" class="avatar-sm">';
+                        }
+                        ?>
                     </a>
+                    <?php endif; ?>
                 </div>
             </aside>

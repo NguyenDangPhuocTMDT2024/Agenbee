@@ -9,6 +9,14 @@ class UserController extends Controller
     }
     public function home()
     {
-        $this->renderView('user/home');
+        if(isLoginStrict($this->userModel)) {
+            $id = getSession('user_id');
+            $data = [
+                'user' => $this->userModel->getUserById($id)
+            ];
+            $this->renderView('user/home', $data);
+        } else {
+            $this->renderView('user/home');
+        }
     }
 }

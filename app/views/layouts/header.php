@@ -6,31 +6,61 @@
                             <i class="bi bi-search"></i>
                             <input type="text" id="globalSearch" class="form-control" placeholder="Tìm kiếm theo từ khóa...">
                         </div>
+                        <?php if(isLogin()): ?>
                         <button class="btn btn-outline-secondary icon-only-btn" id="cartBtn" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Thông báo">
                             <i class="bi bi-bell-fill"></i>
                         </button>
                         <button class="btn btn-outline-secondary icon-only-btn" id="cartBtn" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Giỏ hàng">
                             <i class="bi bi-cart3"></i>
                         </button>
+                        <?php endif; ?>
                         <div class="nav-item dropdown user-menu">
                             <a href="#" class="nav-link dropdown-toggle user-menu-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img
-                                src="<?php echo _HOST_URL_PUBLIC; ?>/img/defaultAvatar.png"
-                                class="avatar-sm rounded-circle shadow"
-                                alt="User Image"
-                                />
-                                <span class="d-none d-md-inline">Admin</span>
+                                <?php
+                                    if(isLogin() && isset($user)) {
+                                        if(!empty($user['avatar'])) {
+                                            echo '<img src="' . _HOST_URL_PUBLIC . '/' . $user['avatar'] . '" alt="User Image" class="avatar-sm shadow">';
+                                        } else {
+                                            echo '<img src="' . _HOST_URL_PUBLIC . '/img/defaultAvatar.png" alt="User Image" class="avatar-sm shadow">';
+                                        }
+                                    } else {
+                                        echo '<img src="' . _HOST_URL_PUBLIC . '/img/defaultAvatar.png" alt="User Image" class="avatar-sm shadow">';
+                                    }
+                                ?>
+                                <span class="d-none d-md-inline">
+                                    <?php
+                                        if(isLogin() && isset($user)) {
+                                            echo $user['name'];
+                                        } else {
+                                            echo 'Guest';
+                                        }
+                                    ?>
+                                </span>
                             </a>
+                            <?php if(isLogin()): ?>
                             <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
                                 <li class="user-dropdown-header">
-                                    <img
-                                        src="<?php echo _HOST_URL_PUBLIC; ?>/img/defaultAvatar.png"
-                                        class="avatar-sm shadow"
-                                        alt="User Image"
-                                    />
+                                    <?php
+                                    if(isLogin() && isset($user)) {
+                                        if(!empty($user['avatar'])) {
+                                            echo '<img src="' . _HOST_URL_PUBLIC . '/' . $user['avatar'] . '" alt="User Image" class="avatar-sm shadow">';
+                                        } else {
+                                            echo '<img src="' . _HOST_URL_PUBLIC . '/img/defaultAvatar.png" alt="User Image" class="avatar-sm shadow">';
+                                        }
+                                    } else {
+                                        echo '<img src="' . _HOST_URL_PUBLIC . '/img/defaultAvatar.png" alt="User Image" class="avatar-sm shadow">';
+                                    }
+                                    ?>
                                     <div>
-                                        <p class="user-name mb-0">Admin</p>
-                                        <small class="user-role">Administrator</small>
+                                        <p class="user-name mb-0">
+                                            <?php
+                                            if(isLogin() && isset($user)) {
+                                                echo $user['name'];
+                                            } else {
+                                                echo 'Guest';
+                                            }
+                                            ?>
+                                        </p>
                                     </div>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
@@ -41,6 +71,12 @@
                                     <a href="<?php echo _HOST_URL ?>/logout" class="dropdown-action-btn signout">Sign out</a>
                                 </li>
                             </ul>
+                            <?php endif; ?>
                         </div>
+                        <?php if(!isLogin()): ?>
+                            <a href="<?php echo _HOST_URL; ?>/login" class="btn btn-outline-danger icon-only-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Đăng nhập" aria-label="Đăng nhập">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </header>

@@ -262,16 +262,26 @@ function redirect($url){
     header("Location: $path");
     exit();
 }
-//hàm kiểm tra đăng nhập
-function isLogin($userModel){
+//hàm kiểm tra đăng nhập (đơn giản - chỉ kiểm tra session)
+function isLogin(){
+    $tokenLogin = getSession('token_login');
+    return !empty($tokenLogin);
+}
+
+//hàm kiểm tra đăng nhập kỹ (kiểm tra token trong database)
+function isLoginStrict($userModel){
     $checkLogin = false;
     $tokenLogin = getSession('token_login');
-    $checkToken = $userModel->getSessionByToken($tokenLogin);
-    if(!empty($checkToken)){
-        $checkLogin = true;
-    }else{
-        deleteSession('token_login');
+    
+    if(!empty($tokenLogin) && !empty($userModel)){
+        $checkToken = $userModel->getSessionByToken($tokenLogin);
+        if(!empty($checkToken)){
+            $checkLogin = true;
+        }else{
+            deleteSession('token_login');
+        }
     }
+    
     return $checkLogin;
 }
 //hàm chuyển hướng đăng nhập theo role
