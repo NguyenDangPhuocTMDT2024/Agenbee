@@ -48,20 +48,32 @@ class AdminController extends Controller
         ];
         $this->renderView($this->viewPath . 'packages/create', $data);
     }
+    private function isComboCategory($categoryId)
+    {
+        $categories = $this->categoryModel->getAllCategories();
+        foreach ($categories as $category) {
+            if ((string)$category['id'] === (string)$categoryId) {
+                return strtolower(trim($category['name'])) === 'combo';
+            }
+        }
+
+        return false;
+    }
     public function packageCreate()
     {
         if (isPost()) {
             $filteredData = filterData();
             $errors = [];
             $errors = validatePackage($filteredData);
-            if($filteredData['category']=='1'){
+            $isComboCategory = !empty($filteredData['category']) && $this->isComboCategory($filteredData['category']);
+            if ($isComboCategory) {
                 $subNumber = 0;
-                foreach($filteredData['items'] as $sub){
-                    if(isset($sub['selected']) && $sub['selected'] === 'on'){
+                foreach ($filteredData['items'] ?? [] as $sub) {
+                    if (isset($sub['selected']) && $sub['selected'] === 'on') {
                         $subNumber++;
                     }
                 }
-                if($subNumber < 2){
+                if ($subNumber < 2) {
                     $errors['items'] = 'Vui lòng chọn ít nhất 2 gói con';
                 }
             }
@@ -74,27 +86,31 @@ class AdminController extends Controller
                 $data = [
                     'name' => $filteredData['name'],
                     'avatar' => $avt,
-                    'description' => $filteredData['description'],
+                    'short_description' => $filteredData['short_description'],
+                    'long_description' => $filteredData['long_description'],
                     'price' => $filteredData['price'],
-                    'category' => $filteredData['category'],
+                    'unit' => $filteredData['unit'],
+                    'category_id' => $filteredData['category'],
                     'hidden' => $filteredData['hidden'],
                     'created_at' => date('Y-m-d H:i:s')
                 ];
                 $checkInsert = $this->packageModel->createPackages($data);
                 if ($checkInsert) {
-                    if($filteredData['category']=='1'){
-                        foreach($filteredData['items'] as $sub){
-                            if(isset($sub['selected']) && $sub['selected'] === 'on'){
-                                $this->packageModel->createPackagesAddon($sub['id'], $checkInsert, $sub['quantity']);
+                    if ($isComboCategory) {
+                        foreach ($filteredData['items'] ?? [] as $addonId => $sub) {
+                            if (isset($sub['selected']) && $sub['selected'] === 'on') {
+                                $this->packageModel->createPackagesAddon($addonId, $checkInsert, $sub['quantity']);
                             }
                         }
                     }
                     setSessionFlash('msg', 'Tạo gói thành công!');
                     setSessionFlash('msg_type', 'success');
-                    redirect('/admin/package/create');
+                    redirect('/admin/package');
                 } else {
                     setSessionFlash('msg', 'Tạo gói thất bại, vui lòng thử lại!');
                     setSessionFlash('msg_type', 'danger');
+                    setSessionFlash('old_data', $filteredData);
+                    redirect('/admin/package/create');
                 }
             } else {
                 setSessionFlash('msg', 'Dữ liệu không hợp lệ, vui lòng thử lại!');
@@ -130,7 +146,10 @@ class AdminController extends Controller
             'userInfo' => $this->userModel->getUserByID($userID),
             'categoryList' => $this->categoryModel->getAllCategories(),
             'packageInfo' => $packageInfo ?? null,
-            'packageAddons' => $this->packageModel->getAddonsByPackageID($id),
+            'packageAddons' => array_reduce($this->packageModel->getAddonsByPackageID($id), function ($carry, $addon) {
+                $carry[$addon['addon_id']] = $addon;
+                return $carry;
+            }, []),
             'addOnPackageList' => $this->packageModel->getAddonPackages()
         ];
         $this->renderView($this->viewPath . 'packages/edit', $data);
@@ -157,11 +176,14 @@ class AdminController extends Controller
             if (empty($errors)) {
                 $id = $filteredData['id'];
                 $data = [
+                    'sku' => $filteredData['sku'],
                     'name' => $filteredData['name'],
                     'avatar' => $avatar,
-                    'description' => $filteredData['description'],
+                    'short_description' => $filteredData['short_description'],
+                    'long_description' => $filteredData['long_description'],
                     'price' => $filteredData['price'],
-                    'category' => $filteredData['category'],
+                    'unit' => $filteredData['unit'],
+                    'category_id' => $filteredData['category'],
                     'hidden' => $filteredData['hidden'],
                     'updated_at' => date('Y-m-d H:i:s')
                 ];
@@ -169,17 +191,20 @@ class AdminController extends Controller
                 if ($checkUpdate) {
                     setSessionFlash('msg', 'Cập nhật gói thành công!');
                     setSessionFlash('msg_type', 'success');
-                    redirect('/admin/package/edit');
+                    redirect('/admin/package');
                 } else {
                     setSessionFlash('msg', 'Cập nhật gói thất bại. Vui lòng thử lại!');
                     setSessionFlash('msg_type', 'danger');
                     setSessionFlash('old_data', $filteredData);
+                    setSessionFlash('errors', $errors);
+                    redirect('/admin/package/edit');
                 }
             } else {
                 setSessionFlash('msg', 'Cập nhật gói thất bại. Vui lòng thử lại!');
                 setSessionFlash('msg_type', 'danger');
                 setSessionFlash('old_data', $filteredData);
                 setSessionFlash('errors', $errors);
+                redirect('/admin/package/edit');
             }
         }
     }

@@ -87,7 +87,8 @@ body.app-body {
 }
 
 .main-area {
-	background: transparent;
+	background: #ffffff;
+	min-height: 100vh;
 }
 
 .top-header {
@@ -241,12 +242,46 @@ body.app-body {
 
 .app-footer {
 	background: rgba(255, 248, 214, 0.86);
+	margin-top: auto;
+}
+
+@media (min-width: 992px) {
+	.sidebar.sidebar-compact {
+		position: fixed;
+		top: 0;
+		left: 0;
+		height: 100vh;
+		overflow-y: auto;
+		z-index: 1030;
+	}
+
+	.main-area.col-lg-10.col-xl-11 {
+		margin-left: 107px;
+		width: calc(100% - 107px);
+		max-width: calc(100% - 107px);
+		flex: 0 0 calc(100% - 107px);
+	}
+
+	.top-header {
+		position: fixed;
+		top: 0;
+		left: 107px;
+		width: calc(100% - 107px);
+		z-index: 1020;
+	}
+
+	.main-area > main {
+		margin-top: 72px;
+	}
 }
 
 @media (max-width: 991.98px) {
 	.sidebar.sidebar-compact {
 		max-width: 100%;
 		min-width: 0;
+		position: static;
+		height: auto;
+		overflow: visible;
 	}
 
 	.sidebar {
@@ -269,4 +304,23 @@ body.app-body {
 	.user-dropdown-menu {
 		width: 230px;
 	}
+
+	.main-area.col-lg-10.col-xl-11 {
+		margin-left: 0;
+		width: auto;
+		max-width: 100%;
+		flex: 1 1 auto;
+	}
+
+	.top-header {
+		position: static;
+		left: auto;
+		width: auto;
+	}
+
+	.main-area > main {
+		margin-top: 0;
+	}
+
 }
+

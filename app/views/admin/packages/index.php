@@ -39,7 +39,7 @@ $msgType = getSessionFlash('msg_type');
         <table class="table table-hover text-center w-80">
             <thead class="table-light table-bordered">
                 <tr>
-                    <th>STT</th>
+                    <th>SKU</th>
                     <th>Tên gói</th>
                     <th>Giá</th>
                     <th>Loại gói</th>
@@ -51,7 +51,7 @@ $msgType = getSessionFlash('msg_type');
             <tbody>
                 <?php foreach ($packageList as $package): ?>
                     <tr class="package-row" data-bs-target="#package<?php echo $package['id']; ?>" style="cursor:pointer;">
-                        <td><?php echo (!empty($package['id'])) ? $package['id'] : '' ?></td>
+                        <td><?php echo (!empty($package['sku'])) ? $package['sku'] : '' ?></td>
                         <td><?php echo (!empty($package['name'])) ? $package['name'] : '' ?></td>
                         <td><?php echo (!empty($package['price'])) ? number_format($package['price']) : '0' ?><sup>đ</sup></td>
                         <td><?php echo (!empty($package['category_name'])) ? $package['category_name'] : '' ?></td>
@@ -83,12 +83,12 @@ $msgType = getSessionFlash('msg_type');
                                             class="img-fluid rounded shadow-sm"
                                             style="max-height:100px; object-fit:cover;">
                                     </div>
-                                    <div class="<?php if($package['category_name'] == 'Add-on') { echo 'col-md-7'; } else { echo 'col-md-3'; } ?> text-start">
+                                    <div class="<?php if($package['category_name'] == 'Add-on') { echo 'col-md-7'; } else { echo 'col-md-4'; } ?> text-start">
                                         <h6 class="mb-1 fw-bold">
                                             <?php echo $package['name']; ?>
                                         </h6>
                                         <p class="mb-1 text-muted small">
-                                            <?php echo $package['description'] ?? 'Không có mô tả'; ?>
+                                            <?php echo $package['short_description'] ?? 'Không có mô tả'; ?>
                                         </p>
                                         <span class="badge bg-primary">
                                             <?php echo $package['category_name']; ?>

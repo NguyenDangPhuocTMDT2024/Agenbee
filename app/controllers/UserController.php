@@ -2,10 +2,12 @@
 
 class UserController extends Controller
 {
-    public $userModel;
+    private $userModel;
+    private $packageModel;
     public function __construct()
     {
         $this->userModel = new User();
+        $this->packageModel = new Package();
     }
     public function home()
     {
@@ -18,5 +20,31 @@ class UserController extends Controller
         } else {
             $this->renderView('user/home');
         }
+    }
+    public function showPackage()
+    {
+        if(isLoginStrict($this->userModel)) {
+            $id = getSession('user_id');
+            $data = [
+                'user' => $this->userModel->getUserById($id),
+                'packages' => $this->packageModel->getAllPackages()
+            ];
+            $this->renderView('user/packages/index', $data);
+        } else {
+            $this->renderView('user/packages/index');
+        }    
+    }
+    //show thông tin liên hệ
+    public function showContact()
+    {
+        if(isLoginStrict($this->userModel)) {
+            $id = getSession('user_id');
+            $data = [
+                'user' => $this->userModel->getUserById($id)
+            ];
+            $this->renderView('user/contact', $data);
+        } else {
+            $this->renderView('user/contact');
+        }    
     }
 }

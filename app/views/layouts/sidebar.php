@@ -19,23 +19,23 @@
                     </a>
 
                     <nav class="sidebar-nav mt-4 mt-lg-5 d-flex flex-column align-items-center align-items-lg-start gap-2">
-                        <button class="nav-item-btn active" data-section="home" data-title="Trang chu" data-bs-toggle="tooltip" data-bs-placement="right" title="Trang chủ">
+                        <a href="<?php echo _HOST_URL ?>/home" class="nav-item-btn active" data-section="home" data-title="Trang chu" data-bs-toggle="tooltip" data-bs-placement="right" title="Trang chủ">
                             <i class="bi bi-house-door-fill"></i>
                             <span>Home</span>
-                        </button>
-                        <button class="nav-item-btn" data-section="package" data-title="Goi dich vu" data-bs-toggle="tooltip" data-bs-placement="right" title="Gói dịch vụ">
+                        </a>
+                        <a href="<?php echo _HOST_URL ?>/package" class="nav-item-btn" data-section="package" data-title="Goi dich vu" data-bs-toggle="tooltip" data-bs-placement="right" title="Gói dịch vụ">
                             <i class="bi bi-box-seam-fill"></i>
                             <span>Package</span>
-                        </button>
-                        <button class="nav-item-btn" data-section="contact" data-title="Lien he doanh nghiep" data-bs-toggle="tooltip" data-bs-placement="right" title="Liên hệ">
+                        </a>
+                        <a href="<?php echo _HOST_URL ?>/contact" class="nav-item-btn" data-section="contact" data-title="Lien he doanh nghiep" data-bs-toggle="tooltip" data-bs-placement="right" title="Liên hệ">
                             <i class="bi bi-telephone-fill"></i>
                             <span>Contact</span>
-                        </button>
+                        </a>
                         <?php if(isLogin()): ?>
-                        <button class="nav-item-btn" data-section="order" data-title="Don hang cua ban" data-bs-toggle="tooltip" data-bs-placement="right" title="Đơn hàng">
+                        <a href="<?php echo _HOST_URL ?>/order" class="nav-item-btn" data-section="order" data-title="Don hang cua ban" data-bs-toggle="tooltip" data-bs-placement="right" title="Đơn hàng">
                             <i class="bi bi-cart-check-fill"></i>
                             <span>Order</span>
-                        </button>
+                        </a>
                         <?php endif; ?>
                     </nav>
                     <?php if(isLogin()): ?>

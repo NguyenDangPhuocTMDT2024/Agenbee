@@ -9,6 +9,50 @@ $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
 $errors = getSessionFlash('errors');
 ?>
+<style>
+    .package-items-table .item-name {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .package-items-table .item-qty-input {
+        max-width: 80px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    #chooseSubPackage {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-height: 600px;
+        overflow-y: auto;
+        padding-right: 8px;
+    }
+
+    #chooseSubPackage .package-items-table {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    #chooseSubPackage::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #chooseSubPackage::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    #chooseSubPackage::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    #chooseSubPackage::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>
 <main class="container mt-4 mb-4">
     <form method="post" enctype="multipart/form-data" class="w-8">
         <div class="row justify-content-center">
@@ -22,6 +66,15 @@ $errors = getSessionFlash('errors');
                         }
                         ?>
                         <input type="hidden" name="id" value="<?php echo $packageInfo['id']; ?>">
+                        <div class="mb-3">
+                            <label class="form-label">SKU</label>
+                            <input type="text" name="sku" class="form-control" value="<?php echo $packageInfo['sku']; ?>">
+                            <?php
+                            if (!empty($errors)) {
+                                echo showErrors($errors, 'sku');
+                            }
+                            ?>
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Tên gói</label>
                             <input type="text" name="name" class="form-control" value="<?php echo $packageInfo['name']; ?>">
@@ -42,11 +95,20 @@ $errors = getSessionFlash('errors');
                             ?>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Mô tả</label>
-                            <textarea name="description" class="form-control"><?php echo $packageInfo['description']; ?></textarea>
+                            <label class="form-label">Mô tả ngắn</label>
+                            <textarea name="short_description" class="form-control"><?php echo $packageInfo['short_description']; ?></textarea>
                             <?php
                             if (!empty($errors)) {
-                                echo showErrors($errors, 'description');
+                                echo showErrors($errors, 'short_description');
+                            }
+                            ?>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mô tả dài</label>
+                            <textarea name="long_description" class="form-control"><?php echo $packageInfo['long_description']; ?></textarea>
+                            <?php
+                            if (!empty($errors)) {
+                                echo showErrors($errors, 'long_description');
                             }
                             ?>
                         </div>
@@ -58,6 +120,12 @@ $errors = getSessionFlash('errors');
                                 echo showErrors($errors, 'price');
                             }
                             ?>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Đơn vị</label><br>
+                            <input type="radio" class="form-check-input" name="unit" value="package" <?php echo ($packageInfo['unit'] === 'package') ? 'checked' : ''; ?>> Gói
+                            <input type="radio" class="form-check-input" name="unit" value="product" <?php echo ($packageInfo['unit'] === 'product') ? 'checked' : ''; ?>> Sản phẩm
+                            <input type="radio" class="form-check-input" name="unit" value="item" <?php echo ($packageInfo['unit'] === 'item') ? 'checked' : ''; ?>> Cái
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Loại gói</label>
@@ -138,7 +206,10 @@ $errors = getSessionFlash('errors');
     function toggleChooseSubPackage() {
         if (!packageType || !chooseSubPackage) return;
 
-        if (packageType.value === '1') {
+        const selectedCategory = packageType.options[packageType.selectedIndex];
+        const selectedCategoryName = selectedCategory ? selectedCategory.textContent.trim().toLowerCase() : '';
+
+        if (selectedCategoryName === 'combo') {
             chooseSubPackage.style.display = 'block';
         } else {
             chooseSubPackage.style.display = 'none';

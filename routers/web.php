@@ -55,3 +55,9 @@ $router->get('/admin/user/delete', 'AdminController@userDelete');
 
 $router->get('/admin/profile', 'AdminController@showProfile');
 
+//user routes
+$router->get('/package', 'UserController@showPackage');
+$router->get('/package/detail', 'UserController@packageDetail');
+
+$router->get('/contact', 'UserController@showContact');
+

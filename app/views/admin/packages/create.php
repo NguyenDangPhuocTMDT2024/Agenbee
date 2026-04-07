@@ -22,6 +22,38 @@ $oldData = getSessionFlash('old_data');
         padding: 0.25rem 0.5rem;
         font-size: 0.875rem;
     }
+
+    #chooseSubPackage {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-height: 600px;
+        overflow-y: auto;
+        padding-right: 8px;
+    }
+
+    #chooseSubPackage .package-items-table {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    #chooseSubPackage::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #chooseSubPackage::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    #chooseSubPackage::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    #chooseSubPackage::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
 </style>
 <main class="container mt-4 mb-4">
     <form method="post" enctype="multipart/form-data" class="w-8">
@@ -36,6 +68,15 @@ $oldData = getSessionFlash('old_data');
                                 echo showMsg($msg, $msgType);
                             }
                             ?>
+                            <div class="mb-3">
+                                <label class="form-label">SKU</label>
+                                <input type="text" name="sku" class="form-control" value="<?php if (!empty($oldData['sku'])) echo $oldData['sku']; ?>">
+                                <?php
+                                if (!empty($errors)) {
+                                    echo showErrors($errors, 'sku');
+                                }
+                                ?>
+                            </div>
                             <div class="mb-3">
                                 <label class="form-label">Tên gói</label>
                                 <input type="text" name="name" class="form-control" value="<?php if (!empty($oldData['name'])) echo $oldData['name']; ?>">
@@ -55,11 +96,20 @@ $oldData = getSessionFlash('old_data');
                                 ?>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Mô tả</label>
-                                <textarea name="description" class="form-control"><?php if (!empty($oldData['description'])) echo $oldData['description']; ?></textarea>
+                                <label class="form-label">Mô tả ngắn</label>
+                                <textarea name="short_description" class="form-control"><?php if (!empty($oldData['short_description'])) echo $oldData['short_description']; ?></textarea>
                                 <?php
                                 if (!empty($errors)) {
-                                    echo showErrors($errors, 'description');
+                                    echo showErrors($errors, 'short_description');
+                                }
+                                ?>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mô tả dài</label>
+                                <textarea name="long_description" class="form-control"><?php if (!empty($oldData['long_description'])) echo $oldData['long_description']; ?></textarea>
+                                <?php
+                                if (!empty($errors)) {
+                                    echo showErrors($errors, 'long_description');
                                 }
                                 ?>
                             </div>
@@ -71,6 +121,12 @@ $oldData = getSessionFlash('old_data');
                                     echo showErrors($errors, 'price');
                                 }
                                 ?>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Đơn vị</label><br>
+                                <input type="radio" class="form-check-input" name="unit" value="package" <?php echo (!empty($oldData['unit']) && $oldData['unit'] === 'package') ? 'checked' : ''; ?>> Gói
+                                <input type="radio" class="form-check-input" name="unit" value="product" <?php echo (!empty($oldData['unit']) && $oldData['unit'] === 'product') ? 'checked' : ''; ?>> Sản phẩm
+                                <input type="radio" class="form-check-input" name="unit" value="item" <?php echo (!empty($oldData['unit']) && $oldData['unit'] === 'item') ? 'checked' : ''; ?>> Cái
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Loại gói</label>
@@ -146,7 +202,10 @@ $oldData = getSessionFlash('old_data');
     function toggleChooseSubPackage() {
         if (!packageType || !chooseSubPackage) return;
 
-        if (packageType.value === '1') {
+        const selectedCategory = packageType.options[packageType.selectedIndex];
+        const selectedCategoryName = selectedCategory ? selectedCategory.textContent.trim().toLowerCase() : '';
+
+        if (selectedCategoryName === 'combo') {
             chooseSubPackage.style.display = 'block';
         } else {
             chooseSubPackage.style.display = 'none';

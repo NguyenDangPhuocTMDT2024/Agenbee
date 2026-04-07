@@ -1,6 +1,6 @@
 <?php
 $data = [
-    'title' => 'Chi tiết gói dịch vụ',
+    'title' => 'Gói dịch vụ',
 ];
 if (isset($user)) {
     $data['user'] = $user;
