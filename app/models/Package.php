@@ -20,6 +20,7 @@ class Package extends Database
         $result = $this->getAll($sql);
         return $result;
     }
+    //lấy tất cả gói addon
     public function getAddonPackages()
     {
         $sql = "SELECT p.*, c.name as category_name 
@@ -29,7 +30,28 @@ class Package extends Database
                 ORDER BY category_id ASC";
         $result = $this->getAll($sql);
         return $result;
-    } 
+    }
+    //lấy type của addon
+    public function getAllAddonType()
+    {
+        $sql = "SELECT DISTINCT p.type
+                FROM {$this->tableName} p
+                WHERE p.type IS NOT NULL AND p.type != ''
+                ORDER BY p.type";
+        $result = $this->getAll($sql);
+        return $result;
+    }
+    //lấy tất cả gói combo 
+    public function getComboPackages()
+    {
+        $sql = "SELECT p.*, c.name as category_name 
+                FROM {$this->tableName} p LEFT JOIN {$this->categoryTable} c 
+                ON p.category_id = c.id 
+                WHERE LOWER(TRIM(c.name)) = 'combo'
+                ORDER BY category_id ASC";
+        $result = $this->getAll($sql);
+        return $result;
+    }
     //lấy tất cả item của gói
     function getAllPackageItems()
     {

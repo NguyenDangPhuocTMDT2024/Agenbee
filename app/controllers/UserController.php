@@ -27,7 +27,9 @@ class UserController extends Controller
             $id = getSession('user_id');
             $data = [
                 'user' => $this->userModel->getUserById($id),
-                'packages' => $this->packageModel->getAllPackages()
+                'combos' => $this->packageModel->getComboPackages(),
+                'addons' => $this->packageModel->getAddonPackages(),
+                'addonTypes' => $this->packageModel->getAllAddonType()
             ];
             $this->renderView('user/packages/index', $data);
         } else {

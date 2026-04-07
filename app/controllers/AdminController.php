@@ -84,6 +84,7 @@ class AdminController extends Controller
             }
             if (empty($errors)) {
                 $data = [
+                    'sku' => $filteredData['sku'],
                     'name' => $filteredData['name'],
                     'avatar' => $avt,
                     'short_description' => $filteredData['short_description'],
