@@ -21,13 +21,13 @@ class Package extends Database
         return $result;
     }
     //lấy tất cả gói addon
-    public function getAddonPackages()
+    public function getAddonPackages($condition = '', $order = '')
     {
         $sql = "SELECT p.*, c.name as category_name 
                 FROM {$this->tableName} p LEFT JOIN {$this->categoryTable} c 
                 ON p.category_id = c.id 
-                WHERE LOWER(TRIM(c.name)) = 'add-on'
-                ORDER BY category_id ASC";
+                WHERE LOWER(TRIM(c.name)) = 'add-on' {$condition}
+                ORDER BY {$order}";
         $result = $this->getAll($sql);
         return $result;
     }

@@ -48,6 +48,18 @@ layout('header', $data);
         overflow: hidden;
         min-height: 4.35em;
     }
+
+    .filter-btn-active {
+        background-color: #ffc107;
+        color: white;
+        border-color: #ffc107;
+    }
+
+    .filter-btn-active:hover {
+        background-color: #e0a800;
+        color: white;
+        border-color: #e0a800;
+    }
 </style>
 <main class="px-3 px-md-4 py-4 flex-grow-1 bg-white">
     <section class="container-fluid px-0">
@@ -68,8 +80,10 @@ layout('header', $data);
                                 <span class="fs-3 fw-bold mb-0 text-break"><?php echo (!empty($combo['price'])) ? number_format($combo['price']) : '0' ?><sup class="fs-6">đ</sup></span>
                                 <span class="text-body-secondary">/gói</span>
                             </div>
-
-                            <button type="button" class="btn btn-primary rounded-pill">Chọn gói</button>
+                            <form method="POST" action="" enctype="multipart/form-data">
+                                <input type="hidden" name="package_id" value="<?php echo htmlspecialchars($combo['id']); ?>">
+                                <button type="submit" class="btn btn-primary rounded-pill">Chọn gói</button>
+                            </form>
 
                             <hr class="my-4">
 
@@ -89,14 +103,19 @@ layout('header', $data);
                 <h3>Các dịch vụ bổ sung</h3>
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3 px-1">
                     <div>
+                        <a type="button" class="btn rounded-0 rounded-pill <?php echo empty($choseType) ? 'filter-btn-active' : 'btn-outline-secondary'; ?>" href="<?php echo _HOST_URL ?>/package">
+                            All
+                        </a>
                         <?php foreach ($addonTypes as $type): ?>
-                            <button type="button" class="btn btn-outline-warning rounded-0 rounded-pill"> <?php echo htmlspecialchars($type['type'])?> </button>
+                            <a type="button" class="btn rounded-0 rounded-pill <?php echo ($type['type'] === $choseType) ? 'filter-btn-active' : 'btn-outline-secondary'; ?>" href="<?php echo _HOST_URL ?>/package?filter=<?php echo urlencode($type['type']) ?>">
+                                <?php echo htmlspecialchars($type['type'])?>
+                            </a>
                         <?php endforeach; ?>
                     </div>
-                    <select name="" id="addon-sort" class="form-select w-auto">
+                    <select name="order" id="addon-sort" class="form-select w-auto">
                         <option value="">Sắp xếp theo</option>
-                        <option value="price_asc">Giá thấp đến cao</option>
-                        <option value="price_desc">Giá cao đến thấp</option>
+                        <option value="price_asc" <?php echo (isset($order) && $order === 'price_asc') ? 'selected' : ''; ?>>Giá thấp đến cao</option>
+                        <option value="price_desc" <?php echo (isset($order) && $order === 'price_desc') ? 'selected' : ''; ?>>Giá cao đến thấp</option>
                     </select>
                 </div>
                 <div class="row g-3 g-md-4">
@@ -123,7 +142,10 @@ layout('header', $data);
                                         ?></span>
                                     </div>
                                     <p class="text-body-secondary mb-0 addon-desc"><?php echo htmlspecialchars($item['short_description']); ?></p>
-                                    <button type="button" class="mt-auto btn btn-outline-primary rounded-0 rounded-pill">Thêm vào giỏ hàng</button>
+                                    <form method="POST" action="" enctype="multipart/form-data" class="mt-3 d-flex justify-content-center gap-2">
+                                        <input type="hidden" name="addon_id" value="<?php echo htmlspecialchars($item['id']); ?>">
+                                        <button type="submit" class="mt-auto btn btn-outline-primary rounded-0 rounded-pill">Thêm vào giỏ hàng</button>
+                                    </form>
                                 </div>
                             </article>
                         </div>
@@ -133,6 +155,20 @@ layout('header', $data);
         </div>
     </section>
 </main>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sortSelect = document.getElementById('addon-sort');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function() {
+                if (this.value) {
+                    const url = new URL(window.location);
+                    url.searchParams.set('order', this.value);
+                    window.location.href = url.toString();
+                }
+            });
+        }
+    });
+</script>
 <?php
 layout('footer');
 ?>
