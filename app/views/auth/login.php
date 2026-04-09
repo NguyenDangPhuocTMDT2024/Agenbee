@@ -47,7 +47,7 @@ $errors = getSessionFlash('errors');
         </div>
 
         <div class="text-center text-lg-start mt-4 pt-2">
-            <button type="submit" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
+            <button type="submit" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-warning btn-lg"
                 style="padding-left: 2.5rem; padding-right: 2.5rem;">Đăng nhập</button>
             <p class="small fw-bold mt-2 pt-1 mb-0">Bạn chưa có tài khoản? <a href="<?php echo _HOST_URL; ?>/register"
                     class="link-danger">Đăng ký</a></p>

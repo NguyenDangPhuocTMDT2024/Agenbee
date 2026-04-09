@@ -7,12 +7,21 @@
                             <input type="text" id="globalSearch" class="form-control" placeholder="Tìm kiếm theo từ khóa...">
                         </div>
                         <?php if(isLogin()): ?>
-                        <button class="btn btn-outline-secondary icon-only-btn" id="cartBtn" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Thông báo">
+                        <?php
+                            $cartCount = isset($cartItemCount) ? (int) $cartItemCount : 0;
+                            $cartCountDisplay = $cartCount > 9 ? '9+' : $cartCount;
+                        ?>
+                        <button class="btn btn-outline-secondary icon-only-btn" id="notifyBtn" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Thông báo">
                             <i class="bi bi-bell-fill"></i>
                         </button>
-                        <button class="btn btn-outline-secondary icon-only-btn" id="cartBtn" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Giỏ hàng">
-                            <i class="bi bi-cart3"></i>
-                        </button>
+                        <a href="<?php echo _HOST_URL; ?>/cart" class="btn btn-outline-secondary icon-only-btn cart-icon-btn" id="cartBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Giỏ hàng">
+                            <span class="cart-icon-wrap">
+                                <i class="bi bi-cart3"></i>
+                                <?php if($cartCount > 0): ?>
+                                <span class="cart-count-badge" style="position:absolute; top:0; background: #f4c430; z-index: 2; border-radius: 50%; width: 25px; height: auto;"><?php echo $cartCountDisplay; ?></span>
+                                <?php endif; ?>
+                            </span>
+                        </a>
                         <?php endif; ?>
                         <div class="nav-item dropdown user-menu">
                             <a href="#" class="nav-link dropdown-toggle user-menu-toggle" data-bs-toggle="dropdown" aria-expanded="false">

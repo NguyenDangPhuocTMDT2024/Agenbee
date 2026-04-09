@@ -5,6 +5,9 @@ $data = [
 if (isset($user)) {
     $data['user'] = $user;
 }
+if(isset($cartItemCount)) {
+    $data['cartItemCount'] = $cartItemCount;
+}
 layout('sidebar', $data);
 layout('header', $data);
 ?>

@@ -5,8 +5,14 @@ $data = [
 if (isset($user)) {
     $data['user'] = $user;
 }
+if(isset($cartItemCount)) {
+    $data['cartItemCount'] = $cartItemCount;
+}
 layout('sidebar', $data);
 layout('header', $data);
+
+$msg = getSessionFlash('msg');
+$msgType = getSessionFlash('msg_type');
 ?>
 <style>
     @media (min-width: 992px) {
@@ -64,6 +70,11 @@ layout('header', $data);
 <main class="px-3 px-md-4 py-4 flex-grow-1 bg-white">
     <section class="container-fluid px-0">
         <div class="text-center mb-5">
+            <?php
+            if (!empty($msg)) {
+                echo showMsg($msg, $msgType);
+            }
+            ?>
             <h1 class="fs-2  fw-semibold mt-3 mb-0">Choose the Perfect Package for You</h1>
         </div>
         <div class="row g-4 justify-content-center">
@@ -108,7 +119,7 @@ layout('header', $data);
                         </a>
                         <?php foreach ($addonTypes as $type): ?>
                             <a type="button" class="btn rounded-0 rounded-pill <?php echo ($type['type'] === $choseType) ? 'filter-btn-active' : 'btn-outline-secondary'; ?>" href="<?php echo _HOST_URL ?>/package?filter=<?php echo urlencode($type['type']) ?>">
-                                <?php echo htmlspecialchars($type['type'])?>
+                                <?php echo htmlspecialchars($type['type']) ?>
                             </a>
                         <?php endforeach; ?>
                     </div>
@@ -123,29 +134,26 @@ layout('header', $data);
                         <div class="col-12 col-sm-6 col-lg-4 col-xxl-3">
                             <article class="card addon-card border-0 shadow-sm">
                                 <span class="badge bg-warning text-dark"><?php echo htmlspecialchars($item['type']); ?></span>
-                                <img src="<?php echo !empty($item['avatar']) ? _HOST_URL_PUBLIC .'/uploads/'. $item['avatar'] : _HOST_URL_PUBLIC . '/img/' . 'service_picture.jpg'; ?>" class="card-img-top addon-thumb" alt="<?php echo htmlspecialchars($item['name']); ?>">
+                                <img src="<?php echo !empty($item['avatar']) ? _HOST_URL_PUBLIC . '/uploads/' . $item['avatar'] : _HOST_URL_PUBLIC . '/img/' . 'service_picture.jpg'; ?>" class="card-img-top addon-thumb" alt="<?php echo htmlspecialchars($item['name']); ?>">
                                 <div class="card-body p-3 d-flex flex-column">
                                     <h3 class="h5 mb-2"><?php echo htmlspecialchars($item['name']); ?></h3>
                                     <div class="fs-4 fw-bold mb-2">
                                         <?php echo (!empty($item['price'])) ? number_format($item['price']) : '0'; ?><sup class="fs-6">đ</sup>
                                         <span class="text-body-secondary fs-6 fw-normal">/
-                                        <?php 
-                                            if(!empty($item['unit'])) {
-                                                if($item['unit'] === 'package') {
+                                            <?php
+                                            if (!empty($item['unit'])) {
+                                                if ($item['unit'] === 'package') {
                                                     echo 'gói';
-                                                } else if($item['unit'] === 'product') {
+                                                } else if ($item['unit'] === 'product') {
                                                     echo 'sản phẩm';
                                                 } else {
                                                     echo 'cái';
                                                 }
                                             }
-                                        ?></span>
+                                            ?></span>
                                     </div>
                                     <p class="text-body-secondary mb-0 addon-desc"><?php echo htmlspecialchars($item['short_description']); ?></p>
-                                    <form method="POST" action="" enctype="multipart/form-data" class="mt-3 d-flex justify-content-center gap-2">
-                                        <input type="hidden" name="addon_id" value="<?php echo htmlspecialchars($item['id']); ?>">
-                                        <button type="submit" class="mt-auto btn btn-outline-primary rounded-0 rounded-pill">Thêm vào giỏ hàng</button>
-                                    </form>
+                                    <a href="<?php echo _HOST_URL ?>/cart/add?package_id=<?php echo $item['id']; ?>" type="button" class="mt-auto btn btn-outline-primary rounded-0 rounded-pill">Thêm vào giỏ hàng</a>
                                 </div>
                             </article>
                         </div>

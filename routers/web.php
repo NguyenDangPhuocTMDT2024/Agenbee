@@ -59,5 +59,9 @@ $router->get('/admin/profile', 'AdminController@showProfile');
 $router->get('/package', 'UserController@showPackage');
 $router->get('/package/detail', 'UserController@packageDetail');
 
+$router->get('/cart/add', 'UserController@addToCart');
+$router->get('/cart', 'UserController@showCart');
+
 $router->get('/contact', 'UserController@showContact');
+
 

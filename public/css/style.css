@@ -240,6 +240,45 @@ body.app-body {
 	font-size: 1.1rem;
 }
 
+.cart-icon-btn {
+	position: relative;
+	overflow: visible !important;
+}
+
+.cart-icon-wrap {
+	position: relative;
+	display: inline-block;
+	line-height: 1;
+}
+
+.cart-icon-wrap i {
+	font-size: 1.2rem;
+	line-height: 1;
+}
+
+.cart-count-badge {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: translate(45%, -45%);
+	width: 18px;
+	height: 18px;
+	padding: 0;
+	border-radius: 50%;
+	background: #f4c430;
+	color: #1a1a1a;
+	font-size: 0.62rem;
+	font-weight: 700;
+	line-height: 1;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 2px solid #ffffff;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+	z-index: 2;
+	pointer-events: none;
+}
+
 .app-footer {
 	background: rgba(255, 248, 214, 0.86);
 	margin-top: auto;
