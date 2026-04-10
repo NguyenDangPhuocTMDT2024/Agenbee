@@ -89,6 +89,79 @@ class UserController extends Controller
             }
         }
     }
+    public function showCart()
+    {
+        if(isLoginStrict($this->userModel)) {
+            $id = getSession('user_id');
+            $data = [
+                'user' => $this->userModel->getUserById($id),
+                'cartItemCount' => $this->cartModel->countItemsInCart($id),
+                'cartInfo' => $this->cartModel->getCartInfoByUserId($id)
+            ];
+            $this->renderView('user/cart', $data);
+        } else {
+            $this->renderView('user/home');
+        }
+    }
+    public function updateCart()
+    {
+        if(isPost()) {
+            $filteredData = filterData('post');
+            $packageId = isset($filteredData['package_id']) ? trim($filteredData['package_id']) : '';
+            $action = isset($filteredData['action']) ? trim($filteredData['action']) : '';
+            $currentQuantity = isset($filteredData['current_quantity']) ? (int) $filteredData['current_quantity'] : 1;
+            if(isLoginStrict($this->userModel)) {
+                $userId = getSession('user_id');
+                $quantityChange = 0;
+                if ($action === 'increase') {
+                    $quantityChange = 1;
+                } elseif ($action === 'decrease') {
+                    $quantityChange = -1;
+                }
+                if ($quantityChange !== 0) {
+                    $quantityChange = $currentQuantity + $quantityChange;
+                    $check = $this->cartModel->updateCartItem($userId, $packageId, $quantityChange);
+                    if ($check) {
+                        setSessionFlash('msg', 'Cập nhật giỏ hàng thành công');
+                        setSessionFlash('msg_type', 'success');
+                    } else {
+                        setSessionFlash('msg', 'Có lỗi xảy ra khi cập nhật giỏ hàng');
+                        setSessionFlash('msg_type', 'danger');
+                    }
+                }
+                redirect('/cart'); 
+            } else {
+                setSessionFlash('msg', 'Vui lòng đăng nhập để cập nhật giỏ hàng');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/login');
+                exit();
+            }
+        }
+    }
+    public function removeCartItem()
+    {
+        if(isGet()) {
+            $filteredData = filterData('get');
+            $packageId = isset($filteredData['package_id']) ? trim($filteredData['package_id']) : '';
+            if(isLoginStrict($this->userModel)) {
+                $userId = getSession('user_id');
+                $check = $this->cartModel->removeCartItem($userId, $packageId);
+                if ($check) {
+                    setSessionFlash('msg', 'Sản phẩm đã được xóa khỏi giỏ hàng');
+                    setSessionFlash('msg_type', 'success');
+                } else {
+                    setSessionFlash('msg', 'Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng');
+                    setSessionFlash('msg_type', 'danger');
+                }
+                redirect('/cart');
+            } else {
+                setSessionFlash('msg', 'Vui lòng đăng nhập để xóa sản phẩm khỏi giỏ hàng');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/login');
+                exit();
+            }
+        }
+    }
     //show thông tin liên hệ
     public function showContact()
     {

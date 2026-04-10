@@ -61,6 +61,10 @@ $router->get('/package/detail', 'UserController@packageDetail');
 
 $router->get('/cart/add', 'UserController@addToCart');
 $router->get('/cart', 'UserController@showCart');
+$router->post('/cart', 'UserController@updateCart');
+$router->get('/cart/remove', 'UserController@removeCartItem');
+
+$router->get('/order/confirm', 'UserController@showOrderConfirm');
 
 $router->get('/contact', 'UserController@showContact');
 

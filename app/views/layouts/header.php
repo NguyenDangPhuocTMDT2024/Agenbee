@@ -18,7 +18,7 @@
                             <span class="cart-icon-wrap">
                                 <i class="bi bi-cart3"></i>
                                 <?php if($cartCount > 0): ?>
-                                <span class="cart-count-badge" style="position:absolute; top:0; background: #f4c430; z-index: 2; border-radius: 50%; width: 25px; height: auto;"><?php echo $cartCountDisplay; ?></span>
+                                <span class="cart-count-badge" style="position:absolute; top:-8px; right:-8px; transform:translate(45%,-45%); background:#f4c430; z-index:2; border-radius:50%; width:20px; height:20px; padding:0; display:inline-flex; align-items:center; justify-content:center; line-height:1;"><?php echo $cartCountDisplay; ?></span>
                                 <?php endif; ?>
                             </span>
                         </a>
