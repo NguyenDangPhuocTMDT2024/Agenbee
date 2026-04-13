@@ -53,7 +53,7 @@ foreach ($cartInfo as $item) {
                     <div class="cart-product-row">
                         <div class="cart-col cart-col-product cart-product-info">
                             <div class="cart-thumb" aria-hidden="true">
-                                <i class="bi bi-box-seam"></i>
+                                <img src="<?php echo !empty($item['avatar']) ? _HOST_URL_PUBLIC . '/uploads/' . $item['avatar'] : _HOST_URL_PUBLIC . '/img/' . 'service_picture.jpg'; ?>" class="card-img-top addon-thumb" alt="<?php echo htmlspecialchars($item['name']); ?>">
                             </div>
                             <div class="cart-item-meta">
                                 <p class="cart-item-name mb-1"><?php echo htmlspecialchars($item['name']); ?></p>

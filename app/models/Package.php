@@ -88,7 +88,7 @@ class Package extends Database
     //lấy các gói con theo id gói chính
     public function getAddonsByPackageID($packageId)
     {
-        $sql = "SELECT pi.*, p.name as addon_name FROM " . $this->itemTable . " pi 
+        $sql = "SELECT pi.*, p.* FROM " . $this->itemTable . " pi 
                 JOIN " . $this->tableName . " p ON pi.addon_id = p.id 
                 WHERE pi.combo_id = :packageId";
         $param = ['packageId' => $packageId];

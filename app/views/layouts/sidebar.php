@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenbee</title>
+    <title><?php echo isset($title) ? htmlspecialchars($title) : 'Agenbee'; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?php echo _HOST_URL_PUBLIC; ?>/css/style.css?v=<?php echo filemtime(ROOT_PATH . '/public/css/style.css'); ?>">
@@ -12,6 +12,22 @@
     <div class="container-fluid px-0 app-shell">
         <div class="row g-0 app-content-wrap">
             <!-- Sidebar -->
+            <?php
+            $currentTitle = isset($title) ? trim((string) $title) : '';
+            $hasTitleKeyword = function (array $keywords) use ($currentTitle) {
+                if ($currentTitle === '') {
+                    return false;
+                }
+
+                foreach ($keywords as $keyword) {
+                    if ($keyword !== '' && strpos($currentTitle, $keyword) !== false) {
+                        return true;
+                    }
+                }
+
+                return false;
+            };
+            ?>
             <aside class="col-12 col-lg-2 col-xl-1 sidebar sidebar-compact p-3">
                 <div class="d-flex flex-column h-100">
                     <a href="<?php echo _HOST_URL ?>/home" class="sidebar-logo text-decoration-none d-flex align-items-center justify-content-center">
@@ -19,20 +35,20 @@
                     </a>
 
                     <nav class="sidebar-nav mt-4 mt-lg-5 d-flex flex-column align-items-center align-items-lg-start gap-2">
-                        <a href="<?php echo _HOST_URL ?>/home" class="nav-item-btn active" data-section="home" data-title="Trang chu" data-bs-toggle="tooltip" data-bs-placement="right" title="Trang chủ">
+                        <a href="<?php echo _HOST_URL ?>/home" class="nav-item-btn <?php echo $hasTitleKeyword(['Trang chủ']) ? 'active' : '' ?>" data-section="home" data-title="Trang chu" data-bs-toggle="tooltip" data-bs-placement="right" title="Trang chủ">
                             <i class="bi bi-house-door-fill"></i>
                             <span>Home</span>
                         </a>
-                        <a href="<?php echo _HOST_URL ?>/package" class="nav-item-btn" data-section="package" data-title="Goi dich vu" data-bs-toggle="tooltip" data-bs-placement="right" title="Gói dịch vụ">
+                        <a href="<?php echo _HOST_URL ?>/package" class="nav-item-btn <?php echo $hasTitleKeyword(['Gói dịch vụ', 'gói dịch vụ', 'Chi tiết gói dịch vụ']) ? 'active' : '' ?>" data-section="package" data-title="Goi dich vu" data-bs-toggle="tooltip" data-bs-placement="right" title="Gói dịch vụ">
                             <i class="bi bi-box-seam-fill"></i>
                             <span>Package</span>
                         </a>
-                        <a href="<?php echo _HOST_URL ?>/contact" class="nav-item-btn" data-section="contact" data-title="Lien he doanh nghiep" data-bs-toggle="tooltip" data-bs-placement="right" title="Liên hệ">
+                        <a href="<?php echo _HOST_URL ?>/contact" class="nav-item-btn <?php echo $hasTitleKeyword(['Liên hệ']) ? 'active' : '' ?>" data-section="contact" data-title="Lien he doanh nghiep" data-bs-toggle="tooltip" data-bs-placement="right" title="Liên hệ">
                             <i class="bi bi-telephone-fill"></i>
                             <span>Contact</span>
                         </a>
                         <?php if(isLogin()): ?>
-                        <a href="<?php echo _HOST_URL ?>/order" class="nav-item-btn" data-section="order" data-title="Don hang cua ban" data-bs-toggle="tooltip" data-bs-placement="right" title="Đơn hàng">
+                        <a href="<?php echo _HOST_URL ?>/order" class="nav-item-btn <?php echo $hasTitleKeyword(['Đơn hàng', 'Giỏ hàng']) ? 'active' : '' ?>" data-section="order" data-title="Don hang cua ban" data-bs-toggle="tooltip" data-bs-placement="right" title="Đơn hàng">
                             <i class="bi bi-cart-check-fill"></i>
                             <span>Order</span>
                         </a>

@@ -9,7 +9,7 @@ class UserController extends Controller
     {
         $this->userModel = new User();
         $this->packageModel = new Package();
-        if(isLoginStrict($this->userModel)) {
+        if (isLoginStrict($this->userModel)) {
             $userId = getSession('user_id');
             $this->cartModel = new Cart($userId);
         } else {
@@ -18,12 +18,13 @@ class UserController extends Controller
     }
     public function home()
     {
-        if(isLoginStrict($this->userModel)) {
+        $data = [
+            'combos' => $this->packageModel->getComboPackages()
+        ];
+        if (isLoginStrict($this->userModel)) {
             $id = getSession('user_id');
-            $data = [
-                'user' => $this->userModel->getUserById($id),
-                'cartItemCount' => $this->cartModel->countItemsInCart($id)
-            ];
+            $data['user'] = $this->userModel->getUserById($id);
+            $data['cartItemCount'] = $this->cartModel->countItemsInCart($id);
             $this->renderView('user/home', $data);
         } else {
             $this->renderView('user/home');
@@ -31,7 +32,7 @@ class UserController extends Controller
     }
     public function showPackage()
     {
-        if(isGet()){
+        if (isGet()) {
             $filteredData = filterData('get');
             $filter = isset($filteredData['filter']) ? trim($filteredData['filter']) : '';
             $order = isset($filteredData['order']) ? trim($filteredData['order']) : '';
@@ -53,7 +54,7 @@ class UserController extends Controller
                 'choseType' => $filter,
                 'order' => $order
             ];
-            if(isLoginStrict($this->userModel)) {
+            if (isLoginStrict($this->userModel)) {
                 $id = getSession('user_id');
                 $data['user'] = $this->userModel->getUserById($id);
                 $data['cartItemCount'] = $this->cartModel->countItemsInCart($id);
@@ -61,15 +62,15 @@ class UserController extends Controller
             } else {
                 $this->renderView('user/packages/index', $data);
             }
-        }    
+        }
     }
     public function addToCart()
     {
-        if(isGet()) {
+        if (isGet()) {
             $filteredData = filterData('get');
             $packageId = isset($filteredData['package_id']) ? trim($filteredData['package_id']) : '';
             $quantity = isset($filteredData['quantity']) ? (int) $filteredData['quantity'] : 1;
-            if(isLoginStrict($this->userModel)) {
+            if (isLoginStrict($this->userModel)) {
                 $userId = getSession('user_id');
                 // Thêm sản phẩm vào giỏ hàng của người dùng
                 $check = $this->cartModel->addCart($userId, $packageId, $quantity);
@@ -91,7 +92,7 @@ class UserController extends Controller
     }
     public function showCart()
     {
-        if(isLoginStrict($this->userModel)) {
+        if (isLoginStrict($this->userModel)) {
             $id = getSession('user_id');
             $data = [
                 'user' => $this->userModel->getUserById($id),
@@ -105,12 +106,12 @@ class UserController extends Controller
     }
     public function updateCart()
     {
-        if(isPost()) {
+        if (isPost()) {
             $filteredData = filterData('post');
             $packageId = isset($filteredData['package_id']) ? trim($filteredData['package_id']) : '';
             $action = isset($filteredData['action']) ? trim($filteredData['action']) : '';
             $currentQuantity = isset($filteredData['current_quantity']) ? (int) $filteredData['current_quantity'] : 1;
-            if(isLoginStrict($this->userModel)) {
+            if (isLoginStrict($this->userModel)) {
                 $userId = getSession('user_id');
                 $quantityChange = 0;
                 if ($action === 'increase') {
@@ -129,7 +130,7 @@ class UserController extends Controller
                         setSessionFlash('msg_type', 'danger');
                     }
                 }
-                redirect('/cart'); 
+                redirect('/cart');
             } else {
                 setSessionFlash('msg', 'Vui lòng đăng nhập để cập nhật giỏ hàng');
                 setSessionFlash('msg_type', 'danger');
@@ -140,10 +141,10 @@ class UserController extends Controller
     }
     public function removeCartItem()
     {
-        if(isGet()) {
+        if (isGet()) {
             $filteredData = filterData('get');
             $packageId = isset($filteredData['package_id']) ? trim($filteredData['package_id']) : '';
-            if(isLoginStrict($this->userModel)) {
+            if (isLoginStrict($this->userModel)) {
                 $userId = getSession('user_id');
                 $check = $this->cartModel->removeCartItem($userId, $packageId);
                 if ($check) {
@@ -165,7 +166,7 @@ class UserController extends Controller
     //show thông tin liên hệ
     public function showContact()
     {
-        if(isLoginStrict($this->userModel)) {
+        if (isLoginStrict($this->userModel)) {
             $id = getSession('user_id');
             $data = [
                 'user' => $this->userModel->getUserById($id),
@@ -174,6 +175,52 @@ class UserController extends Controller
             $this->renderView('user/contact', $data);
         } else {
             $this->renderView('user/contact');
-        }    
+        }
+    }
+    public function contact(){
+        if(isPost()){
+            $filteredData = filterData('post');
+            $name = isset($filteredData['name']) ? trim($filteredData['name']) : '';
+            $email = isset($filteredData['email']) ? trim($filteredData['email']) : '';
+            $message = isset($filteredData['message']) ? trim($filteredData['message']) : '';
+            // $contactModel = new Contact();
+            // $check = $contactModel->addContact($name, $email, $message);
+            // if ($check) {
+            //     setSessionFlash('msg', 'Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.');
+            //     setSessionFlash('msg_type', 'success');
+            // } else {
+            //     setSessionFlash('msg', 'Có lỗi xảy ra khi gửi thông tin liên hệ. Vui lòng thử lại sau.');
+            //     setSessionFlash('msg_type', 'danger');
+            // }
+            // redirect('/contact');
+        }
+    }
+    public function showPackageDetail()
+    {
+        if (isGet()) {
+            $filteredData = filterData('get');
+            $packageId = isset($filteredData['id']) ? trim($filteredData['id']) : '';
+            $package = $this->packageModel->getPackagesById($packageId);
+            $addons = $this->packageModel->getAddonsByPackageID($packageId);
+            if ($package) {
+                $data = [
+                    'package' => $package,
+                    'addons' => $addons
+                ];
+                if (isLoginStrict($this->userModel)) {
+                    $id = getSession('user_id');
+                    $data['user'] = $this->userModel->getUserById($id);
+                    $data['cartItemCount'] = $this->cartModel->countItemsInCart($id);
+                    $this->renderView('user/packages/detail', $data);
+                } else {
+                    $this->renderView('user/packages/detail', $data);
+                }
+            } else {
+                setSessionFlash('msg', 'Gói dịch vụ không tồn tại');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/package');
+                exit();
+            }
+        }
     }
 }

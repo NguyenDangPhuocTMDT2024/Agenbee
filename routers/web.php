@@ -57,7 +57,7 @@ $router->get('/admin/profile', 'AdminController@showProfile');
 
 //user routes
 $router->get('/package', 'UserController@showPackage');
-$router->get('/package/detail', 'UserController@packageDetail');
+$router->get('/package/detail', 'UserController@showPackageDetail');
 
 $router->get('/cart/add', 'UserController@addToCart');
 $router->get('/cart', 'UserController@showCart');
@@ -65,7 +65,13 @@ $router->post('/cart', 'UserController@updateCart');
 $router->get('/cart/remove', 'UserController@removeCartItem');
 
 $router->get('/order/confirm', 'UserController@showOrderConfirm');
+$router->get('/order', 'UserController@showOrder');
 
 $router->get('/contact', 'UserController@showContact');
+$router->post('/contact', 'UserController@contact');
+
+$router->get('/profile', 'UserController@showProfile');
+$router->post('/profile', 'UserController@updateProfile');
+
 
 

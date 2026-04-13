@@ -13,5 +13,5 @@ define('_PUBLIC_PATH', _ROOT_PATH.'/public');
 
 define('_HOST_MAIL', 'agenbee0502@gmail.com');
 define('_APP_PASS','usby gflt wnmn hkph');
-
+define('_PHONE','0765058016');
 ?>

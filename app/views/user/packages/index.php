@@ -5,7 +5,7 @@ $data = [
 if (isset($user)) {
     $data['user'] = $user;
 }
-if(isset($cartItemCount)) {
+if (isset($cartItemCount)) {
     $data['cartItemCount'] = $cartItemCount;
 }
 layout('sidebar', $data);
@@ -15,6 +15,18 @@ $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
 ?>
 <style>
+    .package-page {
+        background:
+            radial-gradient(circle at top left, rgba(244, 196, 48, 0.12), transparent 28%),
+            linear-gradient(180deg, #fffdf8 0%, #fff8e8 100%);
+        border-radius: 24px;
+    }
+
+    .package-title {
+        color: #1b1b1b;
+        font-weight: 800;
+    }
+
     @media (min-width: 992px) {
         .combo-card-header {
             min-height: 215px;
@@ -36,8 +48,59 @@ $msgType = getSessionFlash('msg_type');
         }
     }
 
+    .package-combo-card {
+        border: 1px solid rgba(201, 154, 17, 0.18);
+        border-radius: 22px;
+        background: linear-gradient(180deg, #ffffff 0%, #fff8ea 100%);
+        box-shadow: 0 14px 34px rgba(31, 24, 9, 0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .package-combo-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(31, 24, 9, 0.12);
+    }
+
+    .package-combo-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .combo-price {
+        color: #9b7500;
+    }
+
+    .btn-combo-choose {
+        background: linear-gradient(135deg, #f4c430 0%, #e9b913 100%);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        color: #111111;
+        font-weight: 700;
+        border-radius: 999px;
+        padding: 0.55rem 1rem;
+    }
+
+    .btn-combo-choose:hover {
+        background: linear-gradient(135deg, #ffd451 0%, #f4c430 100%);
+        color: #111111;
+    }
+
+    .combo-desc {
+        color: #656565;
+        line-height: 1.6;
+    }
+
     .addon-card {
         height: 100%;
+        border-radius: 20px;
+        border: 1px solid rgba(201, 154, 17, 0.16);
+        background: linear-gradient(180deg, #ffffff 0%, #fff8ea 100%);
+        box-shadow: 0 12px 30px rgba(31, 24, 9, 0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        overflow: hidden;
+    }
+
+    .addon-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 36px rgba(31, 24, 9, 0.12);
     }
 
     .addon-thumb {
@@ -55,19 +118,72 @@ $msgType = getSessionFlash('msg_type');
         min-height: 4.35em;
     }
 
+    .addon-type {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        border-radius: 999px;
+        padding: 0.3rem 0.7rem;
+        background: rgba(17, 17, 17, 0.92);
+        color: #ffd451;
+        font-weight: 700;
+        z-index: 2;
+    }
+
+    .addon-title {
+        color: #1b1b1b;
+        font-weight: 700;
+    }
+
+    .addon-price {
+        color: #9b7500;
+    }
+
+    .btn-addon {
+        border-radius: 999px;
+        border-color: rgba(201, 154, 17, 0.5);
+        color: #9b7500;
+        font-weight: 700;
+    }
+
+    .btn-addon:hover {
+        background: #f4c430;
+        border-color: #f4c430;
+        color: #111111;
+    }
+
+    .addon-sort {
+        border-radius: 999px;
+        border-color: rgba(201, 154, 17, 0.4);
+        padding-right: 2.2rem;
+    }
+
     .filter-btn-active {
-        background-color: #ffc107;
-        color: white;
-        border-color: #ffc107;
+        background: linear-gradient(135deg, #f4c430 0%, #e9b913 100%);
+        color: #111111;
+        border-color: #f4c430;
+        font-weight: 700;
     }
 
     .filter-btn-active:hover {
-        background-color: #e0a800;
-        color: white;
-        border-color: #e0a800;
+        background: linear-gradient(135deg, #ffd451 0%, #f4c430 100%);
+        color: #111111;
+        border-color: #f4c430;
+    }
+
+    .package-filter-btn {
+        border-radius: 999px;
+        border-color: rgba(201, 154, 17, 0.38);
+        color: #6f6f6f;
+    }
+
+    .package-filter-btn:hover {
+        color: #111111;
+        border-color: rgba(201, 154, 17, 0.6);
+        background: rgba(244, 196, 48, 0.13);
     }
 </style>
-<main class="px-3 px-md-4 py-4 flex-grow-1 bg-white">
+<main class="package-page px-3 px-md-4 py-4 flex-grow-1">
     <section class="container-fluid px-0">
         <div class="text-center mb-5">
             <?php
@@ -75,12 +191,12 @@ $msgType = getSessionFlash('msg_type');
                 echo showMsg($msg, $msgType);
             }
             ?>
-            <h1 class="fs-2  fw-semibold mt-3 mb-0">Choose the Perfect Package for You</h1>
+            <h1 class="fs-2 fw-semibold mt-3 mb-0 package-title">Choose the Perfect Package for You</h1>
         </div>
         <div class="row g-4 justify-content-center">
             <?php foreach ($combos as $combo): ?>
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <article class="card h-100 shadow-sm border-1 bg-white">
+                    <article class="card package-combo-card h-100 border-0">
                         <div class="card-body p-4 p-lg-5 d-flex flex-column">
                             <header class="combo-card-header">
                                 <h2 class="h1 fw-semibold mb-1 combo-card-title"><?php echo htmlspecialchars($combo['name']); ?></h2>
@@ -88,20 +204,15 @@ $msgType = getSessionFlash('msg_type');
                             </header>
 
                             <div class="d-flex align-items-baseline flex-wrap gap-2 mt-4 mb-4">
-                                <span class="fs-3 fw-bold mb-0 text-break"><?php echo (!empty($combo['price'])) ? number_format($combo['price']) : '0' ?><sup class="fs-6">đ</sup></span>
+                                <span class="fs-3 fw-bold mb-0 text-break combo-price"><?php echo (!empty($combo['price'])) ? number_format($combo['price']) : '0' ?><sup class="fs-6">đ</sup></span>
                                 <span class="text-body-secondary">/gói</span>
                             </div>
                             <form method="POST" action="" enctype="multipart/form-data">
                                 <input type="hidden" name="package_id" value="<?php echo htmlspecialchars($combo['id']); ?>">
-                                <button type="submit" class="btn btn-primary rounded-pill">Chọn gói</button>
+                                <a href="<?php echo _HOST_URL ?>/package/detail?id=<?php echo htmlspecialchars($combo['id']); ?>" type="button" class="btn btn-combo-choose">Chọn gói</a>
                             </form>
 
                             <hr class="my-4">
-
-                            <h3 class="h2 fw-semibold mb-3">Mô tả</h3>
-                            <div class="mb-0 mt-1">
-                                <?php echo htmlspecialchars($combo['long_description']); ?>
-                            </div>
                         </div>
                     </article>
                 </div>
@@ -114,16 +225,16 @@ $msgType = getSessionFlash('msg_type');
                 <h3>Các dịch vụ bổ sung</h3>
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3 px-1">
                     <div>
-                        <a type="button" class="btn rounded-0 rounded-pill <?php echo empty($choseType) ? 'filter-btn-active' : 'btn-outline-secondary'; ?>" href="<?php echo _HOST_URL ?>/package">
+                        <a type="button" class="btn package-filter-btn rounded-pill <?php echo empty($choseType) ? 'filter-btn-active' : 'btn-outline-secondary'; ?>" href="<?php echo _HOST_URL ?>/package">
                             All
                         </a>
                         <?php foreach ($addonTypes as $type): ?>
-                            <a type="button" class="btn rounded-0 rounded-pill <?php echo ($type['type'] === $choseType) ? 'filter-btn-active' : 'btn-outline-secondary'; ?>" href="<?php echo _HOST_URL ?>/package?filter=<?php echo urlencode($type['type']) ?>">
+                            <a type="button" class="btn package-filter-btn rounded-pill <?php echo ($type['type'] === $choseType) ? 'filter-btn-active' : 'btn-outline-secondary'; ?>" href="<?php echo _HOST_URL ?>/package?filter=<?php echo urlencode($type['type']) ?>">
                                 <?php echo htmlspecialchars($type['type']) ?>
                             </a>
                         <?php endforeach; ?>
                     </div>
-                    <select name="order" id="addon-sort" class="form-select w-auto">
+                    <select name="order" id="addon-sort" class="form-select w-auto addon-sort">
                         <option value="">Sắp xếp theo</option>
                         <option value="price_asc" <?php echo (isset($order) && $order === 'price_asc') ? 'selected' : ''; ?>>Giá thấp đến cao</option>
                         <option value="price_desc" <?php echo (isset($order) && $order === 'price_desc') ? 'selected' : ''; ?>>Giá cao đến thấp</option>
@@ -132,30 +243,32 @@ $msgType = getSessionFlash('msg_type');
                 <div class="row g-3 g-md-4">
                     <?php foreach ($addons as $item): ?>
                         <div class="col-12 col-sm-6 col-lg-4 col-xxl-3">
-                            <article class="card addon-card border-0 shadow-sm">
-                                <span class="badge bg-warning text-dark"><?php echo htmlspecialchars($item['type']); ?></span>
-                                <img src="<?php echo !empty($item['avatar']) ? _HOST_URL_PUBLIC . '/uploads/' . $item['avatar'] : _HOST_URL_PUBLIC . '/img/' . 'service_picture.jpg'; ?>" class="card-img-top addon-thumb" alt="<?php echo htmlspecialchars($item['name']); ?>">
-                                <div class="card-body p-3 d-flex flex-column">
-                                    <h3 class="h5 mb-2"><?php echo htmlspecialchars($item['name']); ?></h3>
-                                    <div class="fs-4 fw-bold mb-2">
-                                        <?php echo (!empty($item['price'])) ? number_format($item['price']) : '0'; ?><sup class="fs-6">đ</sup>
-                                        <span class="text-body-secondary fs-6 fw-normal">/
-                                            <?php
-                                            if (!empty($item['unit'])) {
-                                                if ($item['unit'] === 'package') {
-                                                    echo 'gói';
-                                                } else if ($item['unit'] === 'product') {
-                                                    echo 'sản phẩm';
-                                                } else {
-                                                    echo 'cái';
+                            <a href="<?php echo _HOST_URL ?>/package/detail?id=<?php echo htmlspecialchars($item['id']); ?>" class="text-decoration-none">
+                                <article class="card addon-card border-0 shadow-sm position-relative">
+                                    <span class="badge addon-type"><?php echo htmlspecialchars($item['type']); ?></span>
+                                    <img src="<?php echo !empty($item['avatar']) ? _HOST_URL_PUBLIC . '/uploads/' . $item['avatar'] : _HOST_URL_PUBLIC . '/img/' . 'service_picture.jpg'; ?>" class="card-img-top addon-thumb" alt="<?php echo htmlspecialchars($item['name']); ?>">
+                                    <div class="card-body p-3 d-flex flex-column">
+                                        <h3 class="h5 mb-2 addon-title"><?php echo htmlspecialchars($item['name']); ?></h3>
+                                        <div class="fs-4 fw-bold mb-2 addon-price">
+                                            <?php echo (!empty($item['price'])) ? number_format($item['price']) : '0'; ?><sup class="fs-6">đ</sup>
+                                            <span class="text-body-secondary fs-6 fw-normal">/
+                                                <?php
+                                                if (!empty($item['unit'])) {
+                                                    if ($item['unit'] === 'package') {
+                                                        echo 'gói';
+                                                    } else if ($item['unit'] === 'product') {
+                                                        echo 'sản phẩm';
+                                                    } else {
+                                                        echo 'cái';
+                                                    }
                                                 }
-                                            }
-                                            ?></span>
+                                                ?></span>
+                                        </div>
+                                        <p class="text-body-secondary mb-0 addon-desc"><?php echo htmlspecialchars($item['short_description']); ?></p>
+                                        <a href="<?php echo _HOST_URL ?>/cart/add?package_id=<?php echo $item['id']; ?>" type="button" class="mt-auto btn btn-outline-primary btn-addon">Thêm vào giỏ hàng</a>
                                     </div>
-                                    <p class="text-body-secondary mb-0 addon-desc"><?php echo htmlspecialchars($item['short_description']); ?></p>
-                                    <a href="<?php echo _HOST_URL ?>/cart/add?package_id=<?php echo $item['id']; ?>" type="button" class="mt-auto btn btn-outline-primary rounded-0 rounded-pill">Thêm vào giỏ hàng</a>
-                                </div>
-                            </article>
+                                </article>
+                            </a>
                         </div>
                     <?php endforeach; ?>
                 </div>

@@ -18,5 +18,34 @@ document.addEventListener("DOMContentLoaded", function () {
 		new bootstrap.Tooltip(item);
 	});
 
-	activateSection("home");
+	function normalizePath(path) {
+		return path.replace(/\/+$/, "");
+	}
+
+	function activateByCurrentPath() {
+		var currentPath = normalizePath(window.location.pathname);
+		var matchedButton = null;
+		var matchedLength = -1;
+
+		navButtons.forEach(function (btn) {
+			var href = btn.getAttribute("href");
+			if (!href) {
+				return;
+			}
+
+			var btnPath = normalizePath(new URL(href, window.location.origin).pathname);
+			var isMatch = currentPath === btnPath || currentPath.indexOf(btnPath + "/") === 0;
+
+			if (isMatch && btnPath.length > matchedLength) {
+				matchedButton = btn;
+				matchedLength = btnPath.length;
+			}
+		});
+
+		if (matchedButton) {
+			activateSection(matchedButton.dataset.section);
+		}
+	}
+
+	activateByCurrentPath();
 });
