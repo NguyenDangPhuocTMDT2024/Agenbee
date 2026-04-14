@@ -15,7 +15,9 @@ $oldData = getSessionFlash('old_data');
     <form method="POST" action="" enctype="multipart/form-data">
         <h2 class="text-center mb-4 text-uppercase">Đăng ký</h2>
         <?php 
-            echo showMsg($msg, $msgType);
+            if($msg) {
+                echo showMsg($msg, $msgType);
+            }
         ?>
         <!-- Name input -->
         <div data-mdb-input-init class="form-outline mb-4">
@@ -24,9 +26,10 @@ $oldData = getSessionFlash('old_data');
                 value="<?php echo showOldData($oldData, 'name'); ?>"
             />
         </div>
-        <?php if(!empty($errors)) { 
+        <?php 
+        if(!empty($errors)) { 
             echo showErrors($errors, 'name');
-            }
+        }
         ?>
         <!-- Email input -->
         <div data-mdb-input-init class="form-outline mb-4">
@@ -35,9 +38,10 @@ $oldData = getSessionFlash('old_data');
                 value="<?php echo showOldData($oldData, 'email'); ?>"
             />
         </div>
-        <?php if(!empty($errors)) { 
+        <?php 
+        if(!empty($errors)) { 
             echo showErrors($errors, 'email');
-            }
+        }
         ?>
         <!-- Phone input -->
         <div data-mdb-input-init class="form-outline mb-4">
@@ -46,27 +50,30 @@ $oldData = getSessionFlash('old_data');
                 value="<?php echo showOldData($oldData, 'phone'); ?>"
             />
         </div>
-        <?php if(!empty($errors)) { 
+        <?php 
+        if(!empty($errors)) { 
             echo showErrors($errors, 'phone');
-            }
+        }
         ?>
         <!-- Password input -->
         <div data-mdb-input-init class="form-outline mb-3">
             <input name="password" type="password" id="form3Example4" class="form-control form-control-lg"
                 placeholder="Nhập mật khẩu" />
         </div>
-        <?php if(!empty($errors)) { 
+        <?php 
+        if(!empty($errors)) { 
             echo showErrors($errors, 'password');
-            }
+        }
         ?>
         <!-- Password confirmation input -->
         <div data-mdb-input-init class="form-outline mb-3">
             <input name="password_confirmation" type="password" id="form3Example5" class="form-control form-control-lg"
                 placeholder="Nhập lại mật khẩu" />
         </div>
-        <?php if(!empty($errors)) { 
+        <?php 
+        if(!empty($errors)) { 
             echo showErrors($errors, 'password_confirmation');
-            }
+        }
         ?>
 
         <div class="text-center text-lg-start mt-4 pt-2">

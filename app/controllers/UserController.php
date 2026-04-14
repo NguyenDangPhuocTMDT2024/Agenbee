@@ -5,10 +5,12 @@ class UserController extends Controller
     private $userModel;
     private $packageModel;
     private $cartModel;
+    private $contactModel;
     public function __construct()
     {
         $this->userModel = new User();
         $this->packageModel = new Package();
+        $this->contactModel = new Contact();
         if (isLoginStrict($this->userModel)) {
             $userId = getSession('user_id');
             $this->cartModel = new Cart($userId);
@@ -180,19 +182,33 @@ class UserController extends Controller
     public function contact(){
         if(isPost()){
             $filteredData = filterData('post');
-            $name = isset($filteredData['name']) ? trim($filteredData['name']) : '';
-            $email = isset($filteredData['email']) ? trim($filteredData['email']) : '';
-            $message = isset($filteredData['message']) ? trim($filteredData['message']) : '';
-            // $contactModel = new Contact();
-            // $check = $contactModel->addContact($name, $email, $message);
-            // if ($check) {
-            //     setSessionFlash('msg', 'Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.');
-            //     setSessionFlash('msg_type', 'success');
-            // } else {
-            //     setSessionFlash('msg', 'Có lỗi xảy ra khi gửi thông tin liên hệ. Vui lòng thử lại sau.');
-            //     setSessionFlash('msg_type', 'danger');
-            // }
-            // redirect('/contact');
+            $errors = validateContact($filteredData);
+            if(empty($errors)){
+                $data = [
+                    'name' => trim($filteredData['name']),
+                    'phone' => trim($filteredData['phone']),
+                    'shop_status' => trim($filteredData['shop_status']),
+                    'budget_range' => trim($filteredData['budget_range']),
+                    'message' => trim($filteredData['message']),
+                    'status' => 'new',
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+                $checkInsert = $this->contactModel->insertContact($data);
+                if($checkInsert){
+                    setSessionFlash('msg', 'Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.');
+                    setSessionFlash('msg_type', 'success');
+                    redirect('/contact');
+                } else {
+                    setSessionFlash('msg', 'Có lỗi xảy ra khi gửi thông tin liên hệ. Vui lòng thử lại sau.');
+                    setSessionFlash('msg_type', 'danger');
+                    redirect('/contact');
+                }
+            } else {
+                setSessionFlash('msg', 'Dữ liệu không hợp lệ. Vui lòng sửa các lỗi sau!');
+                setSessionFlash('msg_type', 'danger');
+                setSessionFlash('errors', $errors);
+                redirect('/contact');
+            }
         }
     }
     public function showPackageDetail()

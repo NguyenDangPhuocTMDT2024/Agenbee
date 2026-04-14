@@ -13,6 +13,10 @@ layout('header', $data);
 
 $currentName = isset($user['name']) ? $user['name'] : '';
 $currentPhone = isset($user['phone']) ? $user['phone'] : '';
+
+$msg = getSessionFlash('msg');
+$msgType = getSessionFlash('msg_type');
+$errors = getSessionFlash('errors');
 ?>
 <style>
     .contact-page {
@@ -230,6 +234,7 @@ $currentPhone = isset($user['phone']) ? $user['phone'] : '';
     }
 
     @media (max-width: 991.98px) {
+
         .contact-layout,
         .contact-hero {
             grid-template-columns: 1fr;
@@ -271,12 +276,11 @@ $currentPhone = isset($user['phone']) ? $user['phone'] : '';
             </div>
         </div>
     </section>
-
-    <?php $msg = getSessionFlash('msg'); $msgType = getSessionFlash('msg_type'); ?>
-    <?php if (!empty($msg)): ?>
-        <div class="mb-3"><?php echo showMsg($msg, $msgType); ?></div>
-    <?php endif; ?>
-
+    <?php
+    if ($msg) {
+        echo showMsg($msg, $msgType);
+    }
+    ?>
     <section class="contact-layout">
         <div class="contact-form-panel">
             <div class="contact-panel-head">
@@ -289,14 +293,24 @@ $currentPhone = isset($user['phone']) ? $user['phone'] : '';
                     <div class="col-12 col-md-6">
                         <label class="form-label contact-label">Họ tên</label>
                         <input type="text" name="name" class="form-control contact-input" value="<?php echo htmlspecialchars($currentName); ?>" placeholder="Nhập họ tên của bạn">
+                        <?php
+                        if (!empty($errors)) {
+                            echo showErrors($errors, 'name');
+                        }
+                        ?>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label contact-label">Số điện thoại</label>
                         <input type="text" name="phone" class="form-control contact-input" value="<?php echo htmlspecialchars($currentPhone); ?>" placeholder="Nhập số điện thoại">
+                        <?php
+                        if (!empty($errors)) {
+                            echo showErrors($errors, 'phone');
+                        }
+                        ?>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label contact-label">Bạn đã có shop chưa?</label>
-                        <select name="shop_status" class="form-select contact-input" required>
+                        <select name="shop_status" class="form-select contact-input">
                             <option value="">Chọn tình trạng shop</option>
                             <option value="chưa có">Chưa có shop</option>
                             <option value="chưa bán tốt">Đã có nhưng chưa bán tốt</option>
@@ -305,7 +319,7 @@ $currentPhone = isset($user['phone']) ? $user['phone'] : '';
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label contact-label">Ngân sách dự kiến</label>
-                        <select name="budget_range" class="form-select contact-input" required>
+                        <select name="budget_range" class="form-select contact-input">
                             <option value="">Chọn ngân sách</option>
                             <option value="under_1m">Dưới 1 triệu</option>
                             <option value="1m-3m">1 - 3 triệu</option>
@@ -314,7 +328,7 @@ $currentPhone = isset($user['phone']) ? $user['phone'] : '';
                     </div>
                     <div class="col-12">
                         <label class="form-label contact-label">Nội dung cần tư vấn</label>
-                        <textarea name="message" rows="6" class="form-control contact-input contact-textarea" placeholder="Mô tả nhu cầu, vấn đề hoặc mục tiêu của bạn" required></textarea>
+                        <textarea name="message" rows="6" class="form-control contact-input contact-textarea" placeholder="Mô tả nhu cầu, vấn đề hoặc mục tiêu của bạn"></textarea>
                     </div>
                     <div class="col-12 d-flex flex-wrap gap-2 align-items-center">
                         <button type="submit" class="btn btn-contact-primary">Gửi liên hệ</button>

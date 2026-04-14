@@ -378,3 +378,19 @@ function validateCategory($data){
     }
     return $errors;
 }
+function validateContact($data){
+    $errors = [];
+    if(empty($data['name'])){
+        $errors['name'] = "Tên không được để trống";
+    } elseif(strlen($data['name']) < 6){
+        $errors['name'] = "Tên phải có ít nhất 6 ký tự";
+    } elseif (!preg_match('/^[a-zA-ZÀ-ỹ\s]+$/u', $data['name'])) {
+        $errors['name'] = "Tên chỉ được chứa chữ cái";
+    }
+
+    if(validatePhone($data['phone']) !== true){
+        $errors['phone'] = validatePhone($data['phone']);
+    }
+
+    return $errors;
+}
