@@ -6,11 +6,13 @@ class UserController extends Controller
     private $packageModel;
     private $cartModel;
     private $contactModel;
+    private $shopInfoModel;
     public function __construct()
     {
         $this->userModel = new User();
         $this->packageModel = new Package();
         $this->contactModel = new Contact();
+        $this->shopInfoModel = new ShopInfo();
         if (isLoginStrict($this->userModel)) {
             $userId = getSession('user_id');
             $this->cartModel = new Cart($userId);
@@ -179,37 +181,36 @@ class UserController extends Controller
             $this->renderView('user/contact');
         }
     }
-    public function contact(){
-        if(isPost()){
+    public function contact()
+    {
+        if (isPost()) {
             $filteredData = filterData('post');
             $errors = validateContact($filteredData);
-            if(empty($errors)){
+            if (empty($errors)) {
                 $data = [
-                    'name' => trim($filteredData['name']),
-                    'phone' => trim($filteredData['phone']),
-                    'shop_status' => trim($filteredData['shop_status']),
-                    'budget_range' => trim($filteredData['budget_range']),
-                    'message' => trim($filteredData['message']),
+                    'name' => $filteredData['name'],
+                    'phone' => $filteredData['phone'],
+                    'shopStatus' => $filteredData['shop_status'],
+                    'budgetRange' => $filteredData['budget_range'],
+                    'message' => $filteredData['message'],
                     'status' => 'new',
-                    'created_at' => date('Y-m-d H:i:s')
+                    'createdAt' => date('Y-m-d H:i:s')
                 ];
                 $checkInsert = $this->contactModel->insertContact($data);
-                if($checkInsert){
-                    setSessionFlash('msg', 'Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi sẽ phản hồi trong thời gian sớm nhất.');
+                if ($checkInsert) {
+                    setSessionFlash('msg', 'Cảm ơn bạn đã liên hệ, chúng tôi sẽ phản hồi trong thời gian sớm nhất');
                     setSessionFlash('msg_type', 'success');
-                    redirect('/contact');
                 } else {
-                    setSessionFlash('msg', 'Có lỗi xảy ra khi gửi thông tin liên hệ. Vui lòng thử lại sau.');
+                    setSessionFlash('msg', 'Có lỗi xảy ra khi gửi thông tin liên hệ, vui lòng thử lại');
                     setSessionFlash('msg_type', 'danger');
-                    redirect('/contact');
                 }
             } else {
-                setSessionFlash('msg', 'Dữ liệu không hợp lệ. Vui lòng sửa các lỗi sau!');
-                setSessionFlash('msg_type', 'danger');
                 setSessionFlash('errors', $errors);
-                redirect('/contact');
+                setSessionFlash('msg', 'Có lỗi xảy ra khi gửi thông tin liên hệ, vui lòng thử lại');
+                setSessionFlash('msg_type', 'danger');
             }
         }
+        redirect('/contact');
     }
     public function showPackageDetail()
     {
@@ -237,6 +238,23 @@ class UserController extends Controller
                 redirect('/package');
                 exit();
             }
+        }
+    }
+    public function showProfile()
+    {
+        if (isLoginStrict($this->userModel)) {
+            $id = getSession('user_id');
+            $data = [
+                'user' => $this->userModel->getUserById($id),
+                'cartItemCount' => $this->cartModel->countItemsInCart($id),
+                'shopInfo' => $this->shopInfoModel->getByUserId($id)
+            ];
+            $this->renderView('user/profile/index', $data);
+        } else {
+            setSessionFlash('msg', 'Vui lòng đăng nhập để xem trang cá nhân');
+            setSessionFlash('msg_type', 'danger');
+            redirect('/login');
+            exit();
         }
     }
 }

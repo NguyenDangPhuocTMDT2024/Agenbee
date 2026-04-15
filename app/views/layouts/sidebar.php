@@ -55,7 +55,7 @@
                         <?php endif; ?>
                     </nav>
                     <?php if(isLogin()): ?>
-                    <a href="#" class="profile-shortcut mt-auto text-decoration-none d-flex align-items-center justify-content-center" title="Mo trang profile" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Profile">
+                    <a href="<?php echo _HOST_URL ?>/profile" class="profile-shortcut mt-auto text-decoration-none d-flex align-items-center justify-content-center" title="Mo trang profile" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Profile">
                         <?php
                         if(isLogin() && isset($user)) {
                             if(!empty($user['avatar'])) {

@@ -11,9 +11,6 @@ if (isset($cartItemCount)) {
 layout('sidebar', $data);
 layout('header', $data);
 
-$currentName = isset($user['name']) ? $user['name'] : '';
-$currentPhone = isset($user['phone']) ? $user['phone'] : '';
-
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
 $errors = getSessionFlash('errors');
