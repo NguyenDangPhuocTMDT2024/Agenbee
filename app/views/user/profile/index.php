@@ -11,33 +11,9 @@ if (isset($cartItemCount)) {
 layout('sidebar', $data);
 layout('header', $data);
 
-$profileData = [
-    'username' => 'sinhvinhnghoxoch',
-    'name' => 'sinh viên nghèo',
-    'email' => 'ng***********@gmail.com',
-    'phone' => '0123 456 789',
-    'avatar' => _HOST_URL_PUBLIC . '/img/defaultAvatar.png',
-];
-
-$shopData = [
-    'shop_name' => 'Sinh Vinh Shop',
-    'logo' => _HOST_URL_PUBLIC . '/img/service_picture.jpg',
-    'address' => 'Quận 1, TP. Hồ Chí Minh',
-    'shop_description' => 'Shop chuyên bán phụ kiện và sản phẩm trend, đang trong giai đoạn tối ưu lại hiển thị, danh mục và nội dung bán hàng để tăng chuyển đổi.',
-    'bank' => 'MB Bank - 9704 **** 1234',
-    'zalo' => '0912 345 678',
-    'facebook' => 'facebook.com/sinhvinhshop',
-];
-
-$navItems = [
-    ['label' => 'Hồ sơ', 'icon' => 'bi-person-vcard-fill', 'active' => true],
-    ['label' => 'Ngân hàng', 'icon' => 'bi-bank2', 'active' => false],
-    ['label' => 'Địa chỉ', 'icon' => 'bi-geo-alt-fill', 'active' => false],
-    ['label' => 'Đổi mật khẩu', 'icon' => 'bi-shield-lock-fill', 'active' => false],
-    ['label' => 'Cài đặt thông báo', 'icon' => 'bi-bell-fill', 'active' => false],
-    ['label' => 'Thiết lập riêng tư', 'icon' => 'bi-lock-fill', 'active' => false],
-    ['label' => 'Thông tin cá nhân', 'icon' => 'bi-card-text', 'active' => false],
-];
+$msg = getSessionFlash('msg');
+$msgType = getSessionFlash('msg_type');
+$errors = getSessionFlash('errors');
 ?>
 <style>
     .profile-page {
@@ -264,16 +240,54 @@ $navItems = [
     }
 
     .profile-avatar-btn {
-        display: inline-block;
-        min-width: 126px;
-        padding: 0.75rem 1rem;
-        border-radius: 2px;
-        border: 1px solid #dddddd;
-        background: #ffffff;
-        color: #444444;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 170px;
+        padding: 0.78rem 1.1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(201, 154, 17, 0.35);
+        background: linear-gradient(135deg, #fff9ea 0%, #ffefbf 100%);
+        color: #5f4700;
         text-decoration: none;
-        font-size: 1rem;
-        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 8px 18px rgba(201, 154, 17, 0.12);
+    }
+
+    .profile-avatar-btn:hover {
+        transform: translateY(-1px);
+        background: linear-gradient(135deg, #ffefbf 0%, #ffe38a 100%);
+        border-color: rgba(201, 154, 17, 0.5);
+        color: #3f2f00;
+    }
+
+    .profile-avatar-btn:focus-visible {
+        outline: 0;
+        box-shadow: 0 0 0 0.18rem rgba(244, 196, 48, 0.28), 0 8px 18px rgba(201, 154, 17, 0.12);
+    }
+
+    .profile-avatar-upload {
+        display: grid;
+        justify-items: center;
+        gap: 10px;
+    }
+
+    .profile-avatar-input {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+        pointer-events: none;
+    }
+
+    .profile-upload-filename {
+        margin: 0;
+        font-size: 0.88rem;
+        color: #7d7d7d;
     }
 
     .profile-upload-note {
@@ -288,8 +302,8 @@ $navItems = [
     }
 
     .profile-save-btn {
-        background: #f4511e;
-        color: #ffffff;
+        background: rgba(201, 154, 17, 0.35);
+        color: #5f4700;
         border: none;
         border-radius: 2px;
         padding: 0.9rem 1.8rem;
@@ -299,11 +313,12 @@ $navItems = [
     }
 
     .profile-save-btn:hover {
-        background: #e64a19;
+        background: rgba(201, 154, 17, 0.5);
         color: #ffffff;
     }
 
     @media (max-width: 1199.98px) {
+
         .profile-shell,
         .profile-form-grid {
             grid-template-columns: 1fr;
@@ -318,6 +333,7 @@ $navItems = [
     }
 
     @media (max-width: 767.98px) {
+
         .profile-main,
         .profile-sidebar {
             padding: 18px;
@@ -345,145 +361,128 @@ $navItems = [
 </style>
 
 <main class="profile-page px-3 px-md-4 py-4 flex-grow-1">
+    <?php if ($msg)
+        echo showMsg($msg, $msgType);
+    ?>
     <div class="profile-shell">
         <aside class="profile-sidebar">
             <div class="profile-user-head">
-                <img src="<?php echo htmlspecialchars($profileData['avatar']); ?>" alt="Avatar" class="profile-avatar">
+                <img src="<?php echo (!empty($user['avatar']) ? _HOST_URL_PUBLIC . $user['avatar'] : _HOST_URL_PUBLIC . 'img/defaultAvatar.png') ?>" alt="Avatar" class="profile-avatar">
                 <div>
-                    <div class="profile-user-name"><?php echo htmlspecialchars($profileData['username']); ?></div>
-                    <a href="#" class="profile-user-edit"><i class="bi bi-pencil-fill"></i> Sửa Hồ Sơ</a>
+                    <div class="profile-user-name"><?php echo !empty($user['name']) ? $user['name'] : 'User' ?></div>
                 </div>
             </div>
 
-            <div class="profile-section">
+            <div class="profile-section profile-menu">
                 <div class="profile-menu-item">
                     <i class="bi bi-person-circle"></i>
-                    <span>Tên nè</span>
+                    <span>
+                        <?php
+                        if (!empty($user['role'])) {
+                            if ($user['role'] == 'user') {
+                                echo 'Chủ shop';
+                            } else {
+                                echo 'Guest';
+                            }
+                        } else {
+                            echo 'Guest';
+                        }
+                        ?></span>
                 </div>
                 <div class="profile-menu-item">
                     <i class="bi bi-envelope"></i>
-                    <span>mail@gmail.com</span>
+                    <span><?php echo !empty($user['email']) ? $user['email'] : 'mail@gmail.com' ?></span>
                 </div>
                 <div class="profile-menu-item">
                     <i class="bi bi-phone"></i>
-                    <span>09xxxxx</span>
+                    <span><?php echo !empty($user['phone']) ? $user['phone'] : '09xxxxx' ?></span>
                 </div>
+                <!-- <div class="profile-menu-item">
+                    <i class="bi bi-shield-lock-fill"></i> 
+                    <button type="button" onclick="showChangePass()" class="btn btn-outline-warning">Đổi mật khẩu</button>
+                </div> -->
             </div>
         </aside>
 
         <section class="profile-main">
             <div class="profile-main-head">
-                <h1>Hồ Sơ Shop</h1>
+                <h1 class="profile-section-title">Hồ Sơ Shop</h1>
             </div>
 
             <div class="profile-divider"></div>
 
-            <div class="profile-form-grid">
+            <form method="POST" action="" enctype="multipart/form-data" class="profile-form-grid">
                 <div class="profile-form">
+
+                    <input type="hidden" name="user_id" value="<?php echo !empty($user['id']) ? $user['id'] : '' ?>">
+
                     <div class="profile-row">
                         <div class="profile-label">Tên Shop</div>
                         <div>
-                            <input type="text" class="profile-field" value="<?php echo htmlspecialchars($profileData['username']); ?>" readonly>
+                            <input type="text" name="shop_name" class="profile-field" <?php echo !empty($shopInfo['shop_name']) ? 'value="' . $shopInfo['shop_name'] . '"' : 'placeholder="Chưa có thông tin"' ?>>
                         </div>
+                        <?php
+                        if (!empty($shopInfo['shop_name'])) {
+                            echo showErrors($errors, 'shop_name');
+                        }
+                        ?>
                     </div>
 
                     <div class="profile-row">
-                        <div class="profile-label">Tên</div>
-                        <div><input type="text" class="profile-field" value="<?php echo htmlspecialchars($profileData['name']); ?>"></div>
+                        <div class="profile-label">Địa chỉ</div>
+                        <div><input type="text" name="address" class="profile-field" <?php echo !empty($shopInfo['address']) ? 'value="' . $shopInfo['address'] . '"' : 'placeholder="Chưa có thông tin"' ?>></div>
+                        <?php
+                        if (!empty($shopInfo['address'])) {
+                            echo showErrors($errors, 'address');
+                        }
+                        ?>
                     </div>
 
                     <div class="profile-row">
-                        <div class="profile-label">Email</div>
-                        <div>
-                            <span><?php echo htmlspecialchars($profileData['email']); ?></span>
-                            <a href="#" class="profile-inline-link ms-2">Thay Đổi</a>
-                        </div>
+                        <div class="profile-label">Ngành hàng</div>
+                        <div><input type="text" name="major" class="profile-field" <?php echo !empty($shopInfo['major']) ? 'value="' . $shopInfo['major'] . '"' : 'placeholder="Chưa có thông tin"' ?>></div>
+                        <?php
+                        if (!empty($shopInfo['major'])) {
+                            echo showErrors($errors, 'major');
+                        }
+                        ?>
                     </div>
 
                     <div class="profile-row">
-                        <div class="profile-label">Số điện thoại</div>
-                        <div><a href="#" class="profile-inline-link">Thêm</a></div>
-                    </div>
-
-                    <div class="profile-row">
-                        <div class="profile-label">Giới tính <span class="text-muted">?</span></div>
-                        <div class="profile-gender-group">
-                            <label class="profile-radio"><input type="radio" name="gender" checked> Nam</label>
-                            <label class="profile-radio"><input type="radio" name="gender"> Nữ</label>
-                            <label class="profile-radio"><input type="radio" name="gender"> Khác</label>
-                        </div>
-                    </div>
-
-                    <div class="profile-row">
-                        <div class="profile-label">Ngày sinh <span class="text-muted">?</span></div>
-                        <div class="profile-date-group">
-                            <select class="profile-select">
-                                <option>Ngày</option>
-                                <?php for ($day = 1; $day <= 31; $day++): ?>
-                                    <option value="<?php echo $day; ?>"><?php echo $day; ?></option>
-                                <?php endfor; ?>
-                            </select>
-                            <select class="profile-select">
-                                <option>Tháng</option>
-                                <?php for ($month = 1; $month <= 12; $month++): ?>
-                                    <option value="<?php echo $month; ?>"><?php echo $month; ?></option>
-                                <?php endfor; ?>
-                            </select>
-                            <select class="profile-select">
-                                <option>Năm</option>
-                                <?php for ($year = 2026; $year >= 1990; $year--): ?>
-                                    <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
-                                <?php endfor; ?>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="profile-save-row">
-                        <button type="button" class="profile-save-btn">Lưu</button>
+                        <div class="profile-label">Mô tả</div>
+                        <div><textarea name="shop_description" class="profile-field" rows="4" placeholder="Chưa có thông tin"><?php echo !empty($shopInfo['shop_description']) ? $shopInfo['shop_description'] : '' ?></textarea></div>
                     </div>
                 </div>
 
                 <aside class="profile-avatar-panel">
-                    <img src="<?php echo htmlspecialchars($profileData['avatar']); ?>" alt="Avatar" class="profile-avatar-big">
-                    <a href="#" class="profile-avatar-btn">Chọn Ảnh</a>
-                    <div class="profile-upload-note">
-                        <div>Dụng lượng file tối đa 1 MB</div>
-                        <div>Định dạng: JPEG, PNG</div>
-                    </div>
-
-                    <div class="profile-section mt-4 text-start">
-                        <div class="profile-section-title">Thông tin shop</div>
-                        <div class="profile-menu-item active justify-content-start mb-2">
-                            <i class="bi bi-shop-window"></i>
-                            <span><?php echo htmlspecialchars($shopData['shop_name']); ?></span>
-                        </div>
-                        <div class="profile-menu-item justify-content-start mb-2">
-                            <i class="bi bi-geo-alt-fill"></i>
-                            <span><?php echo htmlspecialchars($shopData['address']); ?></span>
-                        </div>
-                        <div class="profile-menu-item justify-content-start mb-2">
-                            <i class="bi bi-wallet2"></i>
-                            <span><?php echo htmlspecialchars($shopData['bank']); ?></span>
-                        </div>
-                        <div class="profile-menu-item justify-content-start mb-2">
-                            <i class="bi bi-whatsapp"></i>
-                            <span><?php echo htmlspecialchars($shopData['zalo']); ?></span>
-                        </div>
-                        <div class="profile-menu-item justify-content-start">
-                            <i class="bi bi-facebook"></i>
-                            <span><?php echo htmlspecialchars($shopData['facebook']); ?></span>
-                        </div>
-                    </div>
-
-                    <div class="profile-upload-note text-start">
-                        <?php echo htmlspecialchars($shopData['shop_description']); ?>
+                    <div class="profile-section-title">Logo</div>
+                    <img src="<?php echo !empty($shopInfo['logo']) ? _HOST_URL_PUBLIC . $shopInfo['logo'] : _HOST_URL_PUBLIC . '/img/defaultAvatar.png' ?>" alt="Logo" class="profile-avatar-big">
+                    <div class="profile-avatar-upload">
+                        <input type="file" class="profile-avatar-input" name="logo" id="profileLogoInput" accept="image/*">
+                        <label for="profileLogoInput" class="profile-avatar-btn">
+                            <i class="bi bi-upload"></i>
+                            Chọn ảnh mới
+                        </label>
+                        <p class="profile-upload-filename"><?php echo !empty($shopInfo['logo']) ? 'Chọn ảnh' : 'Chưa có logo' ?></p>
+                        <?php
+                        if (!empty($shopInfo['logo'])) {
+                            echo showErrors($errors, 'logo');
+                        }
+                        ?>
                     </div>
                 </aside>
-            </div>
+                <div class="profile-save-row">
+                    <button type="submit" class="profile-save-btn">Lưu</button>
+                </div>
+            </form>
         </section>
     </div>
 </main>
-
+<!-- <script>
+    function showChangePass() {
+        
+    }
+</script> -->
 <?php
 layout('footer');
 ?>

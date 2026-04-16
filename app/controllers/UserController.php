@@ -247,7 +247,7 @@ class UserController extends Controller
             $data = [
                 'user' => $this->userModel->getUserById($id),
                 'cartItemCount' => $this->cartModel->countItemsInCart($id),
-                'shopInfo' => $this->shopInfoModel->getByUserId($id)
+                'shopInfo' => $this->shopInfoModel->getShopInfoById($id)
             ];
             $this->renderView('user/profile/index', $data);
         } else {
@@ -256,5 +256,45 @@ class UserController extends Controller
             redirect('/login');
             exit();
         }
+    }
+    public function updateProfile()
+    {
+        if (isPost()) {
+            $filteredData = filterData('post');
+            $errors = validateShopInfo($filteredData);
+            if (validateImage($_FILES['logo']) !== true) {
+                $errors['logo'] = validateImage($_FILES['logo']);
+            } else if(!empty($_FILES['logo']['name'])) {
+                $logo = uploadImage($_FILES['logo']);
+            }
+            if (empty($errors)) {
+                $data = [
+                    'shop_name' => $filteredData['shop_name'],
+                    'address' => $filteredData['address'],
+                    'major' => $filteredData['major'],
+                    'shop_description' => $filteredData['shop_description'],
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+                if(isset($logo)) {  
+                    $data['logo'] = $logo;
+                    if(!empty($oldLogo)) {
+                        removeUploadImg($oldLogo);
+                    }
+                }
+                $checkUpdate = $this->shopInfoModel->updateShopInfoByUserId($filteredData['user_id'], $data);
+                if ($checkUpdate) {
+                    setSessionFlash('msg', 'Cập nhật thông tin shop thành công');
+                    setSessionFlash('msg_type', 'success');
+                } else {
+                    setSessionFlash('msg', 'Có lỗi xảy ra khi cập nhật thông tin shop, vui lòng thử lại');
+                    setSessionFlash('msg_type', 'danger');
+                }
+            } else {
+                setSessionFlash('errors', $errors);
+                setSessionFlash('msg', 'Có lỗi xảy ra khi cập nhật thông tin shop, vui lòng thử lại');
+                setSessionFlash('msg_type', 'danger');
+            }
+        }
+        redirect('/profile');
     }
 }

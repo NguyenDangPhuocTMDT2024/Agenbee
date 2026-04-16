@@ -320,11 +320,9 @@ function validatePackage($data){
 }
 //validate ảnh
 function validateImage($file){
-
     if(empty($file['name'])){
-        return "Vui lòng chọn ảnh";
+        return true; //không bắt buộc phải có ảnh
     }
-
     if($file['error'] !== 0){
         return "Upload ảnh thất bại";
     }
@@ -390,6 +388,28 @@ function validateContact($data){
 
     if(validatePhone($data['phone']) !== true){
         $errors['phone'] = validatePhone($data['phone']);
+    }
+
+    return $errors;
+}
+function validateShopInfo($data){
+    $errors = [];
+    if(empty($data['shop_name'])){
+        $errors['shop_name'] = "Tên shop không được để trống";
+    } elseif(strlen($data['shop_name']) < 3){
+        $errors['shop_name'] = "Tên shop phải có ít nhất 3 ký tự";
+    }
+
+    if(empty($data['address'])){
+        $errors['address'] = "Địa chỉ không được để trống";
+    } elseif(strlen($data['address']) < 5){
+        $errors['address'] = "Địa chỉ phải có ít nhất 5 ký tự";
+    }
+
+    if(empty($data['major'])){
+        $errors['major'] = "Ngành hàng không được để trống";
+    } elseif(strlen($data['major']) < 3){
+        $errors['major'] = "Ngành hàng phải có ít nhất 3 ký tự";
     }
 
     return $errors;
