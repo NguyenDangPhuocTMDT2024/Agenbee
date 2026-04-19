@@ -7,12 +7,14 @@ class UserController extends Controller
     private $cartModel;
     private $contactModel;
     private $shopInfoModel;
+    private $orderModel;
     public function __construct()
     {
         $this->userModel = new User();
         $this->packageModel = new Package();
         $this->contactModel = new Contact();
         $this->shopInfoModel = new ShopInfo();
+        $this->orderModel = new Order();
         if (isLoginStrict($this->userModel)) {
             $userId = getSession('user_id');
             $this->cartModel = new Cart($userId);
@@ -167,79 +169,6 @@ class UserController extends Controller
             }
         }
     }
-    //show thông tin liên hệ
-    public function showContact()
-    {
-        if (isLoginStrict($this->userModel)) {
-            $id = getSession('user_id');
-            $data = [
-                'user' => $this->userModel->getUserById($id),
-                'cartItemCount' => $this->cartModel->countItemsInCart($id)
-            ];
-            $this->renderView('user/contact', $data);
-        } else {
-            $this->renderView('user/contact');
-        }
-    }
-    public function contact()
-    {
-        if (isPost()) {
-            $filteredData = filterData('post');
-            $errors = validateContact($filteredData);
-            if (empty($errors)) {
-                $data = [
-                    'name' => $filteredData['name'],
-                    'phone' => $filteredData['phone'],
-                    'shopStatus' => $filteredData['shop_status'],
-                    'budgetRange' => $filteredData['budget_range'],
-                    'message' => $filteredData['message'],
-                    'status' => 'new',
-                    'createdAt' => date('Y-m-d H:i:s')
-                ];
-                $checkInsert = $this->contactModel->insertContact($data);
-                if ($checkInsert) {
-                    setSessionFlash('msg', 'Cảm ơn bạn đã liên hệ, chúng tôi sẽ phản hồi trong thời gian sớm nhất');
-                    setSessionFlash('msg_type', 'success');
-                } else {
-                    setSessionFlash('msg', 'Có lỗi xảy ra khi gửi thông tin liên hệ, vui lòng thử lại');
-                    setSessionFlash('msg_type', 'danger');
-                }
-            } else {
-                setSessionFlash('errors', $errors);
-                setSessionFlash('msg', 'Có lỗi xảy ra khi gửi thông tin liên hệ, vui lòng thử lại');
-                setSessionFlash('msg_type', 'danger');
-            }
-        }
-        redirect('/contact');
-    }
-    public function showPackageDetail()
-    {
-        if (isGet()) {
-            $filteredData = filterData('get');
-            $packageId = isset($filteredData['id']) ? trim($filteredData['id']) : '';
-            $package = $this->packageModel->getPackagesById($packageId);
-            $addons = $this->packageModel->getAddonsByPackageID($packageId);
-            if ($package) {
-                $data = [
-                    'package' => $package,
-                    'addons' => $addons
-                ];
-                if (isLoginStrict($this->userModel)) {
-                    $id = getSession('user_id');
-                    $data['user'] = $this->userModel->getUserById($id);
-                    $data['cartItemCount'] = $this->cartModel->countItemsInCart($id);
-                    $this->renderView('user/packages/detail', $data);
-                } else {
-                    $this->renderView('user/packages/detail', $data);
-                }
-            } else {
-                setSessionFlash('msg', 'Gói dịch vụ không tồn tại');
-                setSessionFlash('msg_type', 'danger');
-                redirect('/package');
-                exit();
-            }
-        }
-    }
     public function showProfile()
     {
         if (isLoginStrict($this->userModel)) {
@@ -296,5 +225,164 @@ class UserController extends Controller
             }
         }
         redirect('/profile');
+    }
+    public function showOrder()
+    {
+        $id = getSession('user_id');
+        $orders = $this->orderModel->getOrdersByUserId($id);
+        
+        $data = [
+            'user' => $this->userModel->getUserById($id),
+            'cartItemCount' => $this->cartModel->countItemsInCart($id),
+            'orders' => $orders,
+        ];
+        $this->renderView('user/orders/index', $data);
+    }
+    public function showOrderDetail()
+    {
+        if (isGet()) {
+            $filteredData = filterData('get');
+            $orderId = isset($filteredData['id']) ? trim($filteredData['id']) : '';
+            $userId = getSession('user_id');
+            $order = $this->orderModel->getOrderByIdAndUserId($orderId, $userId);
+            if (empty($order)) {
+                setSessionFlash('msg', 'Không tìm thấy đơn hàng');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/order');
+                exit();
+            }
+            $data = [
+                'user' => $this->userModel->getUserById($userId),
+                'cartItemCount' => $this->cartModel->countItemsInCart($userId),
+                'order' => $order,
+                'orderItems' => $this->orderModel->getOrderItemsById($orderId),
+                'orderTasks' => $this->orderModel->getOrderTasksById($orderId),
+            ];
+            $this->renderView('user/orders/detail', $data);
+        }
+    }
+
+    public function showOrderConfirm()
+    {
+        if (!isLoginStrict($this->userModel)) {
+            setSessionFlash('msg', 'Vui lòng đăng nhập để điền thông tin setup');
+            setSessionFlash('msg_type', 'danger');
+            redirect('/login');
+            exit();
+        }
+
+        $userId = getSession('user_id');
+        $filteredData = filterData('get');
+        $selectedOrderId = isset($filteredData['order_id']) ? trim($filteredData['order_id']) : '';
+
+        if ($selectedOrderId === '') {
+            $cartItems = $this->cartModel->getCartInfoByUserId($userId);
+            if (empty($cartItems)) {
+                setSessionFlash('msg', 'Giỏ hàng đang trống, vui lòng thêm gói trước khi thanh toán');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/cart');
+                exit();
+            }
+
+            $this->orderModel->conn->beginTransaction();
+            try {
+                $totalPrice = 0;
+                foreach ($cartItems as $item) {
+                    $linePrice = isset($item['price']) ? (float) $item['price'] : 0;
+                    $lineQty = isset($item['quantity']) ? (int) $item['quantity'] : 0;
+                    $totalPrice += ($linePrice * $lineQty);
+                }
+                $now = date('Y-m-d H:i:s');
+
+                $orderId = $this->orderModel->createOrder([
+                    'user_id' => $userId,
+                    'total_price' => $totalPrice,
+                    'duration' => 14,
+                    'status' => 'pending',
+                    'created_at' => $now,
+                ]);
+
+                if (!$orderId) {
+                    throw new Exception('Không thể tạo đơn hàng mới');
+                }
+
+                $addonTaskMap = [];
+
+                foreach ($cartItems as $item) {
+                    $itemInserted = $this->orderModel->createOrderItem([
+                        'order_id' => $orderId,
+                        'package_id' => isset($item['package_id']) ? (int) $item['package_id'] : null,
+                        'quantity' => isset($item['quantity']) ? (int) $item['quantity'] : 1,
+                        'created_at' => $now,
+                    ]);
+
+                    if (!$itemInserted) {
+                        throw new Exception('Không thể tạo chi tiết đơn hàng');
+                    }
+
+                    $categoryName = strtolower(trim((string) ($item['category_name'] ?? '')));
+                    $packageId = isset($item['package_id']) ? (int) $item['package_id'] : 0;
+                    if ($packageId <= 0) {
+                        continue;
+                    }
+
+                    if ($categoryName === 'add-on' || $categoryName === 'addon') {
+                        $addonTaskMap[$packageId] = true;
+                    }
+
+                    if ($categoryName === 'combo') {
+                        $comboAddons = $this->packageModel->getAddonsByPackageID($packageId);
+                        foreach ($comboAddons as $addon) {
+                            $addonId = isset($addon['id']) ? (int) $addon['id'] : 0;
+                            if ($addonId > 0) {
+                                $addonTaskMap[$addonId] = true;
+                            }
+                        }
+                    }
+                }
+
+                foreach (array_keys($addonTaskMap) as $addonTaskId) {
+                    $taskInserted = $this->orderModel->createOrderTask($orderId, (int) $addonTaskId);
+                    if (!$taskInserted) {
+                        throw new Exception('Không thể tạo task cho đơn hàng');
+                    }
+                }
+
+                $cleared = $this->cartModel->clearCartByUserId($userId);
+                if (!$cleared) {
+                    throw new Exception('Không thể làm trống giỏ hàng sau khi tạo đơn');
+                }
+
+                $this->orderModel->conn->commit();
+
+                setSessionFlash('msg', 'Đã tạo đơn hàng mới, vui lòng điền thông tin setup để bắt đầu triển khai');
+                setSessionFlash('msg_type', 'success');
+                redirect('/order/confirm?order_id=' . $orderId);
+                exit();
+            } catch (Exception $e) {
+                $this->orderModel->conn->rollBack();
+                setSessionFlash('msg', 'Không thể khởi tạo đơn hàng từ giỏ hàng, vui lòng thử lại');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/cart');
+                exit();
+            }
+        }
+
+        $selectedOrder = $this->orderModel->getOrderByIdAndUserId($selectedOrderId, $userId);
+        if (empty($selectedOrder)) {
+            setSessionFlash('msg', 'Đơn hàng không hợp lệ');
+            setSessionFlash('msg_type', 'danger');
+            redirect('/order');
+            exit();
+        }
+
+        $data = [
+            'user' => $this->userModel->getUserById($userId),
+            'cartItemCount' => $this->cartModel->countItemsInCart($userId),
+            'orders' => $this->orderModel->getOrdersByUserId($userId),
+            'selectedOrderId' => $selectedOrderId,
+            'selectedOrder' => $selectedOrder,
+        ];
+        $this->renderView('user/checkout/confirm', $data);
     }
 }

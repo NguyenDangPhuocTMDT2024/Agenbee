@@ -26,12 +26,31 @@ class Cart extends Database
     }
     public function getCartInfoByUserId($userId)
     {
-        $sql = "SELECT * FROM $this->tableName
+        $sql = "SELECT $this->cartItemTable.*, `packages`.*, c.name AS category_name FROM $this->tableName
                 JOIN $this->cartItemTable ON $this->tableName.id = $this->cartItemTable.cart_id
                 JOIN `packages` ON $this->cartItemTable.package_id = `packages`.id
+                LEFT JOIN `categories` c ON `packages`.category_id = c.id
                 WHERE user_id = :user_id";
         $param = ['user_id' => $userId];
         return $this->getAll($sql, $param);
+    }
+
+    public function clearCartByUserId($userId)
+    {
+        $sql = "SELECT id FROM $this->tableName WHERE user_id = :user_id";
+        $cart = $this->getOne($sql, ['user_id' => $userId]);
+        if (empty($cart['id'])) {
+            return false;
+        }
+
+        $cartId = $cart['id'];
+        $deleteItemsSql = "DELETE FROM $this->cartItemTable WHERE cart_id = :cart_id";
+        $deleted = $this->delete($deleteItemsSql, ['cart_id' => $cartId]);
+
+        $updateCartSql = "UPDATE $this->tableName SET updated_at = :updated_at WHERE id = :id";
+        $updated = $this->update($updateCartSql, ['updated_at' => date('Y-m-d H:i:s'), 'id' => $cartId]);
+
+        return $deleted && $updated;
     }
     public function addCart($userId, $packageId, $quantity)
     {
