@@ -414,3 +414,15 @@ function validateShopInfo($data){
 
     return $errors;
 }
+function implodeMultiImage($imageArray){
+    if(!empty($imageArray) && is_array($imageArray)){
+        return implode(',',$imageArray);
+    }
+    return '';
+}
+function explodeMultiImage($imageString){
+    if(!empty($imageString)){
+        return explode(',',$imageString);
+    }
+    return [];
+}

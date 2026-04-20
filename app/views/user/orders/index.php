@@ -231,6 +231,7 @@ $formatDate = function ($dateValue) {
 						<th>Trạng thái</th>
 						<th>Tiến độ</th>
 						<th>Chi tiết</th>
+						<th>Xem thông tin</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -266,6 +267,12 @@ $formatDate = function ($dateValue) {
 								<a class="orders-detail-link" href="<?php echo _HOST_URL; ?>/order/detail?id=<?php echo urlencode((string) ($item['id'] ?? '')); ?>">
 									<i class="bi bi-eye-fill"></i>
 									Xem
+								</a>
+							</td>
+							<td>
+								<a class="orders-detail-link" href="<?php echo _HOST_URL; ?>/brief/index?order_id=<?php echo urlencode((string) ($item['id'] ?? '')); ?>">
+									<i class="bi bi-gear-fill"></i>
+									Thiết lập
 								</a>
 							</td>
 						</tr>

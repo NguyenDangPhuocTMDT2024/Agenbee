@@ -113,7 +113,7 @@ class Order extends Database {
         ];
         return $this->insert($sql, $params);
     }
-
+    
     public function createOrderItem($data)
     {
         $sql = "INSERT INTO " . $this->orderItems . " (order_id, package_id, quantity, created_at) VALUES (:order_id, :package_id, :quantity, :created_at)";

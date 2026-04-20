@@ -68,6 +68,11 @@ $router->get('/order/confirm', 'UserController@showOrderConfirm');
 $router->get('/order', 'UserController@showOrder');
 $router->get('/order/detail', 'UserController@showOrderDetail');
 
+$router->get('/brief/index', 'UserController@showSetupInfo');
+$router->post('/brief/index', 'UserController@updateSetupInfo');
+$router->get('/brief/create', 'UserController@showSetupInfoCreate');
+$router->post('/brief/create', 'UserController@createSetupInfo');
+
 $router->get('/contact', 'UserController@showContact');
 $router->post('/contact', 'UserController@contact');
 

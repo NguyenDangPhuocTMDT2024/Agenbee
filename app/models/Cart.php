@@ -34,7 +34,6 @@ class Cart extends Database
         $param = ['user_id' => $userId];
         return $this->getAll($sql, $param);
     }
-
     public function clearCartByUserId($userId)
     {
         $sql = "SELECT id FROM $this->tableName WHERE user_id = :user_id";

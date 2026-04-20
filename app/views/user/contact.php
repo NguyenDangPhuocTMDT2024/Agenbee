@@ -263,7 +263,7 @@ $errors = getSessionFlash('errors');
     <section class="contact-hero mb-4">
         <div>
             <p class="contact-kicker mb-2">Liên hệ Agenbee</p>
-            <h1 class="contact-title mb-2">Gửi thông tin, nhận tư vấn setup shop đúng giai đoạn.</h1>
+            <h1 class="contact-title mb-2">Gửi thông tin,yêu cầu để nhận tư vấn phù hợp với nhu cầu của bạn.</h1>
         </div>
         <div class="contact-hero-note">
             <i class="bi bi-chat-square-dots-fill"></i>
@@ -289,7 +289,7 @@ $errors = getSessionFlash('errors');
                 <div class="row g-3">
                     <div class="col-12 col-md-6">
                         <label class="form-label contact-label">Họ tên</label>
-                        <input type="text" name="name" class="form-control contact-input" value="<?php echo htmlspecialchars($currentName); ?>" placeholder="Nhập họ tên của bạn">
+                        <input type="text" name="name" class="form-control contact-input" value="<?php echo empty($user['name']) ? '' : htmlspecialchars($user['name']); ?>" placeholder="Nhập họ tên của bạn">
                         <?php
                         if (!empty($errors)) {
                             echo showErrors($errors, 'name');
@@ -297,8 +297,8 @@ $errors = getSessionFlash('errors');
                         ?>
                     </div>
                     <div class="col-12 col-md-6">
-                        <label class="form-label contact-label">Số điện thoại</label>
-                        <input type="text" name="phone" class="form-control contact-input" value="<?php echo htmlspecialchars($currentPhone); ?>" placeholder="Nhập số điện thoại">
+                        <label class="form-label contact-label">Số điện thoại (có zalo)</label>
+                        <input type="text" name="phone" class="form-control contact-input" value="<?php echo empty($user['phone']) ? '' : htmlspecialchars($user['phone']); ?>" placeholder="Nhập số điện thoại">
                         <?php
                         if (!empty($errors)) {
                             echo showErrors($errors, 'phone');
