@@ -231,7 +231,7 @@ $formatDate = function ($dateValue) {
 						<th>Trạng thái</th>
 						<th>Tiến độ</th>
 						<th>Chi tiết</th>
-						<th>Xem thông tin</th>
+						<th>Thông tin brief</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -270,10 +270,10 @@ $formatDate = function ($dateValue) {
 								</a>
 							</td>
 							<td>
-								<a class="orders-detail-link" href="<?php echo _HOST_URL; ?>/brief/index?order_id=<?php echo urlencode((string) ($item['id'] ?? '')); ?>">
+								<button class="orders-detail-link" onclick="window.open('<?php echo _AGENBEE_BRIEF; ?>?order_id=<?php echo urlencode((string) ($item['id'] ?? '')); ?>', '_blank')">
 									<i class="bi bi-gear-fill"></i>
 									Thiết lập
-								</a>
+								</button>
 							</td>
 						</tr>
 					<?php endforeach; ?>

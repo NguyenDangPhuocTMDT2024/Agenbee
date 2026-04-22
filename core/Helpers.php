@@ -426,3 +426,49 @@ function explodeMultiImage($imageString){
     }
     return [];
 }
+// function validateProduct($data){
+//     $errors = [];
+//     if(empty($data['name'])){
+//         $errors['name'] = "Tên sản phẩm không được để trống";
+//     } elseif(strlen($data['name']) < 3){
+//         $errors['name'] = "Tên sản phẩm phải có ít nhất 3 ký tự";
+//     }
+
+//     if(empty($data['main_keyword'])){
+//         $errors['main_keyword'] = "Từ khóa chính không được để trống";
+//     } elseif(strlen($data['main_keyword']) < 3){
+//         $errors['main_keyword'] = "Từ khóa chính phải có ít nhất 3 ký tự";
+//     }
+
+//     if(empty($data['brand'])){
+//         $errors['brand'] = "Tên thương hiệu không được để trống";
+//     } elseif(strlen($data['brand']) < 3){
+//         $errors['brand'] = "Tên thương hiệu phải có ít nhất 3 ký tự";
+//     }
+
+//     if(empty($data['model'])){
+//         $errors['model'] = "Tên model không được để trống";
+//     } elseif(strlen($data['model']) < 3){
+//         $errors['model'] = "Tên model phải có ít nhất 3 ký tự";
+//     }
+
+//     if(empty($data['price'])){
+//         $errors['price'] = "Giá không được để trống";
+//     } elseif(!is_numeric($data['price']) || $data['price'] < 0){
+//         $errors['price'] = "Giá phải là số hợp lệ";
+//     }
+
+//     if(empty($data['stock'])){
+//         $errors['stock'] = "Số lượng không được để trống";
+//     } elseif(!is_numeric($data['stock']) || $data['stock'] < 0){
+//         $errors['stock'] = "Số lượng phải là số hợp lệ";
+//     }
+
+//     if(empty($data['description'])){
+//         $errors['description'] = "Mô tả không được để trống";
+//     } elseif(strlen($data['description']) < 10){
+//         $errors['description'] = "Mô tả phải có ít nhất 10 ký tự";
+//     }
+
+//     return $errors;
+// }

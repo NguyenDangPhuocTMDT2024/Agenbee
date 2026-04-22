@@ -67,7 +67,7 @@ class Package extends Database
         return $this->insert($sql, $data);
     }
     //lấy gói theo id
-    public function getPackagesByID($id) 
+    public function getPackageByID($id) 
     {
         $sql = "SELECT * FROM ".$this->tableName." WHERE id = :id";
         $param = ['id' => $id];

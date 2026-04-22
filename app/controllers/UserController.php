@@ -8,7 +8,6 @@ class UserController extends Controller
     private $contactModel;
     private $shopInfoModel;
     private $orderModel;
-    private $setupInfoModel;
     public function __construct()
     {
         $this->userModel = new User();
@@ -16,7 +15,6 @@ class UserController extends Controller
         $this->contactModel = new Contact();
         $this->shopInfoModel = new ShopInfo();
         $this->orderModel = new Order();
-        $this->setupInfoModel = new SetupInfo();
         if (isLoginStrict($this->userModel)) {
             $userId = getSession('user_id');
             $this->cartModel = new Cart($userId);
@@ -69,6 +67,31 @@ class UserController extends Controller
                 $this->renderView('user/packages/index', $data);
             } else {
                 $this->renderView('user/packages/index', $data);
+            }
+        }
+    }
+    public function showPackageDetail()
+    {
+        if (isGet()) {
+            $filteredData = filterData('get');
+            $packageId = isset($filteredData['id']) ? trim($filteredData['id']) : '';
+            $package = $this->packageModel->getPackageById($packageId);
+            if (empty($package)) {
+                setSessionFlash('msg', 'Không tìm thấy gói dịch vụ');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/package');
+            }
+            $data = [
+                'package' => $package,
+                'addons' => $this->packageModel->getAddonsByPackageID($packageId)
+            ];
+            if (isLoginStrict($this->userModel)) {
+                $id = getSession('user_id');
+                $data['user'] = $this->userModel->getUserById($id);
+                $data['cartItemCount'] = $this->cartModel->countItemsInCart($id);
+                $this->renderView('user/packages/detail', $data);
+            } else {
+                $this->renderView('user/packages/detail', $data);
             }
         }
     }
@@ -304,48 +327,6 @@ class UserController extends Controller
             ];
             $this->renderView('user/orders/detail', $data);
         }
-    }
-    public function showSetupInfo()
-    {
-        if (isGet()) {
-            $id = getSession('user_id');
-            $data = [
-                'user' => $this->userModel->getUserById($id),
-                'cartItemCount' => $this->cartModel->countItemsInCart($id),
-            ];
-            $filteredData = filterData('get');
-            $order_id = isset($filteredData['order_id']) ? trim($filteredData['order_id']) : '';
-            $setupInfo = $this->setupInfoModel->getSetupInfoByOrderId($order_id);
-            if (!empty($setupInfo)) {
-                $data['setupInfo'] = $setupInfo;
-                $data['products'] = $this->setupInfoModel->getProductsBySetupInfoId($setupInfo['id']);
-                $this->renderView('user/brief/index', $data);
-            } else {
-                $data['order_id'] = $order_id;
-                setSessionFlash('msg', 'Vui lòng điền thông tin!');
-                setSessionFlash('msg_type', 'success');
-                $this->renderView('user/brief/create', $data);
-            }
-        }
-    }
-    public function updateSetupInfo() {}
-    public function showSetupInfoCreate()
-    {
-        if (isGet()) {
-            $id = getSession('user_id');
-            $data = [
-                'user' => $this->userModel->getUserById($id),
-                'cartItemCount' => $this->cartModel->countItemsInCart($id),
-            ];
-            $filteredData = filterData('get');
-            $order_id = isset($filteredData['order_id']) ? trim($filteredData['order_id']) : '';
-            $data['order_id'] = $order_id;
-            $this->renderView('user/brief/create', $data);
-        }
-    }
-    public function createSetupInfo() 
-    {
-
     }
     public function showOrderConfirm() {}
 }

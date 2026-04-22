@@ -94,7 +94,7 @@ class Order extends Database {
 
     public function getOrderTasksById($orderId)
     {
-        $sql = "SELECT * FROM " . $this->orderTasks . " WHERE order_id = :id ORDER BY id ASC";
+        $sql = "SELECT ot.*, p.name AS package_name FROM " . $this->orderTasks . " ot JOIN " . $this->packageTable . " p ON p.id = ot.task_id WHERE ot.order_id = :id ORDER BY ot.id ASC";
         $params = [
             'id' => $orderId,
         ];

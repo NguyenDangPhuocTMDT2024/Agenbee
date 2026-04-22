@@ -317,6 +317,7 @@ $formatDate = function ($dateValue) {
 	}
 
 	@media (max-width: 575.98px) {
+
 		.order-detail-card,
 		.order-detail-head {
 			border-radius: 18px;
@@ -399,12 +400,14 @@ $formatDate = function ($dateValue) {
 
 		<article class="order-detail-card">
 			<h2>Danh sách task thực hiện</h2>
+			<?php $counter = 1; ?>
 			<?php if (!empty($taskList)): ?>
 				<div class="order-tasks-table-wrap">
 					<table class="order-tasks-table">
 						<thead>
 							<tr>
-								<th>Task ID</th>
+								<th>Số thứ tự</th>
+								<th>Tên Task</th>
 								<th>Trạng thái</th>
 								<th>Cập nhật</th>
 							</tr>
@@ -413,7 +416,8 @@ $formatDate = function ($dateValue) {
 							<?php foreach ($taskList as $task): ?>
 								<?php $isDone = isset($task['status']) && (int) $task['status'] === 1; ?>
 								<tr>
-									<td>#<?php echo htmlspecialchars($task['task_id'] ?? $task['id'] ?? '---'); ?></td>
+									<td>#<?php echo $counter++; ?></td>
+									<td><?php echo htmlspecialchars($task['package_name'] ?? '---'); ?></td>
 									<td>
 										<?php if ($isDone): ?>
 											<span class="task-done"><i class="bi bi-check-circle-fill task-status-icon"></i>Đã hoàn thành</span>
@@ -437,9 +441,14 @@ $formatDate = function ($dateValue) {
 					<span class="order-meta-key">Tổng thanh toán</span>
 					<span class="order-meta-value order-price"><?php echo number_format((float) ($detail['total_price'] ?? 0), 0, ',', '.'); ?>đ</span>
 				</div>
-				<div class="order-meta-item">
-					<span class="order-meta-key">Trạng thái</span>
-					<span class="order-meta-value"><?php echo htmlspecialchars($statusInfo['label']); ?></span>
+				<div class="order-meta-item" style="align-items: space-around; display: flex;">
+					<div>
+						<span class="order-meta-key">Trạng thái</span>
+						<span class="order-meta-value"><?php echo htmlspecialchars($statusInfo['label']); ?></span>
+					</div>
+					<?php if ($statusKey === 'pending'): ?>
+						<button class="btn btn-warning" style="margin-left: 12px;" onclick="window.location.href='<?php echo _HOST_URL; ?>/checkout?order_id=<?php echo urlencode($detail['id'] ?? ''); ?>'">Thanh toán ngay</button>
+					<?php endif; ?>
 				</div>
 				<div class="order-meta-item">
 					<span class="order-meta-key">Mốc xử lý</span>
