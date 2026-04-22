@@ -128,7 +128,7 @@ class AuthController extends Controller
                     'phone' => $phone,
                     'active_token' => $token,
                     'password' => $password,
-                    'create_at' => date('Y-m-d H:i:s'),
+                    'created_at' => date('Y-m-d H:i:s'),
                 ];
                 //insert user
                 $insertStatus = $this->userModel->createUser($data);

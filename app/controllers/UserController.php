@@ -198,10 +198,11 @@ class UserController extends Controller
     {
         if (isLoginStrict($this->userModel)) {
             $id = getSession('user_id');
+            $orders = $this->orderModel->getOrdersByUserId($id);
             $data = [
                 'user' => $this->userModel->getUserById($id),
                 'cartItemCount' => $this->cartModel->countItemsInCart($id),
-                'shopInfo' => $this->shopInfoModel->getShopInfoById($id)
+                'orderCount' => is_array($orders) ? count($orders) : 0,
             ];
             $this->renderView('user/profile/index', $data);
         } else {
