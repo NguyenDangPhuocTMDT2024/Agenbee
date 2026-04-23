@@ -3,7 +3,8 @@
 class Middleware {
     // Middleware để kiểm tra đăng nhập
     public static function authCheck() {
-        if (!getSession('token_login')) {
+        $userModel = new User();
+        if (!isLoginStrict($userModel)) {
             setSessionFlash('msg', 'Bạn cần đăng nhập để truy cập trang này!');
             setSessionFlash('msg_type', 'warning');
             redirect('/login');

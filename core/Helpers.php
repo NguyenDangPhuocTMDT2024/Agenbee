@@ -272,16 +272,51 @@ function isLogin(){
 function isLoginStrict($userModel){
     $checkLogin = false;
     $tokenLogin = getSession('token_login');
-    
-    if(!empty($tokenLogin) && !empty($userModel)){
-        $checkToken = $userModel->getSessionByToken($tokenLogin);
-        if(!empty($checkToken)){
-            $checkLogin = true;
-        }else{
+    $userId = getSession('user_id');
+    $loginStartedAt = (int)getSession('login_started_at');
+
+    if (!empty($tokenLogin) && !empty($userModel) && !empty($userId)) {
+        // Session TTL: expire local session after configured duration.
+        if (empty($loginStartedAt) || (time() - $loginStartedAt) > _LOGIN_SESSION_LIFETIME) {
+            $userModel->updateLoginSessionByID([
+                'user_id' => $userId,
+                'token' => null,
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+            deleteSession('user_id');
             deleteSession('token_login');
+            deleteSession('user_role');
+            deleteSession('login_started_at');
+            return false;
+        }
+
+        $checkToken = $userModel->getSessionByToken($tokenLogin);
+        if (!empty($checkToken) && (int)$checkToken['user_id'] === (int)$userId) {
+            $tokenRefTime = !empty($checkToken['updated_at']) ? $checkToken['updated_at'] : $checkToken['created_at'];
+            $tokenTime = !empty($tokenRefTime) ? strtotime($tokenRefTime) : false;
+
+            // DB token TTL: expire login token row after configured duration.
+            if (empty($tokenTime) || (time() - $tokenTime) > _LOGIN_TOKEN_LIFETIME) {
+                $userModel->updateLoginSessionByID([
+                    'user_id' => $userId,
+                    'token' => null,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+                deleteSession('user_id');
+                deleteSession('token_login');
+                deleteSession('user_role');
+                deleteSession('login_started_at');
+            } else {
+                $checkLogin = true;
+            }
+        } else {
+            deleteSession('user_id');
+            deleteSession('token_login');
+            deleteSession('user_role');
+            deleteSession('login_started_at');
         }
     }
-    
+
     return $checkLogin;
 }
 //hàm chuyển hướng đăng nhập theo role

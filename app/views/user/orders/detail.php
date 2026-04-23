@@ -310,6 +310,28 @@ $formatDate = function ($dateValue) {
 		background: rgba(244, 196, 48, 0.2);
 	}
 
+	.order-payment-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+		flex-wrap: wrap;
+	}
+
+	.order-payment-status {
+		display: grid;
+		gap: 4px;
+	}
+
+	.order-pay-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		font-weight: 700;
+		border-radius: 999px;
+		padding: 0.52rem 0.95rem;
+	}
+
 	@media (max-width: 991.98px) {
 		.order-detail-grid {
 			grid-template-columns: 1fr;
@@ -327,6 +349,10 @@ $formatDate = function ($dateValue) {
 		.order-meta-item {
 			grid-template-columns: 1fr;
 			gap: 6px;
+		}
+
+		.order-payment-row {
+			align-items: flex-start;
 		}
 	}
 </style>
@@ -437,13 +463,16 @@ $formatDate = function ($dateValue) {
 					<span class="order-meta-key">Tổng thanh toán</span>
 					<span class="order-meta-value order-price"><?php echo number_format((float) ($detail['total_price'] ?? 0), 0, ',', '.'); ?>đ</span>
 				</div>
-				<div class="order-meta-item" style="align-items: space-around; display: flex;">
-					<div>
+				<div class="order-meta-item order-payment-row">
+					<div class="order-payment-status">
 						<span class="order-meta-key">Trạng thái</span>
 						<span class="order-meta-value"><?php echo htmlspecialchars($statusInfo['label']); ?></span>
 					</div>
 					<?php if ($statusKey === 'pending'): ?>
-						<button class="btn btn-warning" style="margin-left: 12px;" onclick="window.location.href='<?php echo _HOST_URL; ?>/checkout?order_id=<?php echo urlencode($detail['id'] ?? ''); ?>'">Thanh toán ngay</button>
+						<a class="btn btn-warning btn-sm shadow-sm order-pay-btn" href="<?php echo _HOST_URL; ?>/checkout?order_id=<?php echo urlencode($detail['id'] ?? ''); ?>">
+							<i class="bi bi-credit-card-2-front"></i>
+							Thanh toán ngay
+						</a>
 					<?php endif; ?>
 				</div>
 				<div class="order-meta-item">

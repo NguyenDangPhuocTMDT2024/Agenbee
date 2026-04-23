@@ -397,12 +397,75 @@ class UserController extends Controller
                     $data = [
                         'user' => $this->userModel->getUserById($userId),
                         'cartItemCount' => $this->cartModel->countItemsInCart($userId),
+                        'backToCart' => true,
                         'orderId' => $orderId,
                         'orderItems' => $this->orderModel->getOrderItemsById($orderId),
                     ];
                     $this->renderView('user/checkout', $data);
                 }
             }
+        }
+    }
+    public function backToCart()
+    {
+        //hàm xử lý khi người dùng quay lại giỏ hàng sau khi tạo đơn hàng nhưng chưa thanh toán
+        if (!isLoginStrict($this->userModel)) {
+            setSessionFlash('msg', 'Vui lòng đăng nhập để tiếp tục');
+            setSessionFlash('msg_type', 'danger');
+            redirect('/login');
+            exit();
+        }
+        $userId = getSession('user_id');
+        $filteredData = isGet() ? filterData('get') : [];
+        $orderId = isset($filteredData['order_id']) ? trim($filteredData['order_id']) : '';
+        $order = $this->orderModel->getOrderByIdAndUserId($orderId, $userId);
+        if (!empty($order)) {
+            $orderItems = $this->orderModel->getOrderItemsById($orderId);
+            if (!empty($orderItems)) {
+                foreach ($orderItems as $item) {
+                    $this->cartModel->addCart($userId, $item['package_id'], $item['quantity']);
+                }
+                $this->orderModel->deleteOrderById($orderId);
+                setSessionFlash('msg', 'Đã thêm lại sản phẩm vào giỏ hàng');
+                setSessionFlash('msg_type', 'success');
+            } else {
+                setSessionFlash('msg', 'Không tìm thấy sản phẩm trong đơn hàng');
+                setSessionFlash('msg_type', 'warning');
+            }
+        } else {
+            setSessionFlash('msg', 'Không tìm thấy đơn hàng');
+            setSessionFlash('msg_type', 'danger');
+        }
+        redirect('/cart');
+    }
+    public function cancelOrder()
+    {
+        if (isGet()) {
+            $filteredData = filterData('get');
+            $orderId = isset($filteredData['id']) ? trim($filteredData['id']) : '';
+            $userId = getSession('user_id');
+            $order = $this->orderModel->getOrderByIdAndUserId($orderId, $userId);
+            if (empty($order)) {
+                setSessionFlash('msg', 'Không tìm thấy đơn hàng');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/order');
+                exit();
+            }
+            if ($order['status'] !== 'pending') {
+                setSessionFlash('msg', 'Chỉ có thể hủy đơn hàng ở trạng thái chờ thanh toán');
+                setSessionFlash('msg_type', 'warning');
+                redirect('/order');
+                exit();
+            }
+            $check = $this->orderModel->updateOrderStatus($orderId, 'cancelled');
+            if ($check) {
+                setSessionFlash('msg', 'Đã hủy đơn hàng thành công');
+                setSessionFlash('msg_type', 'success');
+            } else {
+                setSessionFlash('msg', 'Có lỗi xảy ra khi hủy đơn hàng, vui lòng thử lại');
+                setSessionFlash('msg_type', 'danger');
+            }
+            redirect('/order');
         }
     }
 }

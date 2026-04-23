@@ -143,5 +143,37 @@ class Order extends Database {
         return $this->insert($sql, $params);
     }
     
+    public function deleteOrderItemById($id)
+    {
+        $sql = "DELETE FROM " . $this->orderItems . " WHERE id = :id";
+        $params = [
+            'id' => $id,
+        ];
+        return $this->delete($sql, $params);
+    }
 
+    public function deleteOrderById($id)
+    {
+        $deleteItemsSql = "DELETE FROM " . $this->orderItems . " WHERE order_id = :order_id";
+        $deletedItems = $this->delete($deleteItemsSql, ['order_id' => $id]);
+
+        $deleteTasksSql = "DELETE FROM " . $this->orderTasks . " WHERE order_id = :order_id";
+        $deletedTasks = $this->delete($deleteTasksSql, ['order_id' => $id]);
+
+        $deleteOrderSql = "DELETE FROM " . $this->tableName . " WHERE id = :id";
+        $deletedOrder = $this->delete($deleteOrderSql, ['id' => $id]);
+
+        return $deletedItems && $deletedTasks && $deletedOrder;
+    }
+
+    public function updateOrderStatus($orderId, $status)
+    {
+        $sql = "UPDATE " . $this->tableName . " SET status = :status, updated_at = :updated_at WHERE id = :id";
+        $params = [
+            'id' => $orderId,
+            'status' => $status,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+        return $this->update($sql, $params);
+    }
 }

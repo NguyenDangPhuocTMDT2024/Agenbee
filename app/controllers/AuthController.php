@@ -46,13 +46,16 @@ class AuthController extends Controller
                                 'user_id' => $checkMail['id'],
                                 'token' => $token,
                                 'created_at' => date('Y-m-d H:i:s'),
+                                'updated_at' => date('Y-m-d H:i:s'),
                             ];
                             //insert token create login session
                             $insertStatus = $this->userModel->createLoginSession($data);
                             if ($insertStatus) {
+                                session_regenerate_id(true);
                                 setSession('user_id', $checkMail['id']);
                                 setSession('token_login', $token); //gan token vao session de xac thuc dang nhap
                                 setSession('user_role', $checkMail['role']); // Lưu role vào session
+                                setSession('login_started_at', time());
                                 //redirect to home
                                 loginRedirect($checkMail);
                             } else {
@@ -174,6 +177,7 @@ class AuthController extends Controller
         deleteSession('user_id');
         deleteSession('token_login');
         deleteSession('user_role');
+        deleteSession('login_started_at');
 
         redirect('/login');
     }

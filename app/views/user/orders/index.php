@@ -227,15 +227,16 @@ $formatDate = function ($dateValue) {
 					<tr>
 						<th>Mã đơn</th>
 						<th>Tổng tiền</th>
-						<th>Thời gian thực hiện</th>
+						<th>Ngày tạo đơn</th>
 						<th>Trạng thái</th>
 						<th>Tiến độ</th>
 						<th>Chi tiết</th>
-						<th>Thông tin brief</th>
+						<th>Hủy đơn</th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php foreach ($orderList as $item): ?>
+						<?php if($item['status'] === 'cancelled') continue; ?>
 						<?php
 						$statusKey = isset($item['status']) ? strtolower(trim($item['status'])) : 'pending';
 						$meta = isset($statusMeta[$statusKey]) ? $statusMeta[$statusKey] : $statusMeta['pending'];
@@ -253,7 +254,7 @@ $formatDate = function ($dateValue) {
 						<tr class="<?php echo htmlspecialchars($rowClass); ?>">
 							<td class="orders-id">#<?php echo htmlspecialchars($item['id'] ?? '---'); ?></td>
 							<td class="orders-money"><?php echo number_format((float) ($item['total_price'] ?? 0), 0, ',', '.'); ?>đ</td>
-							<td><?php echo htmlspecialchars($item['duration'] ?? null); ?> ngày</td>
+							<td><?php echo htmlspecialchars($formatDate($item['created_at'] ?? null)); ?></td>
 							<td><span class="orders-status-pill"><?php echo htmlspecialchars($meta['label']); ?></span></td>
 							<td>    
 								<div class="orders-progress">
@@ -270,9 +271,9 @@ $formatDate = function ($dateValue) {
 								</a>
 							</td>
 							<td>
-								<button class="orders-detail-link" onclick="window.open('<?php echo _AGENBEE_BRIEF; ?>?order_id=<?php echo urlencode((string) ($item['id'] ?? '')); ?>', '_blank')">
-									<i class="bi bi-gear-fill"></i>
-									Thiết lập
+								<button class="orders-detail-link" onclick="if(confirm('Bạn có chắc muốn hủy đơn hàng này?')) { window.location.href = '<?php echo _HOST_URL; ?>/order/cancel?id=<?php echo urlencode((string) ($item['id'] ?? '')); ?>'; }" <?php echo ($statusKey !== 'pending') ? 'disabled' : ''; ?>>
+									<i class="bi bi-x-lg"></i>
+									Hủy đơn
 								</button>
 							</td>
 						</tr>

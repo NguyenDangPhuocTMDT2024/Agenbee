@@ -15,5 +15,9 @@ define('_HOST_MAIL', 'agenbee0502@gmail.com');
 define('_APP_PASS','usby gflt wnmn hkph');
 define('_PHONE','0765058016');
 
+// Login TTL (seconds)
+define('_LOGIN_SESSION_LIFETIME', 60 * 60 * 24);      // 24 hours
+define('_LOGIN_TOKEN_LIFETIME', 60 * 60 * 24 * 3);   // 3 days
+
 define('_AGENBEE_BRIEF','https://cv6hqcr4yk.zite.so');
 ?>

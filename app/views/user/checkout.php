@@ -234,6 +234,30 @@ $grandTotal = max(0, $subtotal - $discount);
 		color: #111111;
 	}
 
+	.checkout-btn-back {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		width: 100%;
+		padding: 0.82rem 1.1rem;
+		border-radius: 999px;
+		border: 1px solid rgba(201, 154, 17, 0.34);
+		font-weight: 700;
+		color: #5b480f;
+		background: linear-gradient(135deg, #fff9e6 0%, #ffefbf 100%);
+		box-shadow: 0 8px 20px rgba(201, 154, 17, 0.14);
+		text-decoration: none;
+		transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+	}
+
+	.checkout-btn-back:hover {
+		transform: translateY(-1px);
+		color: #3f3005;
+		background: linear-gradient(135deg, #fff0c8 0%, #ffe39d 100%);
+		box-shadow: 0 12px 24px rgba(201, 154, 17, 0.2);
+	}
+
 	.checkout-note {
 		color: #767676;
 		font-size: 0.88rem;
@@ -257,6 +281,11 @@ $grandTotal = max(0, $subtotal - $discount);
 		.checkout-table th,
 		.checkout-table td {
 			padding: 10px 12px;
+		}
+
+		.checkout-btn-back,
+		.checkout-btn-confirm {
+			font-size: 0.94rem;
 		}
 	}
 </style>
@@ -336,7 +365,7 @@ $grandTotal = max(0, $subtotal - $discount);
 				</div>
 
 				<div class="mt-3">
-					<a href="<?php echo _HOST_URL; ?>/order/confirm" class="checkout-btn-confirm">
+					<a href="#" class="checkout-btn-confirm">
 						<i class="bi bi-shield-check"></i>
 						Xác nhận thanh toán
 					</a>
@@ -345,6 +374,11 @@ $grandTotal = max(0, $subtotal - $discount);
 				<p class="checkout-note">
 					//NOTE//
 				</p>
+				<?php if (isset($backToCart) && $backToCart === true): ?>
+					<div class="mt-3">
+						<a class="checkout-btn-back" href="<?php echo _HOST_URL; ?>/back-to-cart?order_id=<?php echo isset($orderId) ? urlencode($orderId) : ''; ?>"><i class="bi bi-arrow-left"></i> Quay lại giỏ hàng</a>
+					</div>
+				<?php endif; ?>
 			</section>
 		</aside>
 	</div>
