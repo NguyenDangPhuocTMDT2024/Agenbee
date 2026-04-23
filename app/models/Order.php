@@ -103,18 +103,17 @@ class Order extends Database {
 
     public function createOrder($data)
     {
-        $sql = "INSERT INTO " . $this->tableName . " (user_id, total_price, duration, status, created_at) VALUES (:user_id, :total_price, :duration, :status, :created_at)";
+        $sql = "INSERT INTO " . $this->tableName . " (user_id, total_price, status, created_at) VALUES (:user_id, :total_price, :status, :created_at)";
         $params = [
             'user_id' => isset($data['user_id']) ? $data['user_id'] : null,
             'total_price' => isset($data['total_price']) ? $data['total_price'] : 0,
-            'duration' => isset($data['duration']) ? $data['duration'] : 14,
             'status' => isset($data['status']) ? $data['status'] : 'pending',
             'created_at' => isset($data['created_at']) ? $data['created_at'] : null,
         ];
         return $this->insert($sql, $params);
     }
     
-    public function createOrderItem($data)
+    public function createOrderItem($data)  
     {
         $sql = "INSERT INTO " . $this->orderItems . " (order_id, package_id, quantity, created_at) VALUES (:order_id, :package_id, :quantity, :created_at)";
         $params = [
@@ -144,4 +143,5 @@ class Order extends Database {
         return $this->insert($sql, $params);
     }
     
+
 }

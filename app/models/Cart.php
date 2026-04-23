@@ -4,6 +4,8 @@ class Cart extends Database
 {
     private $tableName = 'carts';
     private $cartItemTable = 'cart_items';
+    private $packageTable = 'packages';
+    private $categoryTable = 'categories';
     public function __construct($userId = null)
     {
         parent::__construct();
@@ -26,10 +28,10 @@ class Cart extends Database
     }
     public function getCartInfoByUserId($userId)
     {
-        $sql = "SELECT $this->cartItemTable.*, `packages`.*, c.name AS category_name FROM $this->tableName
+        $sql = "SELECT $this->cartItemTable.*, p.*, c.name AS category_name FROM $this->tableName
                 JOIN $this->cartItemTable ON $this->tableName.id = $this->cartItemTable.cart_id
-                JOIN `packages` ON $this->cartItemTable.package_id = `packages`.id
-                LEFT JOIN `categories` c ON `packages`.category_id = c.id
+                JOIN $this->packageTable p ON $this->cartItemTable.package_id = p.id
+                LEFT JOIN $this->categoryTable c ON p.category_id = c.id
                 WHERE user_id = :user_id";
         $param = ['user_id' => $userId];
         return $this->getAll($sql, $param);

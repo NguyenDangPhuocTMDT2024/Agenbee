@@ -95,7 +95,7 @@ foreach ($cartInfo as $item) {
             <div class="cart-summary-left">Tổng sản phẩm: <?php echo $cartTotalItems; ?></div>
             <div class="cart-summary-right">
                 <span>Tổng cộng: <strong><?php echo number_format($cartTotal, 0, ',', '.'); ?>đ</strong></span>
-                <a href="<?php echo _HOST_URL; ?>/order/confirm" class="btn btn-warning cart-checkout-btn">Mua hàng</a>
+                <a href="<?php echo _HOST_URL; ?>/checkout" class="btn btn-warning cart-checkout-btn">Mua hàng</a>
             </div>
         </div>
     </div>
