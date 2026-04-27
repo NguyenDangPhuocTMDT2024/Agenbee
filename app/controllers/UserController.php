@@ -6,14 +6,12 @@ class UserController extends Controller
     private $packageModel;
     private $cartModel;
     private $contactModel;
-    private $shopInfoModel;
     private $orderModel;
     public function __construct()
     {
         $this->userModel = new User();
         $this->packageModel = new Package();
         $this->contactModel = new Contact();
-        $this->shopInfoModel = new ShopInfo();
         $this->orderModel = new Order();
         if (isLoginStrict($this->userModel)) {
             $userId = getSession('user_id');
@@ -213,46 +211,46 @@ class UserController extends Controller
             exit();
         }
     }
-    public function updateProfile()
-    {
-        if (isPost()) {
-            $filteredData = filterData('post');
-            $errors = validateShopInfo($filteredData);
-            if (validateImage($_FILES['logo']) !== true) {
-                $errors['logo'] = validateImage($_FILES['logo']);
-            } else if (!empty($_FILES['logo']['name'])) {
-                $logo = uploadImage($_FILES['logo']);
-            }
-            if (empty($errors)) {
-                $data = [
-                    'shop_name' => $filteredData['shop_name'],
-                    'address' => $filteredData['address'],
-                    'major' => $filteredData['major'],
-                    'shop_description' => $filteredData['shop_description'],
-                    'updated_at' => date('Y-m-d H:i:s')
-                ];
-                if (isset($logo)) {
-                    $data['logo'] = $logo;
-                    if (!empty($oldLogo)) {
-                        removeUploadImg($oldLogo);
-                    }
-                }
-                $checkUpdate = $this->shopInfoModel->updateShopInfoByUserId($filteredData['user_id'], $data);
-                if ($checkUpdate) {
-                    setSessionFlash('msg', 'Cập nhật thông tin shop thành công');
-                    setSessionFlash('msg_type', 'success');
-                } else {
-                    setSessionFlash('msg', 'Có lỗi xảy ra khi cập nhật thông tin shop, vui lòng thử lại');
-                    setSessionFlash('msg_type', 'danger');
-                }
-            } else {
-                setSessionFlash('errors', $errors);
-                setSessionFlash('msg', 'Có lỗi xảy ra khi cập nhật thông tin shop, vui lòng thử lại');
-                setSessionFlash('msg_type', 'danger');
-            }
-        }
-        redirect('/profile');
-    }
+    // public function updateProfile()
+    // {
+    //     if (isPost()) {
+    //         $filteredData = filterData('post');
+    //         $errors = validateShopInfo($filteredData);
+    //         if (validateImage($_FILES['logo']) !== true) {
+    //             $errors['logo'] = validateImage($_FILES['logo']);
+    //         } else if (!empty($_FILES['logo']['name'])) {
+    //             $logo = uploadImage($_FILES['logo']);
+    //         }
+    //         if (empty($errors)) {
+    //             $data = [
+    //                 'shop_name' => $filteredData['shop_name'],
+    //                 'address' => $filteredData['address'],
+    //                 'major' => $filteredData['major'],
+    //                 'shop_description' => $filteredData['shop_description'],
+    //                 'updated_at' => date('Y-m-d H:i:s')
+    //             ];
+    //             if (isset($logo)) {
+    //                 $data['logo'] = $logo;
+    //                 if (!empty($oldLogo)) {
+    //                     removeUploadImg($oldLogo);
+    //                 }
+    //             }
+    //             $checkUpdate = $this->shopInfoModel->updateShopInfoByUserId($filteredData['user_id'], $data);
+    //             if ($checkUpdate) {
+    //                 setSessionFlash('msg', 'Cập nhật thông tin shop thành công');
+    //                 setSessionFlash('msg_type', 'success');
+    //             } else {
+    //                 setSessionFlash('msg', 'Có lỗi xảy ra khi cập nhật thông tin shop, vui lòng thử lại');
+    //                 setSessionFlash('msg_type', 'danger');
+    //             }
+    //         } else {
+    //             setSessionFlash('errors', $errors);
+    //             setSessionFlash('msg', 'Có lỗi xảy ra khi cập nhật thông tin shop, vui lòng thử lại');
+    //             setSessionFlash('msg_type', 'danger');
+    //         }
+    //     }
+    //     redirect('/profile');
+    // }
     public function showContact()
     {
         if (isLoginStrict($this->userModel)) {
@@ -341,7 +339,7 @@ class UserController extends Controller
 
         $userId = getSession('user_id');
         $filteredData = isGet() ? filterData('get') : [];
-        if(isset($filteredData['order_id'])) {
+        if (isset($filteredData['order_id'])) {
             $orderId = trim($filteredData['order_id']);
             $order = $this->orderModel->getOrderByIdAndUserId($orderId, $userId);
             if (empty($order)) {
@@ -405,6 +403,65 @@ class UserController extends Controller
                 }
             }
         }
+    }
+    public function checkout()
+    {
+        if (isPost()) {
+            $filteredData = filterData('post');
+            $orderId = isset($filteredData['order_id']) ? trim($filteredData['order_id']) : '';
+            if (!isLoginStrict($this->userModel)) {
+                setSessionFlash('msg', 'Vui lòng đăng nhập để tiếp tục');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/login');
+                exit();
+            }
+            $userId = getSession('user_id');
+            $order = $this->orderModel->getOrderByIdAndUserId($orderId, $userId);
+            if (empty($order)) {
+                setSessionFlash('msg', 'Không tìm thấy đơn hàng');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/order');
+                exit();
+            }
+            if ($order['status'] !== 'pending') {
+                setSessionFlash('msg', 'Đơn hàng đã được thanh toán hoặc đã hủy, không thể thanh toán lại');
+                setSessionFlash('msg_type', 'warning');
+                redirect('/order');
+                exit();
+            }
+            if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
+                $paymentProof = uploadImage($_FILES['payment_proof'], 'uploads/payment');
+                if ($paymentProof !== false) {
+                    $data = [
+                        'payment_proof' => $paymentProof,
+                        'status' => 'confirming',
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ];
+                    $check = $this->orderModel->updateOrderPaymentByOrderId($orderId, $data);
+                    if ($check) {
+                        $orderItems = $this->orderModel->getOrderItemsById($orderId);
+                        foreach ($orderItems as $item) {
+                            $this->orderModel->createOrderTask($orderId, $item['package_id']);
+                        }
+                        setSessionFlash('msg', 'Thanh toán thành công, chúng tôi sẽ xác nhận thanh toán của bạn trong thời gian sớm nhất');
+                        setSessionFlash('msg_type', 'success');
+                    } else {
+                        setSessionFlash('msg', 'Có lỗi xảy ra khi cập nhật thông tin thanh toán, vui lòng thử lại');
+                        setSessionFlash('msg_type', 'danger');
+                    }
+                } else {
+                    setSessionFlash('msg', 'Có lỗi xảy ra khi tải lên minh chứng thanh toán, vui lòng thử lại');
+                    setSessionFlash('msg_type', 'danger');
+                }
+            } else if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] !== UPLOAD_ERR_NO_FILE) {
+                setSessionFlash('msg', 'Có lỗi xảy ra khi tải lên minh chứng thanh toán, vui lòng thử lại');
+                setSessionFlash('msg_type', 'danger');
+            }
+        } else {
+            setSessionFlash('msg', 'Vui lòng tải lên minh chứng thanh toán để hoàn tất quá trình thanh toán');
+            setSessionFlash('msg_type', 'warning');
+        }
+        redirect('/order');
     }
     public function backToCart()
     {

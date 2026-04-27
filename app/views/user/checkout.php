@@ -258,6 +258,94 @@ $grandTotal = max(0, $subtotal - $discount);
 		box-shadow: 0 12px 24px rgba(201, 154, 17, 0.2);
 	}
 
+	#paymentDetails {
+		margin-top: 14px;
+	}
+
+	.payment-proof-form {
+		display: grid;
+		gap: 14px;
+		padding: 18px;
+		border-radius: 18px;
+		border: 1px solid rgba(201, 154, 17, 0.14);
+		background: linear-gradient(180deg, #fffdf6 0%, #fff7e3 100%);
+		box-shadow: 0 16px 30px rgba(31, 24, 9, 0.08);
+	}
+
+	.payment-proof-qr {
+		width: 100%;
+		max-width: 300px;
+		margin: 0 auto;
+		display: block;
+		border-radius: 18px;
+		background: #ffffff;
+		padding: 10px;
+		box-shadow: 0 8px 20px rgba(31, 24, 9, 0.08);
+	}
+
+	.payment-proof-note {
+		margin: 0;
+		text-align: center;
+		color: #6a5a2c;
+		font-size: 0.92rem;
+		line-height: 1.6;
+	}
+
+	.payment-proof-upload {
+		display: grid;
+		gap: 10px;
+		padding: 14px;
+		border-radius: 16px;
+		border: 1px dashed rgba(201, 154, 17, 0.35);
+		background: rgba(255, 255, 255, 0.85);
+	}
+
+	.payment-proof-upload-label {
+		display: grid;
+		gap: 4px;
+	}
+
+	.payment-proof-upload-title {
+		font-weight: 800;
+		color: #1b1b1b;
+	}
+
+	.payment-proof-upload-help {
+		color: #77633a;
+		font-size: 0.88rem;
+	}
+
+	.payment-proof-input {
+		width: 100%;
+		padding: 0.85rem 1rem;
+		border-radius: 14px;
+		border: 1px solid rgba(201, 154, 17, 0.24);
+		background: #fffdf8;
+		color: #4d3f1a;
+		font-size: 0.95rem;
+	}
+
+	.payment-proof-input::file-selector-button {
+		margin-right: 12px;
+		padding: 0.65rem 1rem;
+		border: none;
+		border-radius: 999px;
+		background: linear-gradient(135deg, #f4c430 0%, #e9b913 100%);
+		color: #111111;
+		font-weight: 800;
+		cursor: pointer;
+	}
+
+	.payment-proof-input:hover::file-selector-button {
+		filter: brightness(1.02);
+	}
+
+	.payment-proof-input:focus {
+		outline: none;
+		border-color: rgba(244, 196, 48, 0.8);
+		box-shadow: 0 0 0 4px rgba(244, 196, 48, 0.18);
+	}
+
 	.checkout-note {
 		color: #767676;
 		font-size: 0.88rem;
@@ -365,14 +453,15 @@ $grandTotal = max(0, $subtotal - $discount);
 				</div>
 
 				<div class="mt-3">
-					<a href="#" class="checkout-btn-confirm">
+					<button type="button" class="checkout-btn-confirm" id="confirmPayment" onclick="showPayment()">
 						<i class="bi bi-shield-check"></i>
 						Xác nhận thanh toán
-					</a>
+					</button>
+					<div id="paymentDetails"></div>
 				</div>
 
 				<p class="checkout-note">
-					//NOTE//
+					Đơn hàng sẽ được xử lý và xác nhận sau khi bạn thực hiện thanh toán. Vui lòng đảm bảo rằng bạn đã hoàn tất thanh toán và gửi minh chứng thanh toán nếu chọn phương thức chuyển khoản để chúng tôi có thể nhanh chóng xác nhận đơn hàng của bạn.
 				</p>
 				<?php if (isset($backToCart) && $backToCart === true): ?>
 					<div class="mt-3">
@@ -384,4 +473,38 @@ $grandTotal = max(0, $subtotal - $discount);
 	</div>
 </main>
 
+<script>
+	const grandTotal = <?php echo json_encode((float) $grandTotal); ?>;
+	const orderId = <?php echo json_encode($orderId); ?>;
+
+	function showPayment() {
+		const paymentBlock = document.querySelector('#paymentDetails');
+		if (!paymentBlock || paymentBlock.dataset.rendered === '1') {
+			return;
+		}
+
+		const newForm = document.createElement('form');
+		newForm.method = 'POST';
+		newForm.enctype = 'multipart/form-data';
+		newForm.className = 'payment-proof-form';
+		newForm.innerHTML = `
+			<img class="payment-proof-qr" src="https://img.vietqr.io/image/970426-80003031591-compact2.png?amount=${encodeURIComponent(grandTotal)}&addInfo=${encodeURIComponent('Thanh toan don hang #' + orderId)}&accountName=Nguyen+Dang+Phuoc" alt="QR Code Thanh Toán">
+			<p class="payment-proof-note">Sau khi thanh toán vui lòng gửi minh chứng thanh toán về cho chúng tôi.</p>
+			<div class="payment-proof-upload">
+				<div class="payment-proof-upload-label">
+					<span class="payment-proof-upload-title">Nộp minh chứng thanh toán</span>
+					<span class="payment-proof-upload-help">Chọn ảnh rõ nét của hóa đơn hoặc ảnh chuyển khoản.</span>
+				</div>
+				<input class="payment-proof-input" type="file" name="payment_proof" accept="image/*" required>
+			</div>
+			<input type="hidden" name="order_id" value="${orderId}">
+			<button type="submit" class="checkout-btn-confirm">
+				<i class="bi bi-upload"></i>
+				Gửi minh chứng thanh toán
+			</button>
+		`;
+		paymentBlock.dataset.rendered = '1';
+		paymentBlock.append(newForm);
+	}
+</script>
 <?php layout('footer'); ?>

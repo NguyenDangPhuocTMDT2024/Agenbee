@@ -125,12 +125,12 @@ class AdminController extends Controller
     public function showPackageEdit()
     {
         $userID = getSession('user_id');
-        if(isGet()){
+        if (isGet()) {
             $filteredData = filterData('get');
-            if(!empty($filteredData['id'])){
+            if (!empty($filteredData['id'])) {
                 $id = $filteredData['id'];
-                $packageInfo = $this->packageModel->getPackagesByID($id);
-                if(!empty($packageInfo)){
+                $packageInfo = $this->packageModel->getPackageByID($id);
+                if (!empty($packageInfo)) {
                     $data['packageInfo'] = $packageInfo;
                 } else {
                     setSessionFlash('msg', 'Gói không tồn tại!');
@@ -215,7 +215,7 @@ class AdminController extends Controller
             $filteredData = filterData('get');
             if (!empty($filteredData['id'])) {
                 $id = $filteredData['id'];
-                $packageInfo = $this->packageModel->getPackagesByID($id);
+                $packageInfo = $this->packageModel->getPackageByID($id);
                 if (!empty($packageInfo)) {
                     $checkDelete = $this->packageModel->deletePackageByID($packageInfo['id']);
                     if ($checkDelete) {
@@ -297,20 +297,101 @@ class AdminController extends Controller
     }
     public function showOrderDetail()
     {
+        if (isGet()) {
+            $filteredData = filterData('get');
+            if (!empty($filteredData['id'])) {
+                $orderId = $filteredData['id'];
+                $checkOrder = $this->orderModel->getOrderById($orderId);
+                if (empty($checkOrder)) {
+                    setSessionFlash('msg', 'Đơn hàng không tồn tại!');
+                    setSessionFlash('msg_type', 'danger');
+                    redirect('/admin/order');
+                }
+                $userID = getSession('user_id');
+                $data = [
+                    'userInfo' => $this->userModel->getUserByID($userID),
+                    'orderInfo' => $checkOrder,
+                    'orderItems' => $this->orderModel->getOrderItemsById($orderId),
+                    'orderTasks' => $this->orderModel->getOrderTasksById($orderId)
+                ];
+                $this->renderView($this->viewPath . 'orders/detail', $data);
+            } else {
+                setSessionFlash('msg', 'Đường dẫn không hợp lệ!');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/admin/order');
+            }
+        }
+    }
+    public function updateOrderTasks()
+    {
+        if (isPost()) {
+            $filteredData = filterData();
+            $orderId = $filteredData['order_id'] ?? null;
+            if (!$orderId || empty($this->orderModel->getOrderById($orderId))) {
+                setSessionFlash('msg', 'Đơn hàng không tồn tại!');
+                setSessionFlash('msg_type', 'danger');
+                redirect('/admin/order');
+            }
+
+            if (isset($filteredData['order_status'])) {
+                $status = trim((string)$filteredData['order_status']);
+                $allowedStatuses = ['pending', 'confirming', 'processing', 'completed', 'cancelled'];
+
+                if (!in_array($status, $allowedStatuses, true)) {
+                    setSessionFlash('msg', 'Trạng thái đơn hàng không hợp lệ!');
+                    setSessionFlash('msg_type', 'danger');
+                    redirect("/admin/order/detail?id=$orderId");
+                }
+
+                $updated = $this->orderModel->updateOrderStatus($orderId, $status);
+                if ($updated) {
+                    setSessionFlash('msg', 'Cập nhật trạng thái đơn hàng thành công!');
+                    setSessionFlash('msg_type', 'success');
+                } else {
+                    setSessionFlash('msg', 'Cập nhật trạng thái đơn hàng thất bại, vui lòng thử lại!');
+                    setSessionFlash('msg_type', 'danger');
+                }
+
+                redirect("/admin/order/detail?id=$orderId");
+            }
+
+            $taskIds = $filteredData['task_ids'] ?? [];
+            if(empty($taskIds)) {
+                setSessionFlash('msg', 'Không có cập nhật nào được thực hiện!');
+                setSessionFlash('msg_type', 'danger');
+                redirect("/admin/order/detail?id=$orderId");
+            } else {
+                $clear = $this->orderModel->clearOrderTasksStatus($orderId);
+                if($clear){
+                    $check = false;
+                    for($i = 0; $i < count($taskIds); $i++) {
+                        $taskId = $taskIds[$i];
+                        $check = $this->orderModel->updateTaskStatusByOrderIdAndTaskId($orderId, $taskId, 1);
+                    }
+                    if($check) {
+                        setSessionFlash('msg', 'Cập nhật trạng thái công việc thành công!');
+                        setSessionFlash('msg_type', 'success');
+                    } else {
+                        setSessionFlash('msg', 'Cập nhật trạng thái công việc thất bại, vui lòng thử lại!');
+                        setSessionFlash('msg_type', 'danger');
+                        
+                    }
+                } else {
+                    setSessionFlash('msg', 'Cập nhật trạng thái công việc thất bại, vui lòng thử lại!');
+                    setSessionFlash('msg_type', 'danger');
+                }
+                redirect("/admin/order/detail?id=$orderId");
+            }
+        }
+    }
+    public function showProfile()
+    {
         $userID = getSession('user_id');
         $data = [
             'userInfo' => $this->userModel->getUserByID($userID),
         ];
-        $this->renderView($this->viewPath . 'orders/detail', $data);
+        $this->renderView($this->viewPath . 'users/profile', $data);
     }
-    // public function showProfile()
-    // {
-    //     $userID = getSession('user_id');
-    //     $data = [
-    //         'userInfo' => $this->userModel->getUserByID($userID),
-    //     ];
-    //     $this->renderView($this->viewPath . 'users/profile', $data);
-    // }
     public function showUser()
     {
         $userID = getSession('user_id');
@@ -482,7 +563,8 @@ class AdminController extends Controller
             }
         }
     }
-    public function showUserEdit(){
+    public function showUserEdit()
+    {
         $userID = getSession('user_id');
         $data = [
             'userInfo' => $this->userModel->getUserByID($userID),
@@ -507,7 +589,5 @@ class AdminController extends Controller
         }
         $this->renderView($this->viewPath . 'users/edit', $data);
     }
-    public function userEdit(){
-
-    }
+    public function userEdit() {}
 }

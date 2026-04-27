@@ -19,7 +19,8 @@ $statusMeta = [
 	'pending' => ['label' => 'Chờ thanh toán', 'class' => 'is-pending'],
 	'processing' => ['label' => 'Đang xử lý', 'class' => 'is-processing'],
 	'completed' => ['label' => 'Hoàn thành', 'class' => 'is-completed'],
-	'cancelled' => ['label' => 'Đã hủy', 'class' => 'is-cancelled']
+	'cancelled' => ['label' => 'Đã hủy', 'class' => 'is-cancelled'],
+	'confirming' => ['label' => 'Đang xác nhận', 'class' => 'is-processing'],
 ];
 
 $formatDate = function ($dateValue) {

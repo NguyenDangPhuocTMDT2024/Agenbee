@@ -5,6 +5,7 @@ class Order extends Database {
     private $orderTasks = 'order_tasks';
     private $packageTable = 'packages';
     private $categoryTable = 'categories';
+    private $userTable = 'users';
     
     public function __construct() {
         parent::__construct();
@@ -33,9 +34,13 @@ class Order extends Database {
     public function getOrderById($orderId)
     {
         $sql = "SELECT o.*, 
+                    u.name AS user_name,
+                    u.email AS user_email,
+                    u.phone AS user_phone,
                     COALESCE(task_stats.total_tasks, 0) AS total_tasks,
                     COALESCE(task_stats.done_tasks, 0) AS done_tasks
                 FROM " . $this->tableName . " o
+                LEFT JOIN " . $this->userTable . " u ON u.id = o.user_id
                 LEFT JOIN (
                     SELECT order_id,
                            COUNT(*) AS total_tasks,
@@ -175,5 +180,46 @@ class Order extends Database {
             'updated_at' => date('Y-m-d H:i:s'),
         ];
         return $this->update($sql, $params);
+    }
+
+    public function updateOrderPaymentByOrderId($orderId, $data)
+    {
+        $sql = "UPDATE " . $this->tableName . " SET payment_proof = :payment_proof, status = :status, updated_at = :updated_at WHERE id = :id";
+        $params = [
+            'id' => $orderId,
+            'payment_proof' => isset($data['payment_proof']) ? $data['payment_proof'] : null,
+            'status' => isset($data['status']) ? $data['status'] : null,
+            'updated_at' => isset($data['updated_at']) ? $data['updated_at'] : null,
+        ];
+        return $this->update($sql, $params);
+    }
+
+    public function clearOrderTasksStatus($orderId)
+    {
+        $sql = "UPDATE " . $this->orderTasks . " SET status = 0, updated_at = :updated_at WHERE order_id = :order_id";
+        $params = [
+            'order_id' => $orderId,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+        return $this->update($sql, $params);
+    }
+
+    public function updateTaskStatusByOrderIdAndTaskId($orderId, $taskId, $status)
+    {
+        $sql = "UPDATE " . $this->orderTasks . " SET status = :status, updated_at = :updated_at WHERE order_id = :order_id AND id = :id";
+        $params = [
+            'order_id' => $orderId,
+            'id' => $taskId,
+            'status' => $status,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+        return $this->update($sql, $params);
+    }
+
+    public function getAllOrders()
+    {
+        $sql = "SELECT o.*, u.name as user_name FROM " . $this->tableName . 
+                " o JOIN " . $this->userTable . " u ON o.user_id = u.id";
+        return $this->getAll($sql);
     }
 }

@@ -8,6 +8,14 @@ layout('admin-sidebar');
 
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
+
+$orderStatus = [
+    'pending' => '<i class="bi bi-check-circle-fill text-success"></i>',
+    'confirming' => '<i class="bi bi-hourglass-split text-warning"></i>',
+    'processing' => '<i class="bi bi-hourglass-split text-success"></i>',
+    'completed' => '<i class="bi bi-check-circle-fill text-success"></i>',
+    'cancelled' => '<i class="bi bi-x-circle-fill text-danger"></i>'
+];
 ?>
 <main class="admin-main">
     <div class="container mt-4">
@@ -43,19 +51,14 @@ $msgType = getSessionFlash('msg_type');
                 <?php foreach($orderList as $order): ?>
                 <tr>
                     <td><?php echo (!empty($order['id'])) ? $order['id']:''; ?></td>
-                    <td><?php echo (!empty($order['name'])) ? $order['name']:'';?></td>
+                    <td><?php echo (!empty($order['user_name'])) ? $order['user_name']:'';?></td>
                     <td><?php echo (!empty($order['total_price'])) ? number_format($order['total_price']): 0;?><sup>đ</sup></td>
                     <td><a href="<?php echo _HOST_URL ?>/admin/order/detail?id=<?php echo (!empty($order['id'])) ? $order['id']:''; ?>" class="btn btn-success btn-sm"><i class="bi bi-pencil-square"></i></a></td>
                     <td>
-                        <?php if(!empty($order['status']) && $order['status'] === 'completed'): ?>
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                        <?php elseif(!empty($order['status']) && $order['status'] === 'cancelled'): ?> 
-                            <i class="bi bi-x-circle-fill text-danger"></i>
-                        <?php elseif(!empty($order['status']) && $order['status'] === 'pending'): ?>
-                            <i class="bi bi-hourglass-split text-danger"></i>
-                        <?php else: ?>
-                            <i class="bi bi-hourglass-split text-success"></i>
-                        <?php endif; ?>
+                        <?php 
+                            $status = (!empty($order['status'])) ? $order['status'] : '';
+                            echo (!empty($orderStatus[$status])) ? $orderStatus[$status] : '';
+                        ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

@@ -41,6 +41,7 @@ $router->get('/admin/order', 'AdminController@showOrder');
 $router->post('/admin/order', 'AdminController@order');
 
 $router->get('/admin/order/detail', 'AdminController@showOrderDetail');
+$router->post('/admin/order/detail', 'AdminController@updateOrderTasks');
 
 $router->get('/admin/user', 'AdminController@showUser');
 
@@ -70,6 +71,7 @@ $router->get('/order/detail', 'UserController@showOrderDetail');
 $router->get('/order/cancel', 'UserController@cancelOrder');
 
 $router->get('/checkout', 'UserController@showCheckOut');
+$router->post('/checkout', 'UserController@checkout');
 $router->get('/back-to-cart', 'UserController@backToCart');
 
 $router->get('/contact', 'UserController@showContact');

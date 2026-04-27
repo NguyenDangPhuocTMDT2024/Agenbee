@@ -20,7 +20,8 @@ $statusMap = [
 	'pending' => ['label' => 'Chờ thanh toán'],
 	'processing' => ['label' => 'Đang xử lý'],
 	'completed' => ['label' => 'Hoàn thành'],
-	'cancelled' => ['label' => 'Đã hủy']
+	'cancelled' => ['label' => 'Đã hủy'],
+	'confirming' => ['label' => 'Đang xác nhận thanh toán'],
 ];
 
 $statusInfo = isset($statusMap[$statusKey]) ? $statusMap[$statusKey] : $statusMap['pending'];
