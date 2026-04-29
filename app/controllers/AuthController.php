@@ -40,6 +40,10 @@ class AuthController extends Controller
                             setSessionFlash('msg', 'Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email để kích hoạt tài khoản!');
                             setSessionFlash('msg_type', 'warning');
                             redirect('/login');
+                        } else if ($checkMail['status'] == 2) {
+                            setSessionFlash('msg', 'Tài khoản đã bị khóa. Vui lòng liên hệ admin để được hỗ trợ!');
+                            setSessionFlash('msg_type', 'danger');
+                            redirect('/login');
                         } else {
                             $token = generateToken();
                             $data = [

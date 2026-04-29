@@ -1,10 +1,11 @@
 <?php
 $data = [
     'title' => 'Packages',
-    'userInfo' => $userInfo
+    'userInfo' => $userInfo,
+    'activeMenu' => 'Packages',
 ];
 layout('admin-header', $data);
-layout('admin-sidebar');
+layout('admin-sidebar', $data);
 
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
@@ -96,6 +97,19 @@ $oldData = getSessionFlash('old_data');
                                 ?>
                             </div>
                             <div class="mb-3">
+                                <label class="form-label">Loại gói</label>
+                                <select name="type" class="form-select">
+                                    <option value="null">Chọn danh mục</option>
+                                    <option value="Setup">Setup</option>
+                                    <option value="Product">Product</option>
+                                    <option value="Layout">Layout</option>
+                                    <option value="Design">Design</option>
+                                    <option value="Content">Content</option>
+                                    <option value="Restart">Restart</option>
+                                    <option value="Support">Support</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label">Mô tả ngắn</label>
                                 <textarea name="short_description" class="form-control"><?php if (!empty($oldData['short_description'])) echo $oldData['short_description']; ?></textarea>
                                 <?php
@@ -174,14 +188,14 @@ $oldData = getSessionFlash('old_data');
                                         <th scope="col">Số lượng</th>
                                     </tr>
                                 </thead>
-                                <?php foreach($addOnPackageList as $item): ?>
-                                <tbody id="itemTableBody">
-                                    <tr>
-                                        <td><input type="checkbox" name="items[<?php echo $item['id']; ?>][selected]" class="form-check-input"></td>
-                                        <td class="item-name"><?php echo $item['name'];?></td>
-                                        <td><input type="number" name="items[<?php echo $item['id']; ?>][quantity]" class="form-control form-control-sm item-qty-input" value="1" min="1"></td>
-                                    </tr>
-                                </tbody>
+                                <?php foreach ($addOnPackageList as $item): ?>
+                                    <tbody id="itemTableBody">
+                                        <tr>
+                                            <td><input type="checkbox" name="items[<?php echo $item['id']; ?>][selected]" class="form-check-input"></td>
+                                            <td class="item-name"><?php echo $item['name']; ?></td>
+                                            <td><input type="number" name="items[<?php echo $item['id']; ?>][quantity]" class="form-control form-control-sm item-qty-input" value="1" min="1"></td>
+                                        </tr>
+                                    </tbody>
                                 <?php endforeach; ?>
                             </table>
                         </div>

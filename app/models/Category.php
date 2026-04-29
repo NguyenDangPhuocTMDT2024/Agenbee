@@ -6,7 +6,7 @@ class Category extends Database {
         parent::__construct();
     }
     public function getAllCategories() {
-        $sql = "SELECT * FROM CATEGORIES";
+        $sql = "SELECT * FROM ". $this->tableName;
         $result = $this->getAll($sql);
         return $result;
     }

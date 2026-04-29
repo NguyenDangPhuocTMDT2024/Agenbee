@@ -1,10 +1,11 @@
 <?php
 $data = [
-    'title' => 'Users',
-    'userInfo' => $userInfo
+    'title' => 'Quản lý người dùng',
+    'userInfo' => $userInfo,
+    'activeMenu' => 'Users'
 ];
 layout('admin-header', $data);
-layout('admin-sidebar');
+layout('admin-sidebar', $data);
 
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
@@ -19,7 +20,7 @@ $msgType = getSessionFlash('msg_type');
                 <select name="role" class="form-select" id="userRole">
                     <option value="">Chọn loại</option>
                     <?php foreach ($userList as $user): ?>
-                        <option value="<?php echo $user['role']; ?>"><?php echo $cate['role']; ?></option>
+                        <option value="<?php echo $user['role']; ?>"><?php echo $user['role']; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

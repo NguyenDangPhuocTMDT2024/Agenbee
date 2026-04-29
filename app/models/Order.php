@@ -216,10 +216,13 @@ class Order extends Database {
         return $this->update($sql, $params);
     }
 
-    public function getAllOrders()
+    public function getAllOrders($condition = '')
     {
         $sql = "SELECT o.*, u.name as user_name FROM " . $this->tableName . 
                 " o JOIN " . $this->userTable . " u ON o.user_id = u.id";
+        if (!empty($condition)) {
+            $sql .= " WHERE " . $condition;
+        }
         return $this->getAll($sql);
     }
 }

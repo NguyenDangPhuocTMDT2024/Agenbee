@@ -1,10 +1,11 @@
 <?php
 $data = [
     'title' => 'Orders',
-    'userInfo' => $userInfo
+    'userInfo' => $userInfo,
+    'activeMenu' => 'Orders'
 ];
 layout('admin-header', $data);
-layout('admin-sidebar');
+layout('admin-sidebar', $data);
 
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
@@ -21,8 +22,13 @@ $orderStatus = [
     <div class="container mt-4">
         <div class="row mb-3 justify-content-center">
             <div class="col-md-3">
-                <select name="category" class="form-select" id="packageType">
-                    <option value="">Chọn loại</option>
+                <select name="category" id="statusFilter" class="form-select" id="packageType">
+                    <option value="all">Chọn loại</option>
+                    <?php foreach ($orderStatus as $statusKey => $statusLabel): ?>
+                        <option value="<?php echo $statusKey; ?>" <?php echo (isset($currentFilter) && $currentFilter === $statusKey) ? 'selected' : ''; ?>>
+                            <?php echo $statusLabel . ' ' . ucfirst($statusKey); ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
             <div class="col-md-6">
@@ -45,6 +51,7 @@ $orderStatus = [
                     <th>Thành tiền</th>
                     <th>Chi tiết</th>
                     <th>Trạng thái</th>
+                    <th>Xóa</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,6 +67,9 @@ $orderStatus = [
                             echo (!empty($orderStatus[$status])) ? $orderStatus[$status] : '';
                         ?>
                     </td>
+                    <td>
+                        <a href="<?php echo _HOST_URL ?>/admin/order/delete?id=<?php echo (!empty($order['id'])) ? $order['id']:''; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')"><i class="bi bi-trash"></i></a>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -68,7 +78,18 @@ $orderStatus = [
     </div>
 </main>
 <script>
-
+    document.addEventListener('DOMContentLoaded', function() {
+        const sortSelect = document.getElementById('statusFilter');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function() {
+                if (this.value) {
+                    const url = new URL(window.location);
+                    url.searchParams.set('filter', this.value);
+                    window.location.href = url.toString();
+                }
+            });
+        }
+    });
 </script>
 <?php
 layout('admin-footer');

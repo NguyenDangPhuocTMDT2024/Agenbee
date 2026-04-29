@@ -1,10 +1,11 @@
 <?php
 $data = [
     'title' => 'Chi tiết đơn hàng',
-    'userInfo' => $userInfo
+    'userInfo' => $userInfo,
+    'activeMenu' => 'Orders'
 ];
 layout('admin-header', $data);
-layout('admin-sidebar');
+layout('admin-sidebar', $data);
 
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');

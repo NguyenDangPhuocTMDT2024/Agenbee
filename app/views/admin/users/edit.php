@@ -1,10 +1,11 @@
 <?php
 $data = [
     'title' => 'Chỉnh sửa người dùng',
-    'userInfo' => $userInfo
+    'userInfo' => $userInfo,
+    'activeMenu' => 'Users'
 ];
 layout('admin-header', $data);
-layout('admin-sidebar');
+layout('admin-sidebar', $data);
 
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
@@ -65,17 +66,17 @@ $oldData = getSessionFlash('old_data');
                             <div class="col-md-6">
                                 <label class="form-label">Trạng thái</label>
                                 <select name="status" class="form-select">
-                                    <option <? if($userProfile['status']) echo 'selected' ?> value="1">Active</option>
-                                    <option <? if(!$userProfile['status']) echo 'selected' ?> value="0">Inactive</option>
+                                    <option <?php echo (isset($userProfile['status']) && $userProfile['status'] === 1) ? 'selected' : ''; ?> value="1">Active</option>
+                                    <option <?php echo (isset($userProfile['status']) && $userProfile['status'] === 0) ? 'selected' : ''; ?> value="0">Inactive</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Role</label>
-                                <select class="form-select">
-                                    <option selected>Admin</option>
-                                    <option>User</option>
+                                <select name="role" class="form-select">
+                                    <option <?php echo (isset($userProfile['role']) && $userProfile['role'] === 'Admin') ? 'selected' : ''; ?> value="Admin">Admin</option>
+                                    <option <?php echo (isset($userProfile['role']) && $userProfile['role'] === 'User') ? 'selected' : ''; ?> value="User">User</option>
                                 </select>
                             </div>
                             <div class="col-md-6">

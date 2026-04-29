@@ -11,12 +11,15 @@ class Package extends Database
         parent::__construct();
     }
     //lấy tất cả gói
-    public function getAllPackages()
+    public function getAllPackages($condition = '')
     {
         $sql = "SELECT p.*, c.name as category_name 
                 FROM {$this->tableName} p LEFT JOIN {$this->categoryTable} c 
                 ON p.category_id = c.id 
                 ORDER BY category_id ASC";
+        if(!empty($condition)) {
+            $sql .= " WHERE " . $condition;
+        }
         $result = $this->getAll($sql);
         return $result;
     }
@@ -26,8 +29,13 @@ class Package extends Database
         $sql = "SELECT p.*, c.name as category_name 
                 FROM {$this->tableName} p LEFT JOIN {$this->categoryTable} c 
                 ON p.category_id = c.id 
-                WHERE LOWER(TRIM(c.name)) = 'add-on' {$condition}
-                ORDER BY {$order}";
+                WHERE LOWER(TRIM(c.name)) = 'add-on'";
+        if(!empty($condition)) {
+            $sql .= " AND " . $condition;
+        }
+        if(!empty($order)) {
+            $sql .= " ORDER BY " . $order;
+        }
         $result = $this->getAll($sql);
         return $result;
     }
@@ -62,8 +70,8 @@ class Package extends Database
     //thêm gói
     public function createPackages($data)
     {
-        $sql = "INSERT INTO " . $this->tableName . "(sku, name, avatar, short_description, long_description, price, unit, category_id, hidden, created_at) 
-                VALUES (:sku, :name, :avatar, :short_description, :long_description, :price, :unit, :category_id, :hidden, :created_at)";
+        $sql = "INSERT INTO " . $this->tableName . "(sku, name, avatar, type, short_description, long_description, price, unit, category_id, hidden, created_at) 
+                VALUES (:sku, :name, :avatar, :type, :short_description, :long_description, :price, :unit, :category_id, :hidden, :created_at)";
         return $this->insert($sql, $data);
     }
     //lấy gói theo id
@@ -94,10 +102,16 @@ class Package extends Database
         $param = ['packageId' => $packageId];
         return $this->getAll($sql, $param);
     }
+    public function deleteAddonsByPackageID($packageId)
+    {
+        $sql = "DELETE FROM " . $this->itemTable . " WHERE combo_id = :packageId";
+        $param = ['packageId' => $packageId];
+        return $this->delete($sql, $param);
+    }
     //cập nhật gói theo id
     public function updatePackageByID($data,$id){
         $sql = "UPDATE " . $this->tableName . "
-        SET sku = :sku, name = :name, avatar = :avatar, short_description = :short_description, long_description = :long_description, price = :price, unit = :unit, category_id = :category_id, hidden = :hidden, updated_at = :updated_at
+        SET sku = :sku, name = :name, avatar = :avatar, type = :type, short_description = :short_description, long_description = :long_description, price = :price, unit = :unit, category_id = :category_id, hidden = :hidden, updated_at = :updated_at
         WHERE id = :id";
         $data['id'] = $id;
         return $this->update($sql,$data);

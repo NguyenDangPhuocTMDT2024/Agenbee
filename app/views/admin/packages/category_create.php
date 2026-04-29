@@ -1,10 +1,11 @@
 <?php
 $data = [
     'title' => 'Category',
-    'userInfo' => $userInfo
+    'userInfo' => $userInfo,
+    'activeMenu' => 'Packages'
 ];
 layout('admin-header', $data);
-layout('admin-sidebar');
+layout('admin-sidebar', $data);
 
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');

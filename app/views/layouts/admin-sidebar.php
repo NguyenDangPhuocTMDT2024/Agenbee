@@ -6,7 +6,7 @@
     <a href="<?php echo _HOST_URL ?>/admin/" class="brand-link">
       <!--begin::Brand Image-->
       <img
-        src="<?php echo _HOST_URL_PUBLIC;?>/img/logo.jpg"
+        src="<?php echo _HOST_URL_PUBLIC; ?>/img/logo.jpg"
         alt="Agenbee"
         class="brand-image opacity-75 shadow rounded-circle" />
       <!--end::Brand Image-->
@@ -26,8 +26,8 @@
         data-lte-toggle="treeview"
         role="menu"
         data-accordion="false">
-        <li class="nav-item menu-open">
-          <a href="<?php echo _HOST_URL ?>/admin/" class="nav-link active">
+        <li class="nav-item">
+          <a href="<?php echo _HOST_URL ?>/admin/" class="nav-link <?php echo ($activeMenu === 'Dashboard') ? 'active' : ''; ?>">
             <i class="nav-icon bi bi-speedometer"></i>
             <p>
               Dashboard
@@ -35,51 +35,34 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="<?php echo _HOST_URL ?>/admin/package" class="nav-link">
-            <i class="nav-icon bi bi-box-seam-fill"></i>
+          <a href="<?php echo _HOST_URL ?>/admin/package" class="nav-link <?php echo ($activeMenu === 'Packages') ? 'active' : ''; ?>">
+            <i class="nav-icon bi bi-box"></i>
             <p>
-              Package
+              Packages
             </p>
           </a>
         </li>
         <li class="nav-item">
-          <a href="<?php echo _HOST_URL ?>/admin/order" class="nav-link">
-            <i class="nav-icon bi bi-clipboard-fill"></i>
+          <a href="<?php echo _HOST_URL ?>/admin/order" class="nav-link <?php echo ($activeMenu === 'Orders') ? 'active' : ''; ?>">
+            <i class="nav-icon bi bi-clipboard"></i>
             <p>
               Orders
             </p>
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon bi bi-clipboard-fill"></i>
+          <a href="<?php echo _HOST_URL ?>/admin/contact" class="nav-link <?php echo ($activeMenu === 'Contacts') ? 'active' : ''; ?>">
+            <i class="nav-icon bi bi-phone"></i>
             <p>
-              Tasks
-              <span class="nav-badge badge text-bg-secondary me-3">6</span>
-              <i class="nav-arrow bi bi-chevron-right"></i>
+              Contacts
             </p>
           </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="./layout/unfixed-sidebar.html" class="nav-link">
-                <i class="nav-icon bi bi-circle"></i>
-                <p>Task List</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="./layout/fixed-sidebar.html" class="nav-link">
-                <i class="nav-icon bi bi-circle"></i>
-                <p>Details</p>
-              </a>
-            </li>
-          </ul>
         </li>
         <li class="nav-item">
-          <a href="<?php echo _HOST_URL;?>/admin/user" class="nav-link">
-            <i class="nav-icon bi bi-tree-fill"></i>
+          <a href="<?php echo _HOST_URL; ?>/admin/user" class="nav-link <?php echo ($activeMenu === 'Users') ? 'active' : ''; ?>">
+            <i class="nav-icon bi bi-people"></i>
             <p>
               User manager
-              <i class="nav-arrow bi bi-chevron-right"></i>
             </p>
           </a>
         </li>

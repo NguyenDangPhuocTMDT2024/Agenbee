@@ -1,10 +1,11 @@
 <?php
 $data = [
   'title' => 'Dashboard',
+  'activeMenu' => 'Dashboard',
   'userInfo' => $userInfo
 ];
 layout('admin-header', $data);
-layout('admin-sidebar');
+layout('admin-sidebar', $data);
 ?>
 <!--begin::App Main-->
 <main class="app-main">

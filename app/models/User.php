@@ -144,4 +144,25 @@ class User extends Database
         $params = ['id' => $id];
         return $this->delete($sql,$params);
     }
+
+    public function updateUserByID($data, $userID){
+        $sql = "UPDATE " . $this->tableName . " SET name = :name, email = :email, phone = :phone, updated_at = :updated_at WHERE id = :id";
+        $params = [
+            'name' => isset($data['name']) ? $data['name'] : null,
+            'email' => isset($data['email']) ? $data['email'] : null,
+            'phone' => isset($data['phone']) ? $data['phone'] : null,
+            'updated_at' => date('Y-m-d H:i:s'),
+            'id' => $userID
+        ];
+        return $this->update($sql, $params);
+    }
+    public function updateUserStatusByID($id, $status){
+        $sql = "UPDATE " . $this->tableName . " SET status = :status, updated_at = :updated_at WHERE id = :id";
+        $params = [
+            'status' => $status,
+            'updated_at' => date('Y-m-d H:i:s'),
+            'id' => $id
+        ];
+        return $this->update($sql, $params);
+    }
 }

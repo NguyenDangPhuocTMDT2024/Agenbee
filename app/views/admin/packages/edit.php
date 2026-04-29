@@ -1,10 +1,11 @@
 <?php
 $data = [
     'title' => 'Packages',
-    'userInfo' => $userInfo
+    'userInfo' => $userInfo,
+    'activeMenu' => 'Packages'
 ];
 layout('admin-header', $data);
-layout('admin-sidebar');
+layout('admin-sidebar', $data);
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
 $errors = getSessionFlash('errors');
@@ -95,6 +96,19 @@ $errors = getSessionFlash('errors');
                             ?>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Loại gói</label>
+                            <select name="type" class="form-select">
+                                <option <?php echo ($packageInfo['type'] === 'null') ? 'selected' : ''; ?> value="null">Chọn danh mục</option>
+                                <option <?php echo ($packageInfo['type'] === 'Setup') ? 'selected' : ''; ?> value="Setup">Setup</option>
+                                <option <?php echo ($packageInfo['type'] === 'Product') ? 'selected' : ''; ?> value="Product">Product</option>
+                                <option <?php echo ($packageInfo['type'] === 'Layout') ? 'selected' : ''; ?> value="Layout">Layout</option>
+                                <option <?php echo ($packageInfo['type'] === 'Design') ? 'selected' : ''; ?> value="Design">Design</option>
+                                <option <?php echo ($packageInfo['type'] === 'Content') ? 'selected' : ''; ?> value="Content">Content</option>
+                                <option <?php echo ($packageInfo['type'] === 'Restart') ? 'selected' : ''; ?> value="Restart">Restart</option>
+                                <option <?php echo ($packageInfo['type'] === 'Support') ? 'selected' : ''; ?> value="Support">Support</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Mô tả ngắn</label>
                             <textarea name="short_description" class="form-control"><?php echo $packageInfo['short_description']; ?></textarea>
                             <?php
@@ -128,9 +142,9 @@ $errors = getSessionFlash('errors');
                             <input type="radio" class="form-check-input" name="unit" value="item" <?php echo ($packageInfo['unit'] === 'item') ? 'checked' : ''; ?>> Cái
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Loại gói</label>
+                            <label class="form-label">Danh mục</label>
                             <select name="category" class="form-select" id="packageType" onchange="toggleChooseSubPackage()">
-                                <option value="">Chọn loại</option>
+                                <option value="">Chọn danh mục</option>
                                 <?php foreach ($categoryList as $cate):
                                     if ($cate['id'] == $packageInfo['category_id']): ?>
                                         <option value="<?php echo $cate['id']; ?>" selected><?php echo $cate['name']; ?></option>

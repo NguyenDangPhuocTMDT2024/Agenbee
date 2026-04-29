@@ -1,10 +1,11 @@
 <?php
 $data = [
     'title' => 'Packages',
-    'userInfo' => $userInfo
+    'userInfo' => $userInfo,
+    'activeMenu' => 'Packages'
 ];
 layout('admin-header', $data);
-layout('admin-sidebar');
+layout('admin-sidebar', $data);
 
 $msg = getSessionFlash('msg');
 $msgType = getSessionFlash('msg_type');
@@ -17,10 +18,12 @@ $msgType = getSessionFlash('msg_type');
         </div>
         <div class="row mb-3 justify-content-center">
             <div class="col-md-3">
-                <select name="category" class="form-select" id="packageType">
-                    <option value="">Chọn loại</option>
+                <select name="category" id="packageCategory" class="form-select">
+                    <option value="all" <?php echo (isset($currentFilter) && $currentFilter === 'all') ? 'selected' : ''; ?>>Tất cả</option>
                     <?php foreach ($categoryList as $cate): ?>
-                        <option value="<?php echo $cate['id']; ?>"><?php echo $cate['name']; ?></option>
+                        <option value="<?php echo $cate['id']; ?>" <?php echo (isset($currentFilter) && $currentFilter === $cate['id']) ? 'selected' : ''; ?>>
+                            <?php echo $cate['name']; ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -153,6 +156,18 @@ $msgType = getSessionFlash('msg_type');
             });
             collapse.toggle();
         });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        const sortSelect = document.getElementById('packageCategory');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function() {
+                if (this.value) {
+                    const url = new URL(window.location);
+                    url.searchParams.set('filter', this.value);
+                    window.location.href = url.toString();
+                }
+            });
+        }
     });
 </script>
 <?php

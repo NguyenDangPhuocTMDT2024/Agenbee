@@ -25,13 +25,10 @@ $router->get('/home', 'UserController@home');
 $router->get('/admin/', 'AdminController@dashboard');
 
 $router->get('/admin/package', 'AdminController@showPackage');
-
 $router->get('/admin/package/create', 'AdminController@showPackageCreate');
 $router->post('/admin/package/create', 'AdminController@packageCreate');
-
 $router->get('/admin/package/edit', 'AdminController@showPackageEdit');
 $router->post('/admin/package/edit', 'AdminController@packageEdit');
-
 $router->get('/admin/package/delete', 'AdminController@packageDelete');
 
 $router->get('/admin/package/category_create', 'AdminController@showCategoryCreate');
@@ -39,22 +36,24 @@ $router->post('/admin/package/category_create', 'AdminController@categoryCreate'
 
 $router->get('/admin/order', 'AdminController@showOrder');
 $router->post('/admin/order', 'AdminController@order');
-
 $router->get('/admin/order/detail', 'AdminController@showOrderDetail');
 $router->post('/admin/order/detail', 'AdminController@updateOrderTasks');
+$router->get('/admin/order/delete', 'AdminController@orderDelete');
+
+$router->get('/admin/contact', 'AdminController@showContact');
+$router->get('/admin/contact/detail', 'AdminController@showContactDetail');
+$router->post('/admin/contact', 'AdminController@updateContactStatus');
+$router->get('/admin/contact/delete', 'AdminController@contactDelete');
 
 $router->get('/admin/user', 'AdminController@showUser');
-
 $router->get('/admin/user/profile', 'AdminController@showUserProfile');
-
-$router->get('/admin/user/edit', 'AdminController@showUserEdit');
-
+$router->get('/admin/user/profile/change', 'AdminController@updateUserStatus');
 $router->get('/admin/user/create', 'AdminController@showUserCreate');
 $router->post('/admin/user/create', 'AdminController@userCreate');
-
 $router->get('/admin/user/delete', 'AdminController@userDelete');
 
 $router->get('/admin/profile', 'AdminController@showProfile');
+$router->post('/admin/profile', 'AdminController@updateProfile');
 
 //user routes
 $router->get('/package', 'UserController@showPackage');

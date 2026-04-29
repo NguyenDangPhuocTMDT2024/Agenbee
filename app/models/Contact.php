@@ -21,6 +21,34 @@ class Contact extends Database
         ];
         return $this->insert($sql, $params);
     }
+    public function getAllContacts()
+    {
+        $sql = "SELECT * FROM {$this->tableName} ORDER BY `status` ASC, created_at DESC";
+        return $this->getAll($sql);
+    }
+    public function getContactByID($id)
+    {
+        $sql = "SELECT * FROM {$this->tableName} WHERE id = :id ORDER BY `status` ASC, created_at DESC";
+        $params = [':id' => $id];
+        return $this->getOne($sql, $params);
+    }
+    public function updateContactStatusById($id, $status)
+    {
+        $sql = "UPDATE {$this->tableName} SET `status` = :status, `updated_at` = :updated_at WHERE id = :id";
+        $params = [
+            'id' => $id,
+            'status' => $status,
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+        return $this->update($sql, $params);
+    }
+    public function deleteContactByID($id)
+    {
+        $sql = "DELETE FROM {$this->tableName} WHERE id = :id";
+        $params = [':id' => $id];
+        return $this->delete($sql, $params);
+    }
 }
 
 ?>
+    
