@@ -143,7 +143,7 @@ class AuthController extends Controller
                     //send mail active account
                     $mailTo = $email;
                     $subject = 'Kích hoạt tài khoản';
-                    $linkActive = _HOST_URL . "/activate?token=$token";
+                    $linkActive = _HOST_URL . "/active?token=$token";
                     $content = "Chào $name,<br> Vui lòng click vào link sau để kích hoạt tài khoản: <a href='$linkActive'>$linkActive</a>";
                     if(sendMail($mailTo, $subject, $content)) {
                         setSessionFlash('msg', 'Đăng ký thành công. Vui lòng kiểm tra email để kích hoạt tài khoản!');
@@ -171,12 +171,9 @@ class AuthController extends Controller
     {
         $userId = getSession('user_id');
         if ($userId) {
-            $data = [
-                'user_id' => $userId,
-                'token' => null,
-                'updated_at' => date('Y-m-d H:i:s')
-            ];
-            $this->userModel->updateLoginSessionByID($data);
+            if(getSession('token_login')) {
+                $this->userModel->deleteLoginSessionByToken(getSession('token_login'));
+            }
         }
         deleteSession('user_id');
         deleteSession('token_login');

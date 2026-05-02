@@ -31,6 +31,16 @@ class Order extends Database {
         return $this->getAll($sql, $params);
     }
 
+    public function countOrdersByStatus($status)
+    {
+        $sql = "SELECT COUNT(*) as count FROM " . $this->tableName . " WHERE status = :status";
+        $params = [
+            'status' => $status,
+        ];
+        $result = $this->getOne($sql, $params);
+        return $result ? $result['count'] : 0;
+    }
+    
     public function getOrderById($orderId)
     {
         $sql = "SELECT o.*, 
@@ -219,7 +229,7 @@ class Order extends Database {
     public function getAllOrders($condition = '')
     {
         $sql = "SELECT o.*, u.name as user_name FROM " . $this->tableName . 
-                " o JOIN " . $this->userTable . " u ON o.user_id = u.id";
+                " o LEFT JOIN " . $this->userTable . " u ON o.user_id = u.id";
         if (!empty($condition)) {
             $sql .= " WHERE " . $condition;
         }

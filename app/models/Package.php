@@ -15,8 +15,7 @@ class Package extends Database
     {
         $sql = "SELECT p.*, c.name as category_name 
                 FROM {$this->tableName} p LEFT JOIN {$this->categoryTable} c 
-                ON p.category_id = c.id 
-                ORDER BY category_id ASC";
+                ON p.category_id = c.id";
         if(!empty($condition)) {
             $sql .= " WHERE " . $condition;
         }

@@ -314,7 +314,11 @@ foreach ($orderItems as $item) {
 
         <div class="row g-3">
             <h5 class="fw-bold mb-3">Thông tin setup</h5>
-            <div style="width:100%;height:700px;" data-zite-id="cv6hqcr4yk" data-zite-embed-type="standard" data-zite-inherit-parameters data-zite-parameters='{"order_id":"<?php echo $orderId; ?>"}'></div>
+            <div style="width:100%;height:700px;" 
+                data-zite-id="cv6hqcr4yk" 
+                data-zite-embed-type="standard" 
+                data-zite-inherit-parameters 
+                data-zite-parameters='{"order_id": "<?php echo $orderId; ?>"}'></div>
             <script src="https://server.fillout.com/embed/v2-zite/"></script>
         </div>
     </div>

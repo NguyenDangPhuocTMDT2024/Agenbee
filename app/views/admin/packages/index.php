@@ -21,7 +21,7 @@ $msgType = getSessionFlash('msg_type');
                 <select name="category" id="packageCategory" class="form-select">
                     <option value="all" <?php echo (isset($currentFilter) && $currentFilter === 'all') ? 'selected' : ''; ?>>Tất cả</option>
                     <?php foreach ($categoryList as $cate): ?>
-                        <option value="<?php echo $cate['id']; ?>" <?php echo (isset($currentFilter) && $currentFilter === $cate['id']) ? 'selected' : ''; ?>>
+                        <option value="<?php echo $cate['name']; ?>" <?php echo (isset($currentFilter) && $currentFilter === $cate['name']) ? 'selected' : ''; ?>>
                             <?php echo $cate['name']; ?>
                         </option>
                     <?php endforeach; ?>

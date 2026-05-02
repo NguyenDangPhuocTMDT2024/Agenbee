@@ -24,8 +24,8 @@ class AdminController extends Controller
         $userID = getSession('user_id');
         $data = [
             'userInfo' => $this->userModel->getUserByID($userID),
-            // 'orderModel' => $this->orderModel,
-            // 'taskModel' => $this->taskModel
+            'needConfirmOrders' => $this->orderModel->countOrdersByStatus('pending'),
+            'currentUsers' => $this->userModel->countOnlineUsers()
         ];
         $this->renderView($this->viewPath . 'dashboard', $data);
     }
@@ -35,20 +35,21 @@ class AdminController extends Controller
         $data = [
             'userInfo' => $this->userModel->getUserByID($userID),
             'packageList' => $this->packageModel->getAllPackages(),
-            'packageItemList' => $this->packageModel->getAllPackageItems()
+            'packageItemList' => $this->packageModel->getAllPackageItems(),
+            'categoryList' => $this->categoryModel->getAllCategories()
         ];
         if(isGet()){
             $filteredData = filterData('get');
-            echo '<pre>';
-            print_r($filteredData);
-            echo '</pre>';
-            die();
+            // echo '<pre>';
+            // print_r($filteredData);
+            // echo '</pre>';
+            // die();
             if(!empty($filteredData['filter'])){
                 if($filteredData['filter'] === 'all'){
                     $data['packageList'] = $this->packageModel->getAllPackages();
                     $data['currentFilter'] = 'all';
                 } else {
-                    $condition = "p.category_id = '" . $filteredData['filter'] . "'";
+                    $condition = "c.name = '" . $filteredData['filter'] . "'";
                     $data['packageList'] = $this->packageModel->getAllPackages($condition);
                     $data['currentFilter'] = $filteredData['filter'];
                 }
@@ -330,7 +331,8 @@ class AdminController extends Controller
     {
         $userID = getSession('user_id');
         $data = [
-            'userInfo' => $this->userModel->getUserByID($userID)
+            'userInfo' => $this->userModel->getUserByID($userID),
+            'orderList' => $this->orderModel->getAllOrders()
         ];
         if(isGet()){
             $filteredData = filterData('get');
@@ -459,7 +461,6 @@ class AdminController extends Controller
             }
         }
     }
-
     public function showContact()
     {
         $userID = getSession('user_id');
@@ -469,7 +470,6 @@ class AdminController extends Controller
         ];
         $this->renderView($this->viewPath . 'contacts/index', $data);
     }
-
     public function updateContactStatus()
     {
         if(isPost()){
@@ -499,7 +499,6 @@ class AdminController extends Controller
             } 
         }
     }
-
     public function contactDelete()
     {
         if(isGet()){
@@ -522,7 +521,6 @@ class AdminController extends Controller
             } 
         }
     }
-
     public function showContactDetail()
     {
         if (isGet()) {
@@ -549,14 +547,27 @@ class AdminController extends Controller
             }
         }
     }
-
     public function showUser()
     {
         $userID = getSession('user_id');
         $data = [
-            'userInfo' => $this->userModel->getUserByID($userID),
-            'userList' => $this->userModel->getAllUsers()
+            'userInfo' => $this->userModel->getUserByID($userID)
         ];
+        if(isGet()){
+            $filteredData = filterData('get');
+            if(!empty($filteredData['filter'])){
+                if($filteredData['filter'] === 'all'){
+                    $data['userList'] = $this->userModel->getAllUsers();
+                    $data['currentFilter'] = 'all';
+                } else {
+                    $condition = "role = '" . $filteredData['filter'] . "'";
+                    $data['userList'] = $this->userModel->getAllUsers($condition);
+                    $data['currentFilter'] = $filteredData['filter'];
+                }
+            } else {
+                $data['userList'] = $this->userModel->getAllUsers();
+            }
+        }
         $this->renderView($this->viewPath . 'users/index', $data);
     }
     public function showUserCreate()

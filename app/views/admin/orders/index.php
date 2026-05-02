@@ -46,7 +46,7 @@ $orderStatus = [
         <table class="table table-hover text-center w-80">
             <thead class="table-light table-bordered">
                 <tr>
-                    <th>STT</th>
+                    <th>ID</th>
                     <th>Tên khách hàng</th>
                     <th>Thành tiền</th>
                     <th>Chi tiết</th>
@@ -57,7 +57,7 @@ $orderStatus = [
             <tbody>
                 <?php foreach($orderList as $order): ?>
                 <tr>
-                    <td><?php echo (!empty($order['id'])) ? $order['id']:''; ?></td>
+                    <td>#<?php echo (!empty($order['id'])) ? $order['id']:''; ?></td>
                     <td><?php echo (!empty($order['user_name'])) ? $order['user_name']:'';?></td>
                     <td><?php echo (!empty($order['total_price'])) ? number_format($order['total_price']): 0;?><sup>đ</sup></td>
                     <td><a href="<?php echo _HOST_URL ?>/admin/order/detail?id=<?php echo (!empty($order['id'])) ? $order['id']:''; ?>" class="btn btn-success btn-sm"><i class="bi bi-pencil-square"></i></a></td>

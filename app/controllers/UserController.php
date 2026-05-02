@@ -443,7 +443,7 @@ class UserController extends Controller
                         foreach ($orderItems as $item) {
                             $this->orderModel->createOrderTask($orderId, $item['package_id']);
                         }
-                        setSessionFlash('msg', 'Thanh toán thành công, chúng tôi sẽ xác nhận thanh toán của bạn trong thời gian sớm nhất');
+                        setSessionFlash('msg', 'Thanh toán thành công, chúng tôi sẽ xác nhận thanh toán của bạn trong thời gian sớm nhất. Trong thời gian này vui lòng xem đơn hàng và điền thông tin cần thiết để chúng tôi có thể hoàn tất đơn hàng cho bạn');
                         setSessionFlash('msg_type', 'success');
                     } else {
                         setSessionFlash('msg', 'Có lỗi xảy ra khi cập nhật thông tin thanh toán, vui lòng thử lại');

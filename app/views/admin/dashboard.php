@@ -35,8 +35,8 @@ layout('admin-sidebar', $data);
           <!--begin::Small Box Widget 1 (new orders)-->
           <div class="small-box text-bg-primary">
             <div class="inner">
-              <h3>150</h3>
-              <p>New Orders</p>
+              <h3><?php echo $needConfirmOrders; ?></h3>
+              <p>Đơn hàng mới (cần xác nhận)</p>
             </div>
             <svg
               class="small-box-icon"
@@ -48,9 +48,9 @@ layout('admin-sidebar', $data);
                 d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"></path>
             </svg>
             <a
-              href="#"
+              href="<?php echo _HOST_URL ?>/admin/order"
               class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-              More info <i class="bi bi-link-45deg"></i>
+              Chi tiết <i class="bi bi-link-45deg"></i>
             </a>
           </div>
           <!--end::Small Box Widget 1-->
@@ -110,8 +110,8 @@ layout('admin-sidebar', $data);
           <!--begin::Small Box Widget 4 (unique visitors-->
           <div class="small-box text-bg-danger">
             <div class="inner">
-              <h3>65</h3>
-              <p>Unique Visitors</p>
+              <h3><?php echo $currentUsers; ?></h3>
+              <p>Người dùng trực tuyến</p>
             </div>
             <svg
               class="small-box-icon"
@@ -129,9 +129,9 @@ layout('admin-sidebar', $data);
                 d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"></path>
             </svg>
             <a
-              href="#"
+              href="<?php echo _HOST_URL ?>/admin/user"
               class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-              More info <i class="bi bi-link-45deg"></i>
+              Chi tiết <i class="bi bi-link-45deg"></i>
             </a>
           </div>
           <!--end::Small Box Widget 4-->

@@ -10,11 +10,23 @@ class User extends Database
         parent::__construct();
     }
     //ham lay toan bo thong tin user
-    public function getAllUsers()
+    public function getAllUsers($condition = '')
     {
-        $sql = "SELECT * FROM " . $this->tableName . " ORDER BY role ASC";
+        $sql = "SELECT u.*, s.token as login_token FROM " . $this->tableName . " u LEFT JOIN " . $this->tokenTable . " s ON u.id = s.user_id";
+        if (!empty($condition)) {
+            $sql .= " WHERE " . $condition;
+        }
         $result = $this->getAll($sql);
         return $result;
+    }
+    //đếm người dùng hiện tại đang online (có token trong bảng login_session và không phải admin)
+    public function countOnlineUsers()
+    {
+        $sql = "SELECT COUNT(DISTINCT u.id) as online_count FROM " . $this->tableName . " u
+                LEFT JOIN " . $this->tokenTable . " s ON u.id = s.user_id
+                WHERE u.role != 'admin' AND s.token IS NOT NULL";
+        $result = $this->getOne($sql);
+        return $result ? $result['online_count'] : 0;
     }
     //ham lay thong tin 1 user bang email
     public function getUserByEmail($email)
@@ -86,6 +98,12 @@ class User extends Database
             'user_id' => isset($data['user_id']) ? $data['user_id'] : null,
         ];
         return $this->update($sql, $params);
+    }
+    public function deleteLoginSessionByToken($token)
+    {
+        $sql = "DELETE FROM " . $this->tokenTable . " WHERE token = :token";
+        $params = ['token' => $token];
+        return $this->delete($sql, $params);
     }
     //ham thay doi forgot_token khi user quen mat khau bang email
     public function updateForgotTokenByEmail($data)
