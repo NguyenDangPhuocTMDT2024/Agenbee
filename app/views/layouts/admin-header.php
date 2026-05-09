@@ -44,6 +44,9 @@
     <!--begin::Required Plugin(AdminLTE)-->
     <link rel="stylesheet" href="<?php echo _HOST_URL_PUBLIC . '/css/adminlte.css'; ?>" />
     <!--end::Required Plugin(AdminLTE)-->
+    <!--begin::Responsive CSS-->
+    <link rel="stylesheet" href="<?php echo _HOST_URL_PUBLIC . '/css/admin-responsive.css'; ?>" />
+    <!--end::Responsive CSS-->
     <!-- apexcharts -->
     <link
       rel="stylesheet"

@@ -1,8 +1,8 @@
 <body>
-    <section class="vh-100">
-        <div class="container-fluid h-custom">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-md-9 col-lg-6 col-xl-5">
+    <section class="auth-section">
+        <div class="auth-container">
+            <div class="auth-content">
+                <div class="auth-logo-wrapper">
                     <img src="<?php echo _HOST_URL_PUBLIC ?>/img/logo.jpg"
-                        class="img-fluid" alt="Sample image">
+                        class="auth-logo" alt="Agenbee Logo">
                 </div>

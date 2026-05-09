@@ -441,17 +441,6 @@ $grandTotal = max(0, $subtotal - $discount);
 					<span class="checkout-summary-value"><?php echo number_format($grandTotal, 0, ',', '.'); ?>đ</span>
 				</div>
 
-				<div class="checkout-payment-list">
-					<label class="checkout-payment-option">
-						<input type="radio" name="payment_method" checked>
-						<span>Thanh toán chuyển khoản</span>
-					</label>
-					<label class="checkout-payment-option">
-						<input type="radio" name="payment_method">
-						<span>Thanh toán khi hoàn tất</span>
-					</label>
-				</div>
-
 				<div class="mt-3">
 					<button type="button" class="checkout-btn-confirm" id="confirmPayment" onclick="showPayment()">
 						<i class="bi bi-shield-check"></i>

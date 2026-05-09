@@ -30,11 +30,50 @@
             ?>
             <aside class="col-12 col-lg-2 col-xl-1 sidebar sidebar-compact p-3">
                 <div class="d-flex flex-column h-100">
-                    <a href="<?php echo _HOST_URL ?>/home" class="sidebar-logo text-decoration-none d-flex align-items-center justify-content-center">
+                    <div class="sidebar-mobile-bar d-flex d-lg-none align-items-center justify-content-between gap-2 mb-2">
+                        <a href="<?php echo _HOST_URL ?>/home" class="sidebar-mobile-logo text-decoration-none d-flex align-items-center">
+                            <img src="<?php echo _HOST_URL_PUBLIC; ?>/img/logo.jpg" alt="Logo" class="logo-img">
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn sidebar-mobile-toggle dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Danh mục điều hướng">
+                                <i class="bi bi-grid-fill"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end sidebar-mobile-menu">
+                                <li>
+                                    <a href="<?php echo _HOST_URL ?>/home" class="dropdown-item <?php echo $hasTitleKeyword(['Trang chủ']) ? 'active' : '' ?>">
+                                        <i class="bi bi-house-door-fill"></i>
+                                        <span>Home</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo _HOST_URL ?>/package" class="dropdown-item <?php echo $hasTitleKeyword(['Gói dịch vụ', 'gói dịch vụ', 'Chi tiết gói dịch vụ']) ? 'active' : '' ?>">
+                                        <i class="bi bi-box-seam-fill"></i>
+                                        <span>Package</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo _HOST_URL ?>/contact" class="dropdown-item <?php echo $hasTitleKeyword(['Liên hệ']) ? 'active' : '' ?>">
+                                        <i class="bi bi-telephone-fill"></i>
+                                        <span>Contact</span>
+                                    </a>
+                                </li>
+                                <?php if(isLogin()): ?>
+                                <li>
+                                    <a href="<?php echo _HOST_URL ?>/order" class="dropdown-item <?php echo $hasTitleKeyword(['Đơn hàng', 'Giỏ hàng']) ? 'active' : '' ?>">
+                                        <i class="bi bi-cart-check-fill"></i>
+                                        <span>Order</span>
+                                    </a>
+                                </li>
+                                <?php endif; ?>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <a href="<?php echo _HOST_URL ?>/home" class="sidebar-logo text-decoration-none d-none d-lg-flex align-items-center justify-content-center">
                         <img src="<?php echo _HOST_URL_PUBLIC; ?>/img/logo.jpg" alt="Logo" class="logo-img">
                     </a>
 
-                    <nav class="sidebar-nav mt-4 mt-lg-5 d-flex flex-column align-items-center align-items-lg-start gap-2">
+                    <nav class="sidebar-nav mt-4 mt-lg-5 d-none d-lg-flex flex-column align-items-center align-items-lg-start gap-2">
                         <a href="<?php echo _HOST_URL ?>/home" class="nav-item-btn <?php echo $hasTitleKeyword(['Trang chủ']) ? 'active' : '' ?>" data-section="home" data-title="Trang chu" data-bs-toggle="tooltip" data-bs-placement="right" title="Trang chủ">
                             <i class="bi bi-house-door-fill"></i>
                             <span>Home</span>
@@ -55,7 +94,7 @@
                         <?php endif; ?>
                     </nav>
                     <?php if(isLogin()): ?>
-                    <a href="<?php echo _HOST_URL ?>/profile" class="profile-shortcut mt-auto text-decoration-none d-flex align-items-center justify-content-center" title="Mo trang profile" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Profile">
+                    <a href="<?php echo _HOST_URL ?>/profile" class="profile-shortcut mt-auto text-decoration-none d-none d-lg-flex align-items-center justify-content-center" title="Mo trang profile" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Profile">
                         <?php
                         if(isLogin() && isset($user)) {
                             if(!empty($user['avatar'])) {

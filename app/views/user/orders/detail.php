@@ -419,6 +419,9 @@ $formatDate = function ($dateValue) {
 			<?php else: ?>
 				<div class="order-items-empty">Đơn hàng này chưa có gói nào trong order_items.</div>
 			<?php endif; ?>
+			<div class="order-detail-card mt-4">
+				<p><strong>Thông tin setup</strong>: <button class="btn btn-warning btn-sm" style="border-radius:30px;" onclick="window.open('https://cv6hqcr4yk.zite.so?order_id=<?php echo $detail['id']; ?>')">Xem form</button></p>
+			</div>
 		</article>
 
 		<article class="order-detail-card">
@@ -486,11 +489,6 @@ $formatDate = function ($dateValue) {
 				<a class="order-back-link" href="<?php echo _HOST_URL; ?>/order"><i class="bi bi-arrow-left"></i> Quay lại danh sách</a>
 			</div>
 		</article>
-	</section>
-	<section class="order-detail-card mt-4">
-		<h2>Thông tin setup</h2>
-		<div style="width:100%;height:700px;" data-zite-id="cv6hqcr4yk" data-zite-embed-type="standard" data-zite-inherit-parameters data-zite-parameters='{"order_id":"<?php echo urlencode($detail['id'] ?? ''); ?>"}'></div>
-		<script src="https://server.fillout.com/embed/v2-zite/"></script>
 	</section>
 </main>
 

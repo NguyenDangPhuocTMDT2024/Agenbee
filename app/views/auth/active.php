@@ -27,16 +27,17 @@ if (!empty($filteredData['token'])) {
 }
 ?>
 
-<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-    <form>
-        <h2 class="text-center mb-4"><?php echo $msg; ?></h2>
+<div class="auth-form-wrapper">
+    <div class="text-center">
+        <h2><?php echo $msg; ?></h2>
         <?php if ($msg === 'Kích hoạt tài khoản thành công!'): ?>
-            <div class="text-center text-lg-start mt-4 pt-2">
-                <p class="small fw-bold mt-2 pt-1 mb-0">Quay lại <a href="<?php echo _HOST_URL; ?>/login"
-                        class="link-success">đăng nhập</a></p>
+            <div class="mt-4 pt-2">
+                <p class="mb-0">Quay lại 
+                    <a href="<?php echo _HOST_URL; ?>/login" class="link-success">đăng nhập</a>
+                </p>
             </div>
         <?php endif; ?>
-    </form>
+    </div>
 </div>
 <?php
 layout('auth-footer');

@@ -144,6 +144,9 @@
       sales_chart.render();
     </script>
     <!--end::Script-->
+    <!--begin::Responsive Script-->
+    <script src="<?php echo _HOST_URL_PUBLIC . '/js/admin-responsive.js'; ?>"></script>
+    <!--end::Responsive Script-->
   </body>
   <!--end::Body-->
 </html>

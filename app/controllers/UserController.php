@@ -42,7 +42,7 @@ class UserController extends Controller
             $order = isset($filteredData['order']) ? trim($filteredData['order']) : '';
             $condition = '';
             if (!empty($filter)) {
-                $condition .= " AND LOWER(TRIM(p.type)) = '" . strtolower($filter) . "'";
+                $condition .= " LOWER(TRIM(p.type)) = '" . strtolower($filter) . "'";
             }
             if ($order === 'price_asc') {
                 $orderBy = 'p.price ASC';

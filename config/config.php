@@ -4,7 +4,8 @@ define('username', 'root');
 define('password', '');
 define('database', 'AGENBEE');
 
-define('_HOST_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/agenbee');
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+define('_HOST_URL', $protocol . $_SERVER['HTTP_HOST'] . '/agenbee');
 define('_HOST_URL_LAYOUT', _HOST_URL . '/app/views/layouts');
 define('_HOST_URL_PUBLIC', _HOST_URL . '/public');
 

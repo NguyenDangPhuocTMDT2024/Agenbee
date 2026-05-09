@@ -209,6 +209,84 @@ $formatDate = function ($dateValue) {
 			min-width: 860px;
 		}
 	}
+
+	/* Mobile: convert table rows into card-like blocks */
+	@media (max-width: 767.98px) {
+		.orders-table-wrap {
+			overflow: visible;
+			padding: 8px;
+		}
+
+		.orders-table {
+			min-width: 0;
+			width: 100%;
+			border: 0;
+		}
+
+		.orders-table thead {
+			display: none;
+		}
+
+		.orders-table tbody tr {
+			display: block;
+			background: linear-gradient(180deg, #ffffff 0%, #fff8ea 100%);
+			border: 1px solid rgba(201, 154, 17, 0.08);
+			border-radius: 12px;
+			padding: 10px 12px;
+			margin-bottom: 12px;
+			box-shadow: 0 8px 18px rgba(31, 24, 9, 0.06);
+		}
+
+		.orders-table tbody tr td {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 8px 6px;
+			border: 0;
+			font-size: 0.95rem;
+		}
+
+		/* Labels on the left via pseudo elements */
+		.orders-table tbody tr td:nth-child(1)::before { content: "Mã đơn"; color: #8a8a8a; font-weight: 700; margin-right: 8px; }
+		.orders-table tbody tr td:nth-child(2)::before { content: "Tổng tiền"; color: #8a8a8a; font-weight: 600; margin-right: 8px; }
+		.orders-table tbody tr td:nth-child(3)::before { content: "Ngày tạo"; color: #8a8a8a; font-weight: 600; margin-right: 8px; }
+		.orders-table tbody tr td:nth-child(4)::before { content: "Trạng thái"; color: #8a8a8a; font-weight: 600; margin-right: 8px; }
+		.orders-table tbody tr td:nth-child(5)::before { content: "Tiến độ"; color: #8a8a8a; font-weight: 600; margin-right: 8px; }
+		.orders-table tbody tr td:nth-child(6)::before { content: "Chi tiết"; color: #8a8a8a; font-weight: 600; margin-right: 8px; }
+		.orders-table tbody tr td:nth-child(7)::before { content: "Hành động"; color: #8a8a8a; font-weight: 600; margin-right: 8px; }
+
+		.orders-table tbody tr td::before {
+			display: inline-block;
+			min-width: 86px;
+		}
+
+		.orders-progress {
+			width: 100%;
+			margin-left: 12px;
+		}
+
+		.orders-progress-track {
+			width: 100%;
+		}
+
+		.orders-progress-text {
+			text-align: right;
+			font-size: 0.82rem;
+			margin-top: 6px;
+		}
+
+		.orders-id, .orders-money { white-space: nowrap; }
+
+		.orders-detail-link {
+			padding: 8px 10px;
+		}
+
+		/* Make buttons full width for easier tapping */
+		.orders-table tbody tr td .orders-detail-link,
+		.orders-table tbody tr td button.orders-detail-link {
+			min-width: 120px;
+		}
+	}
 </style>
 
 <main class="orders-page px-3 px-md-4 py-4 flex-grow-1">

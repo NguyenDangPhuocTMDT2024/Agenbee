@@ -1,7 +1,7 @@
 <div class="col-12 col-lg-10 col-xl-11 d-flex flex-column main-area">
                 <!-- Header -->
                 <header class="top-header px-3 px-md-4 py-2 border-bottom">
-                    <div class="d-flex align-items-center gap-2 gap-md-3 flex-wrap">
+                    <div class="d-flex align-items-center gap-2 gap-md-3 flex-nowrap header-toolbar">
                         <div class="search-wrap flex-grow-1">
                             <i class="bi bi-search"></i>
                             <input type="text" id="globalSearch" class="form-control" placeholder="Tìm kiếm theo từ khóa...">
@@ -11,9 +11,6 @@
                             $cartCount = isset($cartItemCount) ? (int) $cartItemCount : 0;
                             $cartCountDisplay = $cartCount > 9 ? '9+' : $cartCount;
                         ?>
-                        <button class="btn btn-outline-secondary icon-only-btn" id="notifyBtn" type="button" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Thông báo">
-                            <i class="bi bi-bell-fill"></i>
-                        </button>
                         <a href="<?php echo _HOST_URL; ?>/cart" class="btn btn-outline-secondary icon-only-btn cart-icon-btn" id="cartBtn" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Giỏ hàng">
                             <span class="cart-icon-wrap">
                                 <i class="bi bi-cart3"></i>

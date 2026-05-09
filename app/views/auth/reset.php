@@ -25,43 +25,36 @@ $errors = getSessionFlash('errors');
 
 ?>
 
-<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+<div class="auth-form-wrapper">
     <form method="POST" action="" enctype="multipart/form-data">
-        <h2 class="text-center mb-4 text-uppercase">Đặt lại mật khẩu</h2>
+        <h2>Đặt lại mật khẩu</h2>
         <?php 
             if(!empty($msg)) {
                 echo showMsg($msg, $msgType);
             }
         ?>
+        
         <!-- Password input -->
-        <div data-mdb-input-init class="form-outline mb-4">
-            <input name="password" type="password" id="form3Example3" class="form-control form-control-lg"
+        <div class="form-outline mb-4">
+            <input name="password" type="password" id="password" class="form-control"
                 placeholder="Nhập mật khẩu mới" />
         </div>
-        <div class = "errors">
         <?php if(!empty($errors)) { 
             echo showErrors($errors, 'password');
-            }
-        ?>
-        </div>
+        } ?>
 
         <!-- Confirm Password input -->
-        <div data-mdb-input-init class="form-outline mb-3">
-            <input name="confirm_password" type="password" id="form3Example4" class="form-control form-control-lg"
+        <div class="form-outline mb-4">
+            <input name="confirm_password" type="password" id="confirm_password" class="form-control"
                 placeholder="Nhập lại mật khẩu" />
         </div>
-        <div class = "errors">
         <?php if(!empty($errors)) { 
             echo showErrors($errors, 'confirm_password');
-            }
-        ?>
-        </div>
+        } ?>
 
-        <div class="text-center text-lg-start mt-4 pt-2">
-            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-warning btn-lg"
-                style="padding-left: 2.5rem; padding-right: 2.5rem;">Xác nhận</button>
+        <div class="text-center">
+            <button type="submit" class="btn btn-warning">Xác nhận</button>
         </div>
-
     </form>
 </div>
 <?php

@@ -10,33 +10,33 @@ $msg_type = getSessionFlash('msg_type');
 $errors = getSessionFlash('errors');
 ?>
 
-<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+<div class="auth-form-wrapper">
     <form method="POST" action="" enctype="multipart/form-data">
-        <h2 class="text-center mb-4 text-uppercase">Quên mật khẩu</h2>
+        <h2>Quên mật khẩu</h2>
         <?php 
             if($msg) {
                 echo showMsg($msg, $msg_type);
             }
         ?>
+        
         <!-- Email input -->
-        <div data-mdb-input-init class="form-outline mb-4">
-            <input name="email" type="text" id="form3Example3" class="form-control form-control-lg"
+        <div class="form-outline mb-4">
+            <input name="email" type="text" id="email" class="form-control"
                 placeholder="Nhập email khôi phục" />
         </div>
-        <div class = "errors">
         <?php if(!empty($errors)) { 
             echo showErrors($errors, 'email');
-            }
-        ?>
-        </div>
+        } ?>
 
-        <div class="text-center text-lg-start mt-4 pt-2">
-            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-warning btn-lg"
-                style="padding-left: 2.5rem; padding-right: 2.5rem;">Gửi yêu cầu</button>
+        <div class="text-center">
+            <button type="submit" class="btn btn-warning">Gửi yêu cầu</button>
+            <p class="mt-3 mb-0">Quay lại 
+                <a href="<?php echo _HOST_URL?>/login" class="link-danger">Đăng nhập</a>
+            </p>
         </div>
-
     </form>
 </div>
+
 <?php
 layout('auth-footer');
 ?>
