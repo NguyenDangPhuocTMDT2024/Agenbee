@@ -348,6 +348,8 @@ function loginRedirect($userData)
     if (!empty($userData)) {
         if ($userData['role'] === 'admin') {
             redirect('/admin/');
+        } else if ($userData['role'] === 'reviewer') {
+            redirect('/reviewer/job-board');
         } else {
             redirect('/home');
         }

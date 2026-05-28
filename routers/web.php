@@ -76,6 +76,19 @@ $router->get('/back-to-cart', 'UserController@backToCart');
 $router->get('/contact', 'UserController@showContact');
 $router->post('/contact', 'UserController@contact');
 
+// Reviewer routes
+$router->get('/reviewer', 'ReviewerController@jobBoard');
+$router->get('/reviewer/job-board', 'ReviewerController@jobBoard');
+$router->get('/reviewer/job-detail', 'ReviewerController@jobDetail');
+$router->post('/reviewer/job-detail', 'ReviewerController@jobDetail');
+
+$router->get('/reviewer/workspace', 'ReviewerController@workspace');
+$router->post('/reviewer/workspace', 'ReviewerController@workspace');
+
+// reviewer profile routes
+$router->get('/reviewer/profile', 'ReviewerController@showProfile');
+$router->post('/reviewer/profile', 'ReviewerController@updateProfile');
+
 $router->get('/profile', 'UserController@showProfile');
 $router->post('/profile', 'UserController@updateProfile');
 
